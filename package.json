@@ -1,0 +1,35 @@
+{
+  "name": "reddex-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel-node": "babel-node --presets=env",
+    "start": "nodemon --exec npm run babel-node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyrelchambers/reddex-backend.git"
+  },
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2017": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.2.7",
+    "mongoose": "^5.6.1",
+    "nodemon": "^1.19.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tyrelchambers/reddex-backend/issues"
+  },
+  "homepage": "https://github.com/tyrelchambers/reddex-backend#readme"
+}
