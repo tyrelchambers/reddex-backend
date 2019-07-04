@@ -3,7 +3,7 @@ import Token from '../../models/Tokens';
 
 const app = express.Router();
 
-app.get('/', async (req, res) => {
+app.get('/confirmInvite', async (req, res) => {
   try {
     const { inviteCode } = req.query;
     const token = await Token.findOne({token: inviteCode});
