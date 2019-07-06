@@ -9,6 +9,8 @@ app.get('/getTokens', authHandler, async (req, res) => {
     const userId = res.locals.userId;
     const user = await User.findOne({_id: userId});
 
+    if (!user) throw new Error("No user");
+
     res.json({
       refresh_token: user.refresh_token,
       access_token: user.access_token
@@ -17,7 +19,7 @@ app.get('/getTokens', authHandler, async (req, res) => {
 
   catch(err) {
     console.log(err);
-    res.status(503).send("Something went wrong");
+    res.status(503).json({error: err});
   }
 });
 
