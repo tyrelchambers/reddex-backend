@@ -9,6 +9,8 @@ const userSchema = new Schema({
   access_token: String,
   refresh_token: String,
   authorsMessaged: [String],
+  storiesUsed: [String],
+  altMessage: String,
   defaultMessage: String,
   initialGreeting: String,
   repeatGreeting: String

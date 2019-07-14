@@ -9,6 +9,7 @@ import login from './api/auth/login';
 import tokens from './api/auth/tokens';
 import invites from './api/invites/invites';
 import createInvite from './api/invites/createInvite';
+import saveAuthors from './api/profile/saveAuthors';
 
 const database = config[config.env].database;
 
@@ -26,7 +27,7 @@ db.on('error', console.error.bind(console, "Connection error"));
 db.once('open', () => console.log("Connected sucessfully to database"));
 
 app.use('/api/auth/', register);
-app.use('/api/profile', profile);
+app.use('/api/profile', [profile, saveAuthors]);
 app.use('/api/auth/', login);
 app.use('/api/tokens', tokens);
 app.use('/api/invites', [invites, createInvite]);

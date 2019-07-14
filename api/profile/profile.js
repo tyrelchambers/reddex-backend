@@ -35,4 +35,20 @@ app.post('/default_message', authHandler, async (req, res) => {
   }
 });
 
+app.post('/alt_message', authHandler, async (req, res) => {
+  try {
+    const userId = res.locals.userId;
+    const { altMessage } = req.body;
+
+    const user = await User.findOneAndUpdate({_id: userId}, {altMessage});
+
+    res.send(user.altMessage);
+  }
+
+  catch(err) {
+    console.log(err);
+    res.send(400).json({error: err});
+  }
+});
+
 module.exports = app;
