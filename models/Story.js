@@ -14,6 +14,14 @@ const storySchema = new Schema({
   title: String,
   ups: Number,
   url: String,
+  permission: {
+    type: Boolean,
+    default: false
+  },
+  read: {
+    type: Boolean,
+    default: false
+  },
   user_id: {
     type: ObjectId,
     ref: 'User'

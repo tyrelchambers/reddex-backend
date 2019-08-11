@@ -50,17 +50,6 @@ app.post('/save_story', authHandler, async (req, res) => {
   }
 });
 
-app.get('/get_stories', authHandler, async (req, res) => {
-  try {
-    const stories = await Story.find({user_id: res.locals.userId});
-    res.send(stories);
-  }
-
-  catch(err) {
-    console.log(err);
-  }
-});
-
 app.get('/get_story', authHandler, async (req, res) => {
   try {
     const {
@@ -68,7 +57,7 @@ app.get('/get_story', authHandler, async (req, res) => {
       title
     } = req.query;
 
-    const story = await Story.findOne({user_id: res.locals.userId, title, author}, { user_id: 0});
+    const story = await Story.findOne({user_id: res.locals.userId, title, author}, { user_id: 0, _id: 0});
     res.send(story);
   }
 
@@ -77,4 +66,81 @@ app.get('/get_story', authHandler, async (req, res) => {
   }
 });
 
+// sets PERMISSION of singular story (used in InboxMessage)
+app.post('/set_permission', authHandler, async (req, res) => {
+  try {
+    const { 
+      author,
+      title,
+      permission
+     } = req.body;
+
+    const story = await Story.findOne({user_id: res.locals.userId, title, author});
+
+    story.save(err => {
+      if ( err ) throw new Error(err);
+
+      story.permission = permission;
+      story.save();
+    });
+
+    res.sendStatus(200);
+  }
+
+  catch(err) {
+    console.log(err)
+  }
+});
+
+// Get all stories with TRUE permission
+app.get('/reading_list', authHandler, async (req, res) => {
+  try {
+    const { 
+      permission
+    } = req.query;
+
+    const story = await Story.find({user_id: res.locals.userId, permission, read: false});
+
+    res.send(story);
+  }
+
+  catch(err) {
+    console.log(err);
+  }
+});
+
+app.post('/stories/completed', authHandler, async (req, res) => {
+  try {
+    const {
+      read,
+      author,
+      title
+    } = req.body;
+
+    const story = await Story.findOne({user_id: res.locals.userId, title, author});
+
+    story.save(err => {
+      if ( err ) throw new Error(err);
+
+      story.read = read;
+      story.save();
+    });
+    res.sendStatus(200);
+  }
+
+  catch(err) {
+    console.log(err);
+  }
+});
+
+app.get('/stories/completed', authHandler, async (req, res) => {
+  try {
+    const story = await Story.find({user_id: res.locals.userId, read: true}, { user_id: 0, _id: 0});
+    res.send(story);
+  }
+  
+  catch(err) {
+    console.log(err);
+  }
+})
 module.exports = app;

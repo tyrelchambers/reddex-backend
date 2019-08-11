@@ -14,6 +14,14 @@ const userSchema = new Schema({
   defaultMessage: String,
   initialGreeting: String,
   repeatGreeting: String,
+  completedStories: [{
+    type: ObjectId,
+    ref: 'Story'
+  }],
+  readingList: [{
+    type: ObjectId,
+    ref: 'Story'
+  }],
   fullStories: [{
     type: ObjectId,
     ref: 'Story'
