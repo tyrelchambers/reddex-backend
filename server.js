@@ -10,6 +10,7 @@ import tokens from './api/auth/tokens';
 import invites from './api/invites/invites';
 import createInvite from './api/invites/createInvite';
 import saveAuthors from './api/profile/saveAuthors';
+import stories from './api/profile/stories';
 
 const database = config[config.env].database;
 
@@ -27,8 +28,9 @@ db.on('error', console.error.bind(console, "Connection error"));
 db.once('open', () => console.log("Connected sucessfully to database"));
 
 app.use('/api/auth/', register);
-app.use('/api/profile', [profile, saveAuthors]);
+app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/auth/', login);
 app.use('/api/tokens', tokens);
 app.use('/api/invites', [invites, createInvite]);
+
 app.listen(port, () => console.log("App running on " + port));

@@ -13,9 +13,15 @@ const userSchema = new Schema({
   altMessage: String,
   defaultMessage: String,
   initialGreeting: String,
-  repeatGreeting: String
+  repeatGreeting: String,
+  fullStories: [{
+    type: ObjectId,
+    ref: 'Story'
+  }]
 });
 
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
+
+
