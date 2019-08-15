@@ -10,7 +10,7 @@ app.post('/saveAuthors', authHandler, async (req, res) => {
     const { userId } = res.locals;
     await User.findOneAndUpdate({_id: userId}, { $addToSet: { authorsMessaged: author, storiesUsed: postId}});
 
-    res.send(200);
+    res.sendStatus(200);
   }
 
   catch(err) {

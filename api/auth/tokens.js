@@ -29,7 +29,7 @@ app.post('/saveTokens', authHandler, async (req ,res) => {
     const { access_token, refresh_token } = req.body;
     await User.findOneAndUpdate({_id: userId}, {access_token, refresh_token});
 
-    res.send(200);
+    res.sendStatus(200);
   }
 
   catch(err) {
