@@ -60,7 +60,6 @@ app.get('/approved', (req, res) => {
       approved,
       fullName
     } = req.query;
-    console.log(email, approved)
 
     const emailTemp = new Email({
       message: {
