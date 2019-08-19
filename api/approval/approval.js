@@ -1,6 +1,7 @@
 import express from 'express';
 import nodemailer from 'nodemailer';
 import voucher from '../../helpers/inviteCode';
+import Token from '../../models/Tokens';
 
 const Email = require('email-templates');
 
@@ -53,7 +54,7 @@ app.post('/', (req, res) => {
   res.status(200).json({message: "Your form has been received!"});
 });
 
-app.get('/approved', (req, res) => {
+app.get('/approved', async (req, res) => {
   try {
     const { 
       email,
@@ -79,6 +80,12 @@ app.get('/approved', (req, res) => {
     });
   
     if (approved == "true") {
+      const voucherCode = voucher();
+
+      await Token.create({
+        token: voucherCode
+      });
+
       emailTemp
       .send({
         template: "approved",
@@ -88,7 +95,7 @@ app.get('/approved', (req, res) => {
         locals: {
           email,
           fullName,
-          code: voucher()
+          code: voucherCode
         }
       })
       .then()
