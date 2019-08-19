@@ -1,0 +1,18 @@
+head
+  link(rel="stylesheet", href="/css/app.css", data-inline)
+
+p #{email}
+p #{fullName}
+p #{youtubeChannel}
+p #{youtubeLink}
+p #{channelType}
+
+a(href=`${process.env.URL}/api/approval/approved?email=${email}&approved=true&fullName=${fullName}`) Approve
+
+a(href=`${process.env.URL}/api/approval/approved?email=${email}&approved=false&fullName=${fullName}`) Deny
+
+
+
+
+
+ 

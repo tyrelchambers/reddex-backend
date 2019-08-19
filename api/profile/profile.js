@@ -51,5 +51,24 @@ app.post('/alt_message', authHandler, async (req, res) => {
   }
 });
 
+app.post('/youtube', authHandler, async (req, res) => {
+  try {
+    const user = await User.findOne({_id: res.locals.userId});
+    const { youtubeId } = req.body;
+
+    user.save(err => {
+      if ( err ) throw new Error(err);
+
+      user.youtubeId = youtubeId;
+      user.save();
+    });
+
+    res.sendStatus(200);
+  }
+
+  catch(err) {
+    console.log(err)
+  }
+});
 
 module.exports = app;

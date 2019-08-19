@@ -11,13 +11,15 @@ import invites from './api/invites/invites';
 import createInvite from './api/invites/createInvite';
 import saveAuthors from './api/profile/saveAuthors';
 import stories from './api/profile/stories';
+import approval from './api/approval/approval';
+require('dotenv').config();
 
 const database = config[config.env].database;
 
 const db = mongoose.connection;
 const app = express();
 const port = process.env.PORT || '3001';
-
+app.use(express.static('helpers'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cors());
@@ -32,5 +34,6 @@ app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/auth/', login);
 app.use('/api/tokens', tokens);
 app.use('/api/invites', [invites, createInvite]);
+app.use('/api/approval', approval);
 
 app.listen(port, () => console.log("App running on " + port));

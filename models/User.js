@@ -14,6 +14,7 @@ const userSchema = new Schema({
   defaultMessage: String,
   initialGreeting: String,
   repeatGreeting: String,
+  youtubeId: String,
   completedStories: [{
     type: ObjectId,
     ref: 'Story'

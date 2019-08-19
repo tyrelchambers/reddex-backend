@@ -1,0 +1,12 @@
+head
+  link(rel="stylesheet", href="/css/app.css", data-inline)
+
+h1 Welcome to Reddex!
+p Hey, #{fullName}, welcome to Reddex. I hope you enjoy my little creation and I hope it serves you well.
+p To complete your sign up process, click the button below to enter in your invitation code and create your account.
+
+button(type="button" class="btn" id="tokenBtn") 
+  a(href="http://localhost:3000/signup") Complete Setup
+
+p Invite code incase the button doesn't work
+p #{code}
