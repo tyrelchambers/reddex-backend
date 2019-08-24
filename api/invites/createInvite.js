@@ -1,6 +1,6 @@
 import express from 'express';
 import Token from '../../models/Tokens';
-import {voucher} from '../../helpers/inviteCode';
+import voucher from '../../helpers/inviteCode';
 
 const app = express.Router();
 
