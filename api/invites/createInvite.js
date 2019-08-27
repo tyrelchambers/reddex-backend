@@ -7,10 +7,10 @@ const app = express.Router();
 
 app.post('/createInvite', async (req, res) => {
   try {
+    const vouch = voucher();
     const token = await Token.create({
-      token: voucher()
+      token: vouch
     });
-
     res.send(token);
   }
 
