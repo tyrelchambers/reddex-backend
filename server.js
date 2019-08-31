@@ -19,10 +19,12 @@ const database = config[config.env].database;
 const db = mongoose.connection;
 const app = express();
 const port = process.env.PORT || '3001';
+
+app.use(cors());
+
 app.use(express.static('helpers'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
-app.use(cors());
 
 mongoose.connect(database, {useNewUrlParser: true});
 
