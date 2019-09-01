@@ -31,7 +31,7 @@ mongoose.connect(database, {useNewUrlParser: true});
 db.on('error', console.error.bind(console, "Connection error"));
 db.once('open', () => console.log("Connected sucessfully to database"));
 
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   console.log('yep')
 })
 app.use('/api/auth/', register);
