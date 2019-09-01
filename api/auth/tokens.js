@@ -1,10 +1,8 @@
 import express from 'express';
 import User from '../../models/User';
 import { authHandler } from '../../middleware/middleware';
-import cors from 'cors';
 
 const app = express.Router();
-app.use(cors());
 
 app.get('/getTokens', authHandler, async (req, res) => {
   try {
