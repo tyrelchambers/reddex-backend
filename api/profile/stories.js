@@ -57,7 +57,7 @@ app.get('/get_story', authHandler, async (req, res) => {
       title
     } = req.query;
 
-    const story = await Story.findOne({user_id: res.locals.userId, title, author}, { user_id: 0, _id: 0});
+    const story = await Story.findOne({user_id: res.locals.userId, title: new RegExp(title, 'i'), author}, { user_id: 0, _id: 0});
     res.send(story);
   }
 
