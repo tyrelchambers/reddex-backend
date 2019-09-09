@@ -75,7 +75,7 @@ app.post('/set_permission', authHandler, async (req, res) => {
       permission
      } = req.body;
 
-    const story = await Story.findOne({user_id: res.locals.userId, title, author});
+    const story = await Story.findOne({user_id: res.locals.userId, title: new RegExp(title, 'i'), author});
 
     story.save(err => {
       if ( err ) throw new Error(err);
