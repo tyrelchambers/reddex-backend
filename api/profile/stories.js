@@ -133,7 +133,7 @@ app.post('/stories/completed', authHandler, async (req, res) => {
   }
 });
 
-app.get('/stories/completed', authHandler, async (req, res) => {
+app.get('/stories/completed', authHandler, async (req, res, next) => {
   try {
     const story = await Story.find({user_id: res.locals.userId, read: true}, { user_id: 0, _id: 0});
     res.send(story);
@@ -141,6 +141,23 @@ app.get('/stories/completed', authHandler, async (req, res) => {
   
   catch(err) {
     console.log(err);
+    next(err)
   }
 })
+
+app.delete('/stories/remove', authHandler, async (req, res, next) => {
+  try {
+    const {
+      postId
+    } = req.query;
+    await Story.findOneAndRemove({postId});
+    res.send("Story removed");
+  }
+
+  catch(err) {
+    console.log(err)
+    next(err);
+  }
+});
+
 module.exports = app;
