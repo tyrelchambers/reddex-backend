@@ -26,6 +26,10 @@ const userSchema = new Schema({
   fullStories: [{
     type: ObjectId,
     ref: 'Story'
+  }],
+  contacts: [{
+    type: ObjectId,
+    ref: "Contact"
   }]
 });
 
