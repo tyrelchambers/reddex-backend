@@ -74,4 +74,21 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 })
 
+app.get('/name', authHandler, async ( req, res, next ) => {
+  try {
+    const {
+      name
+    } = req.query;
+    
+    const contact = await Contact.findOne({name, belongs_to: res.locals.userId});
+    res.send(contact)
+  }
+
+  catch(err) {
+    console.log(err)
+    res.send(500, err.message);
+    next(err.message);
+  }
+});
+
 module.exports = app;
