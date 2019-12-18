@@ -18,6 +18,7 @@ app.post('/save_story', authHandler, async (req, res) => {
       created,
       flair,
       postId,
+      permission,
       id
     } = req.body;
 
@@ -32,7 +33,8 @@ app.post('/save_story', authHandler, async (req, res) => {
       flair,
       postId,
       id,
-      user_id: user
+      user_id: user,
+      permission
     });
 
     user.save(err => {
