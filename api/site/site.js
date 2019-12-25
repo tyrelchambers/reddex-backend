@@ -35,7 +35,9 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtube,
       podcast,
       accent,
-      theme
+      theme,
+      introduction,
+      bannerURL
     } = req.body;
 
     const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
@@ -48,9 +50,11 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtube,
       podcast,
       accent,
-      theme
+      theme,
+      introduction,
+      bannerURL
     })
-
+    
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 
 
     res.send(website)

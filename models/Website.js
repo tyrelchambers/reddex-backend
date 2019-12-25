@@ -12,6 +12,11 @@ const websiteSchema = new Schema({
   patreon: String,
   youtube: String,
   podcast: String,
+  introduction: String,
+  bannerURL: {
+    type: String,
+    default: "https://images.unsplash.com/photo-1513346940221-6f673d962e97?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"
+  },
   accent: {
     type: String,
     default: "#000000"
