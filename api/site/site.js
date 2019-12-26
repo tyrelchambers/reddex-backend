@@ -37,7 +37,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       accent,
       theme,
       introduction,
-      bannerURL
+      bannerURL,
+      submissionForm
     } = req.body;
 
     const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
@@ -52,7 +53,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       accent,
       theme,
       introduction,
-      bannerURL
+      bannerURL,
+      submissionForm
     })
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 
