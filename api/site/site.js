@@ -38,7 +38,9 @@ app.post('/update', authHandler, async (req, res, next) => {
       theme,
       introduction,
       bannerURL,
-      submissionForm
+      submissionForm,
+      youtubeId,
+      youtubeTimeline
     } = req.body;
 
     const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
@@ -54,7 +56,9 @@ app.post('/update', authHandler, async (req, res, next) => {
       theme,
       introduction,
       bannerURL,
-      submissionForm
+      submissionForm,
+      youtubeId,
+      youtubeTimeline
     })
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 
