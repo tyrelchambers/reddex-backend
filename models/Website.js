@@ -16,6 +16,8 @@ const websiteSchema = new Schema({
   submissionForm: Boolean,
   youtubeTimeline: Boolean,
   youtubeId: String,
+  twitterTimeline: Boolean,
+  twitterId: String,
   bannerURL: {
     type: String,
     default: "https://images.unsplash.com/photo-1513346940221-6f673d962e97?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"
