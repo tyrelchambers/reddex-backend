@@ -30,7 +30,13 @@ const userSchema = new Schema({
   contacts: [{
     type: ObjectId,
     ref: "Contact"
-  }]
+  }],
+  website: {
+    type: ObjectId,
+    ref: "Website"
+  }
+}, {
+  timestamps: true
 });
 
 const User = mongoose.model("User", userSchema);

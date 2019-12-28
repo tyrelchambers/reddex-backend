@@ -13,6 +13,9 @@ import saveAuthors from './api/profile/saveAuthors';
 import stories from './api/profile/stories';
 import approval from './api/approval/approval';
 import contact from './api/contact/contact'
+import site from './api/site/site'
+import upload from './api/upload/upload'
+
 require('dotenv').config();
 
 const database = config[config.env].database;
@@ -37,5 +40,7 @@ app.use('/api/tokens', tokens);
 app.use('/api/invites', [invites, createInvite]);
 app.use('/api/approval', approval);
 app.use('/api/contacts', contact);
+app.use('/api/site', site);
+app.use('/api/upload', upload);
 
 app.listen(port, () => console.log("App running on " + port));
