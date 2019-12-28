@@ -108,4 +108,20 @@ app.get('/', async (req, res, next) => {
   }
 })
 
+app.delete('/delete', authHandler, async (req, res, next) => {
+  try {
+    const {
+      siteId
+    } = req.query;
+
+    await Website.findOneAndRemove({_id: siteId});
+    res.send("Site deleted")
+  }
+
+  catch(err) {
+    console.log(err)
+    next(err);
+    res.send(500, {err: err.message})
+  }
+})
 module.exports = app;
