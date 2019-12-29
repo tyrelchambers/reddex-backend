@@ -4,7 +4,10 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 
 const websiteSchema = new Schema({
-  subdomain: String,
+  subdomain: {
+    type: String,
+    unique: true
+  },
   title: String,
   twitter: String,
   facebook: String,
@@ -32,7 +35,7 @@ const websiteSchema = new Schema({
   },
   user_id: {
     type: ObjectId,
-    ref: "Profile"
+    ref: "User"
   }
 }, {
   timestamps: true
