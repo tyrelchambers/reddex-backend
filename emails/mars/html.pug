@@ -1,15 +1,18 @@
 head
   link(rel="stylesheet", href="/css/app.css", data-inline)
 
+h3 Email
 p #{email}
-p #{fullName}
-p #{youtubeChannel}
-p #{youtubeLink}
-p #{channelType}
 
-a(href=`${process.env.URL}/api/approval/approved?email=${email}&approved=true&fullName=${fullName}`) Approve
+h3 Full name
+p #{senderName}
 
-a(href=`${process.env.URL}/api/approval/approved?email=${email}&approved=false&fullName=${fullName}`) Deny
+h3 Story Body:
+p #{message}
+
+h3 Was this sent to someone else?
+p #{sentToOthers}
+
 
 
 

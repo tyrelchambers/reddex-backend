@@ -15,6 +15,7 @@ import approval from './api/approval/approval';
 import contact from './api/contact/contact'
 import site from './api/site/site'
 import upload from './api/upload/upload'
+import submissionForm from './api/forms/submissionForm'
 
 require('dotenv').config();
 
@@ -27,6 +28,7 @@ app.use(express.static('helpers'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cors());
+
 
 mongoose.connect(database, {useNewUrlParser: true});
 
@@ -42,5 +44,6 @@ app.use('/api/approval', approval);
 app.use('/api/contacts', contact);
 app.use('/api/site', site);
 app.use('/api/upload', upload);
+app.use('/api/submissionForm', submissionForm);
 
 app.listen(port, () => console.log("App running on " + port));
