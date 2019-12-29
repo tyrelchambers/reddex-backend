@@ -10,7 +10,7 @@ const emailCon = new Email({
     from: 'Reddex App <reddexapp@gmail.com>'
   },
   // uncomment below to send emails in development/test env:
-  //send: true,
+  send: true,
   transport: nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
