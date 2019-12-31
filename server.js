@@ -16,18 +16,23 @@ import contact from './api/contact/contact'
 import site from './api/site/site'
 import upload from './api/upload/upload'
 import submissionForm from './api/forms/submissionForm'
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 require('dotenv').config();
+
+const app = express();
+app.use(helmet())
 
 const database = config[config.env].database;
 
 const db = mongoose.connection;
-const app = express();
 const port = process.env.PORT || '3001';
 app.use(express.static('helpers'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(cors());
+app.use(morgan('combined'));
 
 
 mongoose.connect(database, {useNewUrlParser: true});
