@@ -42,7 +42,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtubeId,
       youtubeTimeline,
       twitterId,
-      twitterTimeline
+      twitterTimeline,
+      showCreditLink
     } = req.body;
 
     const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
@@ -62,7 +63,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtubeId,
       youtubeTimeline,
       twitterId,
-      twitterTimeline
+      twitterTimeline,
+      showCreditLink
     })
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 
