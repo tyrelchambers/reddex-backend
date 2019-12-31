@@ -7,14 +7,14 @@ import Token from '../../models/Tokens';
 
 const app = express.Router();
 
-app.post('/register', async (req, res) => {
+app.post('/register', async (req, res, next) => {
   try {
-    const { email, password, access_token, refresh_token, inviteCode } = req.body;
-    if ( !email || !password ) res.send("No email or password");
+    const { email, password, access_token, refresh_token } = req.body;
+    if ( !email || !password ) throw new Error("No email or password provided");
     const hashPassword = bcrypt.hashSync(password, 10);
     const existingUser = await User.findOne({email});
-    console.log(inviteCode)
-    if (existingUser) throw res.status(400).json({error: "User already exists"});
+
+    if (existingUser) throw new Error({error: "User already exists"});
 
     const user = await User.create({
       email,
@@ -22,18 +22,9 @@ app.post('/register', async (req, res) => {
       access_token,
       refresh_token
     });
-
-    const inviteToken = await Token.findOne({token: inviteCode});
-
-    inviteToken.save(err => {
-      if ( err ) throw new Error(err);
-
-      inviteToken.used = true;
-      inviteToken.save();
-    }); 
     
     const token = jwt.sign({id: user._id, email: user.email}, config.development.secret, {
-      expiresIn: "30d"
+      expiresIn: "1d"
     });
 
     res.status(200).json({
@@ -44,6 +35,8 @@ app.post('/register', async (req, res) => {
 
   catch(err) {
     console.log(err);
+    res.send(500, {error: err.message})
+    next(err.message)
   }
 })
 
