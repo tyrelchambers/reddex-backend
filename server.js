@@ -7,11 +7,9 @@ import register from './api/auth/register';
 import profile from './api/profile/profile';
 import login from './api/auth/login';
 import tokens from './api/auth/tokens';
-import invites from './api/invites/invites';
-import createInvite from './api/invites/createInvite';
+
 import saveAuthors from './api/profile/saveAuthors';
 import stories from './api/profile/stories';
-import approval from './api/approval/approval';
 import contact from './api/contact/contact'
 import site from './api/site/site'
 import upload from './api/upload/upload'
@@ -44,8 +42,6 @@ app.use('/api/auth/', register);
 app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/auth/', login);
 app.use('/api/tokens', tokens);
-app.use('/api/invites', [invites, createInvite]);
-app.use('/api/approval', approval);
 app.use('/api/contacts', contact);
 app.use('/api/site', site);
 app.use('/api/upload', upload);
