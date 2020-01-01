@@ -1,21 +1,23 @@
 head
   link(rel="stylesheet", href="/css/app.css", data-inline)
 
-h3 Email
-p #{email}
+div.hero 
+  img(src="https://reddex.s3.amazonaws.com/download.svg", alt="Reddex", class="hero-img")
 
-h3 Full name
-p #{senderName}
+.group
+  h3.subtitle Email: 
+  p #{email}
 
-h3 Story Body:
-p #{message}
+.group
+  h3.subtitle Full name: 
+  p #{senderName}
 
-h3 Was this sent to someone else?
-p #{sentToOthers}
+hr
 
+p.body #{message}
 
+hr
 
-
-
-
- 
+.group
+  h3.subtitle Was this sent to someone else?
+  p #{sentToOthers ? "Yes" : "No"}
