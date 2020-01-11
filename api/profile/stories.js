@@ -19,7 +19,8 @@ app.post('/save_story', authHandler, async (req, res) => {
       flair,
       postId,
       permission,
-      id
+      id,
+      subreddit
     } = req.body;
 
     const story = await Story.create({
@@ -34,7 +35,8 @@ app.post('/save_story', authHandler, async (req, res) => {
       postId,
       id,
       user_id: user,
-      permission
+      permission,
+      subreddit
     });
 
     user.save(err => {
