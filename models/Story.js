@@ -14,6 +14,7 @@ const storySchema = new Schema({
   title: String,
   ups: Number,
   url: String,
+  subreddit: String,
   permission: {
     type: Boolean,
     default: false

@@ -5,7 +5,10 @@ const ObjectId = Schema.Types.ObjectId;
 
 const userSchema = new Schema({
   email: String,
-  password: String,
+  password: {
+    type: String,
+    minlength: 8
+  },
   access_token: String,
   refresh_token: String,
   authorsMessaged: [String],

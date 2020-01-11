@@ -1,6 +1,7 @@
 import express from 'express';
 import User from '../../models/User';
 import { authHandler } from '../../middleware/middleware';
+import bcrypt from 'bcryptjs';
 
 const app = express.Router();
 
@@ -70,5 +71,52 @@ app.post('/youtube', authHandler, async (req, res) => {
     console.log(err)
   }
 });
+
+app.put('/update/email', authHandler, async (req, res, next) => {
+  try {
+    const {
+      email
+    } = req.body;
+
+    if ( !email ) throw new Error("No email provided");
+    const user = await User.findOneAndUpdate({_id: res.locals.userId}, {email});
+
+    res.send(user)
+  }
+
+  catch(err) {
+    console.log(err)
+    res.send(err)
+    next(err)
+  }
+})
+
+app.put('/update/password', authHandler, async (req, res) => {
+  try {
+    const {
+      newPassword,
+      currentPassword
+    } = req.body;
+
+    if (!newPassword || !currentPassword) throw new Error("No passwords provided");
+
+    const user = await User.findOne({_id: res.locals.userId});
+    const comparePasswords = await bcrypt.compareSync(currentPassword, user.password);
+
+    if ( !comparePasswords ) throw new Error("Passwords don't match");
+
+    const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
+
+    const newUser = await User.findOneAndUpdate({_id: res.locals.userId}, {password: hashNewPassword});
+    res.sendStatus(newUser)
+
+  }
+
+  catch(err) {
+    console.log(err)
+    res.send(err)
+    next(err)
+  }
+})
 
 module.exports = app;
