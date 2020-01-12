@@ -1,0 +1,10 @@
+head
+  link(rel="stylesheet", href="/css/app.css", data-inline)
+
+
+div.hero 
+  img(src="https://reddex.s3.amazonaws.com/download.svg", alt="Reddex", class="hero-img")
+
+p.subtle.center Here is your reset link: #[a(href=`${process.env.FRONT_END}/reset?code=${resetToken}`) #{`${process.env.FRONT_END}/reset?code=${resetToken}`}]
+
+p.subtle.center If you didn't request this password change, don't worry, nothing has been changed on your account. Nothing more is needed to be done.

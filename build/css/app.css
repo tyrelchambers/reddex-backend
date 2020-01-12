@@ -6,9 +6,12 @@
 .subtitle {
   font-size: 1rem;
   font-weight: 700;
-  color: #2E2E2E;
+  color: rgb(63, 63, 63);
 }
 
+.center {
+  text-align: center;
+}
 .hero-img {
   width: 200px;
   padding: 1em;

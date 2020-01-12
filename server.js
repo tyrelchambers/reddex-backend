@@ -16,6 +16,7 @@ import upload from './api/upload/upload'
 import submissionForm from './api/forms/submissionForm'
 import helmet from 'helmet';
 import morgan from 'morgan';
+import resetPassword from './api/auth/resetPassword'
 
 require('dotenv').config();
 
@@ -46,5 +47,5 @@ app.use('/api/contacts', contact);
 app.use('/api/site', site);
 app.use('/api/upload', upload);
 app.use('/api/submissionForm', submissionForm);
-
+app.use('/api/reset', resetPassword);
 app.listen(port, () => console.log("App running on " + port));
