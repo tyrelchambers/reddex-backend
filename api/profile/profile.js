@@ -23,7 +23,7 @@ app.get('/auth', authHandler, async (req, res) => {
 app.post('/default_message', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
-    const { defaultMessage } = req.body;
+    const defaultMessage = req.sanitize(req.body.defaultMessage);
 
     const user = await User.findOneAndUpdate({_id: userId}, {defaultMessage});
 
@@ -39,7 +39,7 @@ app.post('/default_message', authHandler, async (req, res) => {
 app.post('/alt_message', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
-    const { altMessage } = req.body;
+    const altMessage = req.sanitize(req.body.altMessage);
 
     const user = await User.findOneAndUpdate({_id: userId}, {altMessage});
 
@@ -55,7 +55,7 @@ app.post('/alt_message', authHandler, async (req, res) => {
 app.post('/youtube', authHandler, async (req, res) => {
   try {
     const user = await User.findOne({_id: res.locals.userId});
-    const { youtubeId } = req.body;
+    const youtubeId = req.sanitize(req.body.youtubeId);
 
     user.save(err => {
       if ( err ) throw new Error(err);
@@ -74,9 +74,8 @@ app.post('/youtube', authHandler, async (req, res) => {
 
 app.put('/update/email', authHandler, async (req, res, next) => {
   try {
-    const {
-      email
-    } = req.body;
+
+    const email = req.sanitize(req.body.email);
 
     if ( !email ) throw new Error("No email provided");
     const user = await User.findOneAndUpdate({_id: res.locals.userId}, {email});
@@ -93,10 +92,8 @@ app.put('/update/email', authHandler, async (req, res, next) => {
 
 app.put('/update/password', authHandler, async (req, res) => {
   try {
-    const {
-      newPassword,
-      currentPassword
-    } = req.body;
+    const newPassword = req.sanitize(req.body.newPassword);
+    const currentPassword = req.sanitize(req.body.currentPassword);
 
     if (!newPassword || !currentPassword) throw new Error("No passwords provided");
 
