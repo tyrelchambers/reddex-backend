@@ -9,7 +9,11 @@ const app = express.Router();
 
 app.post('/register', async (req, res, next) => {
   try {
-    const { email, password, access_token, refresh_token } = req.body;
+    const email = req.sanitize(req.body.email)
+    const password = req.sanitize(req.body.password)
+    const access_token = req.sanitize(req.body.access_token)
+    const refresh_token = req.sanitize(req.body.refresh_token)
+
     if ( !email || !password ) throw new Error("No email or password provided");
     const hashPassword = bcrypt.hashSync(password, 10);
     const existingUser = await User.findOne({email});
