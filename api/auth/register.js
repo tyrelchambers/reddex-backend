@@ -14,7 +14,7 @@ app.post('/register', async (req, res, next) => {
     const hashPassword = bcrypt.hashSync(password, 10);
     const existingUser = await User.findOne({email});
 
-    if (existingUser) throw new Error({error: "User already exists"});
+    if (existingUser) throw new Error("User already exists");
 
     const user = await User.create({
       email,
@@ -27,7 +27,7 @@ app.post('/register', async (req, res, next) => {
       expiresIn: "1d"
     });
 
-    res.status(200).json({
+    res.status(200).send({
       token,
       user
     })
@@ -35,7 +35,7 @@ app.post('/register', async (req, res, next) => {
 
   catch(err) {
     console.log(err);
-    res.send(500, {error: err.message})
+    res.send(500, err.message)
     next(err.message)
   }
 })
