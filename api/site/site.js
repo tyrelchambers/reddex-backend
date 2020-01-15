@@ -13,7 +13,7 @@ app.post('/activate', authHandler, async (req, res, next) => {
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id})
 
-    res.sendStatus(200);
+    res.status(200).send(website);
   }
 
   catch(err) {

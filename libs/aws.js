@@ -48,7 +48,6 @@ const upload = multer({
 });
 
 const deleteObject = (url) => {
-  
   const regex = /\d+\/\w+.+\w+/gim;
   const key = url.match(regex).toString();
 
