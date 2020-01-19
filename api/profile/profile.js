@@ -120,9 +120,7 @@ app.put('/update/password', authHandler, async (req, res) => {
 
 app.delete('/delete', authHandler, async (req, res) => {
   try {
-    const {
-      id
-    } = req.query;
+    const id = req.sanitize(req.query.id);
 
     if ( id !== res.locals.userId) throw new Error("Something went wrong");
 
