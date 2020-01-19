@@ -9,7 +9,9 @@ const app = express.Router();
 app.post('/login', async (req, res) => {
   try {
 
-    const { email, password } = req.body;
+    const password = req.sanitize(req.body.password);
+    const email = req.sanitize(req.body.email);
+
     const user = await User.findOne({email});
 
     const hashPassword = await bcrypt.compareSync(password, user.password);

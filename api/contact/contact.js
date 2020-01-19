@@ -7,11 +7,9 @@ const app = express.Router();
 
 app.post('/save', authHandler, async (req, res, next) => {
   try {
-    const {
-      name,
-      notes
-    } = req.body;
 
+    const name = req.sanitize(req.body.name);
+    const notes = req.sanitize(req.body.notes);
     const contact = await Contact.create({name, notes, belongs_to: res.locals.userId});
     await User.findOneAndUpdate({_id: res.locals.userId}, { $push: { contacts: contact._id }});
 
@@ -40,11 +38,10 @@ app.get('/all', authHandler, async (req, res, next) => {
 
 app.post('/update', authHandler, async (req, res, next) => {
   try {
-    const {
-      name,
-      notes,
-      _id
-    } = req.body;
+    const name = req.sanitize(req.body.name);
+    const notes = req.sanitize(req.body.notes);
+    const _id = req.sanitize(req.body._id);
+
     const contact = await Contact.findOneAndUpdate({_id}, {name, notes}, {new: true});
     await User.findOneAndUpdate({_id: res.locals.userId}, { $pull: { contacts: contact._id}});
     res.send(contact);
