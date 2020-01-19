@@ -8,9 +8,7 @@ const app = express.Router();
 
 app.post("/get_reset_token", async (req, res, next) => {
   try {
-    const { 
-      email
-    } = req.body;
+    const email = req.sanitize(req.body.email)
 
     const user = await User.findOne({email});
 

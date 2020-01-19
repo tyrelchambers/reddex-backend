@@ -17,6 +17,7 @@ import submissionForm from './api/forms/submissionForm'
 import helmet from 'helmet';
 import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
+import expressSanitizer from 'express-sanitizer'
 
 require('dotenv').config();
 
@@ -29,7 +30,9 @@ const db = mongoose.connection;
 const port = process.env.PORT || '3001';
 app.use(express.static('helpers'))
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(expressSanitizer());
 app.use(cors());
 app.use(morgan('combined'));
 
