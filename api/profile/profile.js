@@ -69,6 +69,8 @@ app.post('/youtube', authHandler, async (req, res) => {
 
   catch(err) {
     console.log(err)
+    res.status(500).send(err)
+    next(err)
   }
 });
 
@@ -86,7 +88,7 @@ app.put('/update/email', authHandler, async (req, res, next) => {
 
   catch(err) {
     console.log(err)
-    res.send(err)
+    res.status(500).send(err)
     next(err)
   }
 })
@@ -114,9 +116,28 @@ app.put('/update/password', authHandler, async (req, res) => {
 
   catch(err) {
     console.log(err)
-    res.send(err)
+    res.status(500).send(err)
     next(err)
   }
 })
+
+app.delete('/delete', authHandler, async (req, res) => {
+  try {
+    const {
+      id
+    } = req.query;
+
+    if ( id !== res.locals.userId) throw new Error("Something went wrong");
+
+    await User.findOneAndRemove({_id: id});
+    res.send(200)
+  }
+
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err)
+    next(err)
+  }
+});
 
 module.exports = app;
