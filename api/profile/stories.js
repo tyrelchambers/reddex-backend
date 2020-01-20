@@ -98,7 +98,7 @@ app.get('/reading_list', authHandler, async (req, res) => {
   try {
     const {
       permission
-    } = req.body
+    } = req.query
 
     const story = await Story.find({user_id: res.locals.userId, permission, read: false});
 
