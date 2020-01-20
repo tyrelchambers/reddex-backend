@@ -23,10 +23,20 @@ let links = [
 
 const main = async () => {
   const directory = "samples/dark_web";
+  const formattedData = [];
 
   makeDir(directory)
-  getData()
+  const data = await getData()
   
+  data.map(x => {
+    let selftext = x.data.selftext;
+    let matched = selftext.replace(/\W/gi, ' ');
+    formattedData.push(matched)
+  })
+
+  for (let i = 0; i < formattedData.length; i++ ) {
+    writeToFile(formattedData[i], i)
+  }
 }
 
 const getData = async () => {
@@ -37,21 +47,15 @@ const getData = async () => {
 
     await Axios.get(`https://www.reddit.com/r/nosleep/search/.json?q=dark%20web&restrict_sr=1&after=${after}`).then(res => {
       after = res.data.data.after;
-      
-      for ( let i = 0; i < res.data.data.children.length; i++ ) {
-        writeToFile(res.data.data.children[i].data)
-      }
-      
+      posts = [...posts, ...res.data.data.children]
     }).catch(err => err);
   }
 
+  return posts;
 }
 
-const writeToFile = (data) => {
-  console.log(data)
-  let selftext = data.selftext;
-  let matched = selftext.replace(/\W/gi, ' ');
-  fs.writeFile(`samples/dark_web/sample_${i}.txt`, matched, err => {
+const writeToFile = (data, i) => {
+  fs.writeFile(`${__dirname}/samples/dark_web/sample_${i}.txt`, data, err => {
     if (err) throw err;
     console.log(`Saved file: sample_${i}.txt`)
   })  
