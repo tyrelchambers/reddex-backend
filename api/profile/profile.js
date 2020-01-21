@@ -9,7 +9,7 @@ app.get('/auth', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
 
-    const user = await User.findOne({_id: userId}, {password: 0});
+    const user = await User.findOne({_id: userId}, {password: 0}).populate("website contacts readingList completedStories");
 
     res.send(user);
   }
