@@ -19,7 +19,7 @@ app.get('/getTokens', authHandler, async (req, res) => {
 
   catch(err) {
     console.log(err);
-    res.status(503).json({error: err});
+    res.status(503).send(err);
   }
 });
 
