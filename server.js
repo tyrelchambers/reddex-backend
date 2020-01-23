@@ -18,6 +18,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
 import expressSanitizer from 'express-sanitizer'
+import dashboard from './api/dashboard/index'
 
 require('dotenv').config();
 
@@ -51,4 +52,6 @@ app.use('/api/site', site);
 app.use('/api/upload', upload);
 app.use('/api/submissionForm', submissionForm);
 app.use('/api/reset', resetPassword);
+app.use('/api/dashboard', dashboard);
+
 app.listen(port, () => console.log("App running on " + port));

@@ -21,6 +21,7 @@ const websiteSchema = new Schema({
   youtubeId: String,
   twitterTimeline: Boolean,
   twitterId: String,
+  views: Number,
   showCreditLink: {
     type: Boolean,
     default: true

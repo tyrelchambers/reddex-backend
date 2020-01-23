@@ -99,7 +99,7 @@ app.get('/', async (req, res, next) => {
     } = req.query;
 
     const website = await Website.findOne({subdomain});
-
+    await Website.findOneAndUpdate({subdomain}, { $inc: { views: 1 }})
     res.send(website);
   }
 
