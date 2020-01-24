@@ -1,9 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../../models/User';
 import config from '../../config';
-import Token from '../../models/Tokens';
+import knex from '../../db/index'
 
 const app = express.Router();
 
@@ -15,6 +14,7 @@ app.post('/register', async (req, res, next) => {
     const refresh_token = req.sanitize(req.body.refresh_token)
 
     if ( !email || !password ) throw new Error("No email or password provided");
+
     const hashPassword = bcrypt.hashSync(password, 10);
     const existingUser = await User.findOne({email});
 
