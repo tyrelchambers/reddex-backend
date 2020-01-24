@@ -40,6 +40,7 @@
     "nodemon": "^1.19.1",
     "pg": "^7.17.1",
     "pug": "^2.0.4",
+    "uuid": "^3.4.0",
     "voucher-code-generator": "^1.1.1"
   },
   "author": "",
