@@ -13,7 +13,7 @@ app.post('/activate', authHandler, async (req, res, next) => {
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id})
 
-    res.sendStatus(200);
+    res.status(200).send(website);
   }
 
   catch(err) {
@@ -25,25 +25,26 @@ app.post('/activate', authHandler, async (req, res, next) => {
 
 app.post('/update', authHandler, async (req, res, next) => {
   try {
-    const {
-      subdomain,
-      title,
-      twitter,
-      facebook,
-      instagram,
-      patreon,
-      youtube,
-      podcast,
-      accent,
-      theme,
-      introduction,
-      bannerURL,
-      submissionForm,
-      youtubeId,
-      youtubeTimeline,
-      twitterId,
-      twitterTimeline
-    } = req.body;
+    const subdomain = req.sanitize(req.body.subdomain);
+    const title = req.sanitize(req.body.title);
+    const twitter = req.sanitize(req.body.twitter);
+    const facebook = req.sanitize(req.body.facebook);
+    const instagram = req.sanitize(req.body.instagram);
+    const patreon = req.sanitize(req.body.patreon);
+    const youtube = req.sanitize(req.body.youtube);
+    const podcast = req.sanitize(req.body.podcast);
+    const accent = req.sanitize(req.body.accent);
+    const theme = req.sanitize(req.body.theme);
+    const introduction = req.sanitize(req.body.introduction);
+    const bannerURL = req.sanitize(req.body.bannerURL);
+    const submissionForm = req.sanitize(req.body.submissionForm);
+    const youtubeId = req.sanitize(req.body.youtubeId);
+    const youtubeTimeline = req.sanitize(req.body.youtubeTimeline);
+    const twitterId = req.sanitize(req.body.twitterId);
+    const twitterTimeline = req.sanitize(req.body.twitterTimeline);
+    const showCreditLink = req.sanitize(req.body.showCreditLink);
+
+
 
     const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
       subdomain,
@@ -62,7 +63,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtubeId,
       youtubeTimeline,
       twitterId,
-      twitterTimeline
+      twitterTimeline,
+      showCreditLink
     })
     
     await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 

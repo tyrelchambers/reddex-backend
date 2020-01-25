@@ -6,8 +6,11 @@ const app = express.Router();
 
 app.post('/saveAuthors', authHandler, async (req, res) => {
   try {
-    const { author, postId } = req.body;
     const { userId } = res.locals;
+    const author = req.sanitize(req.body.author);
+    const postId = req.sanitize(req.body.postId);
+
+
     await User.findOneAndUpdate({_id: userId}, { $addToSet: { authorsMessaged: author, storiesUsed: postId}});
 
     res.sendStatus(200);

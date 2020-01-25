@@ -7,17 +7,17 @@ import register from './api/auth/register';
 import profile from './api/profile/profile';
 import login from './api/auth/login';
 import tokens from './api/auth/tokens';
-import invites from './api/invites/invites';
-import createInvite from './api/invites/createInvite';
+
 import saveAuthors from './api/profile/saveAuthors';
 import stories from './api/profile/stories';
-import approval from './api/approval/approval';
 import contact from './api/contact/contact'
 import site from './api/site/site'
 import upload from './api/upload/upload'
 import submissionForm from './api/forms/submissionForm'
 import helmet from 'helmet';
 import morgan from 'morgan';
+import resetPassword from './api/auth/resetPassword'
+import expressSanitizer from 'express-sanitizer'
 
 require('dotenv').config();
 
@@ -30,7 +30,9 @@ const db = mongoose.connection;
 const port = process.env.PORT || '3001';
 app.use(express.static('helpers'))
 app.use(bodyParser.json());
+
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(expressSanitizer());
 app.use(cors());
 app.use(morgan('combined'));
 
@@ -44,11 +46,9 @@ app.use('/api/auth/', register);
 app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/auth/', login);
 app.use('/api/tokens', tokens);
-app.use('/api/invites', [invites, createInvite]);
-app.use('/api/approval', approval);
 app.use('/api/contacts', contact);
 app.use('/api/site', site);
 app.use('/api/upload', upload);
 app.use('/api/submissionForm', submissionForm);
-
+app.use('/api/reset', resetPassword);
 app.listen(port, () => console.log("App running on " + port));

@@ -1,4 +1,46 @@
 * {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Verdana, sans-serif;
   line-height: 1.8em;
+}
+
+.subtitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgb(63, 63, 63);
+}
+
+.center {
+  text-align: center;
+}
+.hero-img {
+  width: 200px;
+  padding: 1em;
+  border-radius: 8px;
+}
+
+.hero {
+  display: flex;
+  justify-content: center;
+  background: #f4f6f9;
+  border-radius: 8px;
+}
+
+.group {
+  flex-direction: column;
+  text-align: center;
+}
+.group h3 {
+  margin-right: 1em;
+
+}
+
+.body {
+  white-space: pre-line;
+  color: #212121;
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: antiquewhite;
 }

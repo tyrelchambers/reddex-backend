@@ -21,9 +21,13 @@ const websiteSchema = new Schema({
   youtubeId: String,
   twitterTimeline: Boolean,
   twitterId: String,
+  showCreditLink: {
+    type: Boolean,
+    default: true
+  },
   bannerURL: {
     type: String,
-    default: "https://images.unsplash.com/photo-1513346940221-6f673d962e97?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80"
+    default: "https://images.unsplash.com/photo-1524721696987-b9527df9e512?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2090&q=80"
   },
   accent: {
     type: String,

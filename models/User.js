@@ -5,7 +5,10 @@ const ObjectId = Schema.Types.ObjectId;
 
 const userSchema = new Schema({
   email: String,
-  password: String,
+  password: {
+    type: String,
+    minlength: 8
+  },
   access_token: String,
   refresh_token: String,
   authorsMessaged: [String],
@@ -15,7 +18,7 @@ const userSchema = new Schema({
   initialGreeting: String,
   repeatGreeting: String,
   youtubeId: String,
-  subTier: String,
+  is_grandfathered: Boolean,
   completedStories: [{
     type: ObjectId,
     ref: 'Story'
