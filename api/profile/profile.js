@@ -139,9 +139,8 @@ app.get('/auth', authHandler, async (req, res) => {
 app.get('/stories_used', authHandler, async (req, res) => {
   try {
     const id = res.locals.userId;
-    const stories = knex('stories_used').where({})
-    console.log(stories)
-    
+    const stories = await knex('stories_used').where({user_id: id}).returning('*')
+
     res.send(stories)
   }
 
