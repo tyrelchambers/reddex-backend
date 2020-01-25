@@ -8,7 +8,7 @@ import default_message from './api/default_message/default_message'
 import alt_message from './api/alt_message/alt_message'
 // import tokens from './api/auth/tokens';
 import saveAuthors from './api/profile/saveAuthors';
-// import stories from './api/profile/stories';
+import stories from './api/profile/stories';
 import contact from './api/contact/contact'
 // import site from './api/site/site'
 // import upload from './api/upload/upload'
@@ -35,10 +35,9 @@ app.use(cors());
 
 
 app.use('/api/auth/', [register, login]);
-app.use('/api/profile', [profile, saveAuthors]);
+app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/default_message', default_message)
 app.use('/api/alt_message', alt_message)
-// app.use('/api/profile', [profile, saveAuthors, stories]);
 // app.use('/api/tokens', tokens);
 app.use('/api/contacts', contact);
 // app.use('/api/site', site);
