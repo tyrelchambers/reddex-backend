@@ -152,7 +152,7 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
     const {
       postId
     } = req.query;
-    await Story.findOneAndRemove({postId});
+    await Story.deleteOne({postId});
     res.send("Story removed");
   }
 
