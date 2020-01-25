@@ -9,25 +9,25 @@ app.post('/save_story', authHandler, async (req, res) => {
   try {
     const author = req.sanitize(req.body.author);
     const title = req.sanitize(req.body.title);
-    const selftext = req.sanitize(req.body.selftext);
+    const self_text = req.sanitize(req.body.self_text);
     const ups = req.sanitize(req.body.ups);
     const url = req.sanitize(req.body.url);
     const num_comments = req.sanitize(req.body.num_comments);
     const flair = req.sanitize(req.body.flair);
-    const postId = req.sanitize(req.body.postId);
-    const permission = req.sanitize(req.body.permission);
+    const post_id = req.sanitize(req.body.post_id);
+    const permission = req.body.permission;
     const subreddit = req.sanitize(req.body.subreddit);
-      
+
     await knex('stories').insert({
       uuid: uuidv4(),
       author,
       title,
-      self_text: selftext,
+      self_text,
       ups,
       url,
       num_comments,
       flair,
-      post_id: postId,
+      post_id,
       permission,
       subreddit,
       user_id: res.locals.userId
@@ -49,11 +49,12 @@ app.get('/get_story', authHandler, async (req, res) => {
     } = req.query;
 
     const story = await knex('stories')
-                          .where('author', 'like', `%${title}%`)
+                          .where({user_id: res.locals.userId})
+                          .where('title', 'like', `%${title}%`)
                           .where({author})
                           .returning('*')
-    console.log(story)
-    res.send(story);
+                          console.log(story)
+    res.send(story[0]);
   }
 
   catch(err) {
@@ -61,29 +62,29 @@ app.get('/get_story', authHandler, async (req, res) => {
   }
 });
 
-// // sets PERMISSION of singular story (used in InboxMessage)
-// app.post('/set_permission', authHandler, async (req, res) => {
-//   try {
-//      const author = req.sanitize(req.body.author);
-//      const title = req.sanitize(req.body.title);
-//      const permission = req.sanitize(req.body.permission);
+// sets PERMISSION of singular story (used in InboxMessage)
+app.post('/set_permission', authHandler, async (req, res) => {
+  try {
+     const author = req.sanitize(req.body.author);
+     const title = req.sanitize(req.body.title);
+     const permission = req.body.permission;
 
-//     const story = await Story.findOne({user_id: res.locals.userId, title: new RegExp(title, 'i'), author});
+     await knex('stories')
+            .where({user_id: res.locals.userId})
+            .where('title', 'like', `%${title}%`)
+            .where({author})
+            .update({
+              permission
+            })
+            .returning('*')
 
-//     story.save(err => {
-//       if ( err ) throw new Error(err);
+    res.sendStatus(200);
+  }
 
-//       story.permission = permission;
-//       story.save();
-//     });
-
-//     res.sendStatus(200);
-//   }
-
-//   catch(err) {
-//     console.log(err)
-//   }
-// });
+  catch(err) {
+    console.log(err)
+  }
+});
 
 // Get all stories with TRUE permission
 app.get('/reading_list', authHandler, async (req, res) => {

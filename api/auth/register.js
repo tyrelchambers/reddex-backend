@@ -13,6 +13,7 @@ app.post('/register', async (req, res, next) => {
     const password = req.sanitize(req.body.password)
     const access_token = req.sanitize(req.body.access_token)
     const refresh_token = req.sanitize(req.body.refresh_token)
+    const reddit_profile = req.body.reddit_profile
 
     if ( !email || !password ) throw new Error("No email or password provided");
 
@@ -26,7 +27,8 @@ app.post('/register', async (req, res, next) => {
       uuid: uuidv4(),
       password: hashPassword,
       access_token,
-      refresh_token
+      refresh_token,
+      reddit_profile
     }).returning('*')
 
     const token = jwt.sign({id: user[0].uuid, email: user[0].email}, config.development.secret, {

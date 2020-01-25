@@ -36,7 +36,7 @@ app.get('/authors_messaged', authHandler, async (req, res) => {
       user_id: userId
     }).returning('*')
 
-    console.log(authors)
+    res.send(authors)
   }
   catch(err) {
     console.log(err);
