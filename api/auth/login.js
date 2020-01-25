@@ -1,8 +1,8 @@
 import express from 'express';
-import User from '../../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
+import knex from '../../db/index'
 
 const app = express.Router();
 
@@ -12,11 +12,13 @@ app.post('/login', async (req, res) => {
     const password = req.sanitize(req.body.password);
     const email = req.sanitize(req.body.email);
 
-    const user = await User.findOne({email});
+    const user = await knex('users').where({
+      email
+    });
 
-    const hashPassword = await bcrypt.compareSync(password, user.password);
+    const hashPassword = await bcrypt.compareSync(password, user[0].password);
     if ( !hashPassword ) throw new Error("Email or password do not match");
-    const token = jwt.sign({id: user._id, email: user.email}, config.development.secret, {
+    const token = jwt.sign({id: user[0]._id, email: user[0].email}, config.development.secret, {
       expiresIn: "1d"
     });
 

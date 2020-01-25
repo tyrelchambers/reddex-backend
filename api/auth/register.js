@@ -28,13 +28,14 @@ app.post('/register', async (req, res, next) => {
       access_token,
       refresh_token
     }).returning('*')
-    const token = jwt.sign({id: user._id, email: user.email}, config.development.secret, {
+
+    const token = jwt.sign({id: user[0].uuid, email: user[0].email}, config.development.secret, {
       expiresIn: "1d"
     });
-
+    
     res.status(200).send({
       token,
-      user
+      user: user[0]
     })
   }
 

@@ -3,8 +3,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import config from './config';
 import register from './api/auth/register';
-// import profile from './api/profile/profile';
-// import login from './api/auth/login';
+import profile from './api/profile/profile';
+import login from './api/auth/login';
 // import tokens from './api/auth/tokens';
 // import saveAuthors from './api/profile/saveAuthors';
 // import stories from './api/profile/stories';
@@ -34,8 +34,10 @@ app.use(cors());
 
 
 app.use('/api/auth/', register);
+app.use('/api/profile', profile);
+
 // app.use('/api/profile', [profile, saveAuthors, stories]);
-// app.use('/api/auth/', login);
+app.use('/api/auth/', login);
 // app.use('/api/tokens', tokens);
 // app.use('/api/contacts', contact);
 // app.use('/api/site', site);

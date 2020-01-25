@@ -12,6 +12,7 @@ const authHandler = async (req, res, next) => {
       return decoded.id     
     });
 
+
     res.locals.userId = userId;
     next();
   }
