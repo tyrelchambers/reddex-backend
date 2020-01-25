@@ -8,7 +8,7 @@ import login from './api/auth/login';
 // import tokens from './api/auth/tokens';
 // import saveAuthors from './api/profile/saveAuthors';
 // import stories from './api/profile/stories';
-// import contact from './api/contact/contact'
+import contact from './api/contact/contact'
 // import site from './api/site/site'
 // import upload from './api/upload/upload'
 // import submissionForm from './api/forms/submissionForm'
@@ -39,7 +39,7 @@ app.use('/api/profile', profile);
 // app.use('/api/profile', [profile, saveAuthors, stories]);
 app.use('/api/auth/', login);
 // app.use('/api/tokens', tokens);
-// app.use('/api/contacts', contact);
+app.use('/api/contacts', contact);
 // app.use('/api/site', site);
 // app.use('/api/upload', upload);
 // app.use('/api/submissionForm', submissionForm);
