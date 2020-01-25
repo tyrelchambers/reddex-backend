@@ -11,7 +11,7 @@ import saveAuthors from './api/profile/saveAuthors';
 import stories from './api/profile/stories';
 import contact from './api/contact/contact'
 // import site from './api/site/site'
-// import upload from './api/upload/upload'
+import upload from './api/upload/upload'
 // import submissionForm from './api/forms/submissionForm'
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -41,7 +41,7 @@ app.use('/api/alt_message', alt_message)
 app.use('/api/tokens', tokens);
 app.use('/api/contacts', contact);
 // app.use('/api/site', site);
-// app.use('/api/upload', upload);
+app.use('/api/upload', upload);
 // app.use('/api/submissionForm', submissionForm);
 // app.use('/api/reset', resetPassword);
 // app.use('/api/dashboard', dashboard);

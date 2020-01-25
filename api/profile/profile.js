@@ -22,75 +22,79 @@ app.get('/auth', authHandler, async (req, res) => {
   }
 });
 
+app.post('/youtube', authHandler, async (req, res) => {
+  try {
+    const youtube_id = req.sanitize(req.body.youtube_id);
+    await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      youtube_id
+    })
 
+    res.sendStatus(200);
+  }
 
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err)
+    next(err)
+  }
+});
 
+app.put('/update/email', authHandler, async (req, res, next) => {
+  try {
 
-// app.post('/youtube', authHandler, async (req, res) => {
-//   try {
-//     const user = await User.findOne({_id: res.locals.userId});
-//     const youtubeId = req.sanitize(req.body.youtubeId);
+    const email = req.sanitize(req.body.email);
 
-//     user.save(err => {
-//       if ( err ) throw new Error(err);
+    if ( !email ) throw new Error("No email provided");
+    const user = await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      email
+    }).returning('*')
+    res.send(user)
+  }
 
-//       user.youtubeId = youtubeId;
-//       user.save();
-//     });
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err.code === "23505" ? "Email already exists" : `Error code: ${err.code}`)
+    next(err)
+  }
+})
 
-//     res.sendStatus(200);
-//   }
+app.put('/update/password', authHandler, async (req, res) => {
+  try {
+    const newPassword = req.sanitize(req.body.newPassword);
+    const currentPassword = req.sanitize(req.body.currentPassword);
 
-//   catch(err) {
-//     console.log(err)
-//     res.status(500).send(err)
-//     next(err)
-//   }
-// });
+    if (!newPassword || !currentPassword) throw new Error("No passwords provided");
 
-// app.put('/update/email', authHandler, async (req, res, next) => {
-//   try {
+    const user = await knex('users').where({
+      uuid: res.locals.userId
+    }).returning('*')
+    console.log(currentPassword, user[0].password)
+    const comparePasswords = await bcrypt.compareSync(currentPassword, user[0].password);
 
-//     const email = req.sanitize(req.body.email);
+    if ( !comparePasswords ) throw new Error("Passwords don't match");
 
-//     if ( !email ) throw new Error("No email provided");
-//     const user = await User.findOneAndUpdate({_id: res.locals.userId}, {email});
+    const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
 
-//     res.send(user)
-//   }
+    const newUser = await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      password: hashNewPassword
+    }).returning('*')
+    
+    res.send(newUser)
 
-//   catch(err) {
-//     console.log(err)
-//     res.status(500).send(err)
-//     next(err)
-//   }
-// })
+  }
 
-// app.put('/update/password', authHandler, async (req, res) => {
-//   try {
-//     const newPassword = req.sanitize(req.body.newPassword);
-//     const currentPassword = req.sanitize(req.body.currentPassword);
-
-//     if (!newPassword || !currentPassword) throw new Error("No passwords provided");
-
-//     const user = await User.findOne({_id: res.locals.userId});
-//     const comparePasswords = await bcrypt.compareSync(currentPassword, user.password);
-
-//     if ( !comparePasswords ) throw new Error("Passwords don't match");
-
-//     const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
-
-//     const newUser = await User.findOneAndUpdate({_id: res.locals.userId}, {password: hashNewPassword});
-//     res.sendStatus(newUser)
-
-//   }
-
-//   catch(err) {
-//     console.log(err)
-//     res.status(500).send(err)
-//     next(err)
-//   }
-// })
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err)
+    next(err)
+  }
+})
 
 // app.delete('/delete', authHandler, async (req, res) => {
 //   try {
