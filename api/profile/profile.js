@@ -2,7 +2,6 @@ import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import bcrypt from 'bcryptjs';
 import knex from '../../db/index'
-import uuidv4 from 'uuid';
 
 const app = express.Router();
 
@@ -72,7 +71,6 @@ app.put('/update/password', authHandler, async (req, res) => {
     const user = await knex('users').where({
       uuid: res.locals.userId
     }).returning('*')
-    console.log(currentPassword, user[0].password)
     const comparePasswords = await bcrypt.compareSync(currentPassword, user[0].password);
 
     if ( !comparePasswords ) throw new Error("Passwords don't match");
@@ -96,22 +94,25 @@ app.put('/update/password', authHandler, async (req, res) => {
   }
 })
 
-// app.delete('/delete', authHandler, async (req, res) => {
-//   try {
-//     const id = req.sanitize(req.query.id);
+app.delete('/delete', authHandler, async (req, res) => {
+  try {
+    const uuid = req.sanitize(req.query.uuid);
 
-//     if ( id !== res.locals.userId) throw new Error("Something went wrong");
+    if ( uuid !== res.locals.userId) throw new Error("Something went wrong");
 
-//     await User.findOneAndRemove({_id: id});
-//     res.send(200)
-//   }
+    await knex('users').where({
+      uuid
+    }).del()
+    
+    res.send(200)
+  }
 
-//   catch(err) {
-//     console.log(err)
-//     res.status(500).send(err)
-//     next(err)
-//   }
-// });
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err)
+    next(err)
+  }
+});
 
 app.get('/stories_used', authHandler, async (req, res) => {
   try {

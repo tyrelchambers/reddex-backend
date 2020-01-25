@@ -14,7 +14,7 @@ app.post('/login', async (req, res) => {
 
     const user = await knex('users').where({
       email
-    });
+    }).returning('*');
 
     const hashPassword = await bcrypt.compareSync(password, user[0].password);
     if ( !hashPassword ) throw new Error("Email or password do not match");
@@ -24,7 +24,7 @@ app.post('/login', async (req, res) => {
 
     res.send({
       token,
-      user
+      user: user[0]
     });
   }
 

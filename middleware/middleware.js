@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import config from '../config';
-
+import util from 'util'
 const authHandler = async (req, res, next) => {
 
   try {
