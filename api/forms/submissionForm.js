@@ -1,6 +1,6 @@
 import express from 'express'
-import Website from '../../models/Website'
 import emailCon from '../../libs/emailConfig'
+import knex from '../../db/index'
 
 const app = express.Router();
 
@@ -10,14 +10,17 @@ app.post('/submit', async (req, res) => {
   const message = req.sanitize(req.body.message);
   const sentToOthers = req.sanitize(req.body.sentToOthers);
   const subdomain = req.sanitize(req.body.subdomain);
-
-  const website = await Website.findOne({_id: subdomain}).populate("user_id");
+  const website = await knex('websites').where({
+    subdomain
+  })
+  .innerJoin('users', 'websites.user_id', 'users.uuid')
+  .returning('*')
 
   emailCon
   .send({
     template: 'mars',
     message: {
-      to: website.user_id.email
+      to: website[0].email
     },
     locals: {
       email,

@@ -31,7 +31,7 @@ app.post('/register', async (req, res, next) => {
       reddit_profile
     }).returning('*')
 
-    const token = jwt.sign({id: user[0].uuid, email: user[0].email}, config.development.secret, {
+    const token = jwt.sign({uuid: user[0].uuid, email: user[0].email}, config.development.secret, {
       expiresIn: "1d"
     });
     

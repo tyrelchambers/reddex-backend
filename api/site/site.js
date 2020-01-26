@@ -1,25 +1,24 @@
 import express from 'express'
 import {authHandler } from '../../middleware/middleware';
-import Website from '../../models/Website'
-import User from '../../models/User'
+import knex from '../../db/index'
+import uuidv4 from 'uuid'
 
 const app = express.Router();
 
 app.post('/activate', authHandler, async (req, res, next) => {
   try {
-    const website = await Website.create({
+    const website = await knex('websites').insert({
+      uuid: uuidv4(),
       user_id: res.locals.userId
-    });
-    
-    await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id})
+    }).returning('*')
 
-    res.status(200).send(website);
+    res.status(200).send(website[0]);
   }
 
   catch(err) {
     console.log(err)
     next(err);
-    res.send(500, {err: err.message})
+    res.status(500).send(err.message)
   }
 })
 
@@ -36,17 +35,19 @@ app.post('/update', authHandler, async (req, res, next) => {
     const accent = req.sanitize(req.body.accent);
     const theme = req.sanitize(req.body.theme);
     const introduction = req.sanitize(req.body.introduction);
-    const bannerURL = req.sanitize(req.body.bannerURL);
-    const submissionForm = req.sanitize(req.body.submissionForm);
-    const youtubeId = req.sanitize(req.body.youtubeId);
-    const youtubeTimeline = req.sanitize(req.body.youtubeTimeline);
-    const twitterId = req.sanitize(req.body.twitterId);
-    const twitterTimeline = req.sanitize(req.body.twitterTimeline);
-    const showCreditLink = req.sanitize(req.body.showCreditLink);
+    const banner_url = req.sanitize(req.body.banner_url);
+    const submission_form = req.sanitize(req.body.submission_form);
+    const youtube_id = req.sanitize(req.body.youtube_id);
+    const youtube_timeline = req.sanitize(req.body.youtube_timeline);
+    const twitter_id = req.sanitize(req.body.twitter_id);
+    const twitter_timelines = req.sanitize(req.body.twitter_timelines);
+    const show_credit_link = req.sanitize(req.body.show_credit_link);
 
 
 
-    const website = await Website.findOneAndUpdate({user_id: res.locals.userId}, {
+    const website = await knex('websites').where({
+      user_id: res.locals.userId
+    }).update({
       subdomain,
       title,
       twitter,
@@ -58,16 +59,14 @@ app.post('/update', authHandler, async (req, res, next) => {
       accent,
       theme,
       introduction,
-      bannerURL,
-      submissionForm,
-      youtubeId,
-      youtubeTimeline,
-      twitterId,
-      twitterTimeline,
-      showCreditLink
-    })
-    
-    await User.findOneAndUpdate({_id: res.locals.userId}, {website: website._id}); 
+      banner_url,
+      submission_form,
+      youtube_id,
+      youtube_timeline,
+      twitter_id,
+      twitter_timelines,
+      show_credit_link
+    }).returning('*')
 
     res.send(website)
   }
@@ -81,8 +80,11 @@ app.post('/update', authHandler, async (req, res, next) => {
 
 app.get('/config', authHandler, async (req, res, next) => {
   try {
-    const website = await Website.findOne({user_id: res.locals.userId});
-    res.send(website);
+    const website = await knex('websites').where({
+      user_id: res.locals.userId
+    }).returning('*')
+    
+    res.send(website[0]);
   }
 
   catch(err) {
@@ -98,9 +100,12 @@ app.get('/', async (req, res, next) => {
       subdomain
     } = req.query;
 
-    const website = await Website.findOne({subdomain});
-    await Website.findOneAndUpdate({subdomain}, { $inc: { views: 1 }})
-    res.send(website);
+    const website = await knex('websites').where({
+      subdomain
+    })
+    .returning('*')
+    
+    res.send(website[0]);
   }
 
   catch(err) {
@@ -113,10 +118,13 @@ app.get('/', async (req, res, next) => {
 app.delete('/delete', authHandler, async (req, res, next) => {
   try {
     const {
-      siteId
+      uuid
     } = req.query;
 
-    await Website.findOneAndRemove({_id: siteId});
+    await knex('websites').where({
+      uuid
+    }).del()
+    
     res.send("Site deleted")
   }
 

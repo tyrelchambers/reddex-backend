@@ -53,7 +53,6 @@ app.get('/get_story', authHandler, async (req, res) => {
                           .where('title', 'like', `%${title}%`)
                           .where({author})
                           .returning('*')
-                          console.log(story)
     res.send(story[0]);
   }
 
