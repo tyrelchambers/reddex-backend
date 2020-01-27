@@ -1,49 +1,18 @@
 import express from 'express';
-import User from '../../models/User';
 import { authHandler } from '../../middleware/middleware';
 import bcrypt from 'bcryptjs';
+import knex from '../../db/index'
 
 const app = express.Router();
 
 app.get('/auth', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
-
-    const user = await User.findOne({_id: userId}, {password: 0}).populate("website contacts readingList completedStories");
-
-    res.send(user);
-  }
-
-  catch(err) {
-    console.log(err);
-    res.send(400).json({error: err});
-  }
-});
-
-app.post('/default_message', authHandler, async (req, res) => {
-  try {
-    const userId = res.locals.userId;
-    const defaultMessage = req.sanitize(req.body.defaultMessage);
-
-    const user = await User.findOneAndUpdate({_id: userId}, {defaultMessage});
-
-    res.send(user.defaultMessage);
-  }
-
-  catch(err) {
-    console.log(err);
-    res.send(400).json({error: err});
-  }
-});
-
-app.post('/alt_message', authHandler, async (req, res) => {
-  try {
-    const userId = res.locals.userId;
-    const altMessage = req.sanitize(req.body.altMessage);
-
-    const user = await User.findOneAndUpdate({_id: userId}, {altMessage});
-
-    res.send(user.altMessage);
+    const user = await knex('users').where({
+      uuid: userId
+    }).returning('*')
+    
+    res.send(user[0]);
   }
 
   catch(err) {
@@ -54,15 +23,12 @@ app.post('/alt_message', authHandler, async (req, res) => {
 
 app.post('/youtube', authHandler, async (req, res) => {
   try {
-    const user = await User.findOne({_id: res.locals.userId});
-    const youtubeId = req.sanitize(req.body.youtubeId);
-
-    user.save(err => {
-      if ( err ) throw new Error(err);
-
-      user.youtubeId = youtubeId;
-      user.save();
-    });
+    const youtube_id = req.sanitize(req.body.youtube_id);
+    await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      youtube_id
+    })
 
     res.sendStatus(200);
   }
@@ -80,14 +46,17 @@ app.put('/update/email', authHandler, async (req, res, next) => {
     const email = req.sanitize(req.body.email);
 
     if ( !email ) throw new Error("No email provided");
-    const user = await User.findOneAndUpdate({_id: res.locals.userId}, {email});
-
+    const user = await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      email
+    }).returning('*')
     res.send(user)
   }
 
   catch(err) {
     console.log(err)
-    res.status(500).send(err)
+    res.status(500).send(err.code === "23505" ? "Email already exists" : `Error code: ${err.code}`)
     next(err)
   }
 })
@@ -99,15 +68,22 @@ app.put('/update/password', authHandler, async (req, res) => {
 
     if (!newPassword || !currentPassword) throw new Error("No passwords provided");
 
-    const user = await User.findOne({_id: res.locals.userId});
-    const comparePasswords = await bcrypt.compareSync(currentPassword, user.password);
+    const user = await knex('users').where({
+      uuid: res.locals.userId
+    }).returning('*')
+    const comparePasswords = await bcrypt.compareSync(currentPassword, user[0].password);
 
     if ( !comparePasswords ) throw new Error("Passwords don't match");
 
     const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
 
-    const newUser = await User.findOneAndUpdate({_id: res.locals.userId}, {password: hashNewPassword});
-    res.sendStatus(newUser)
+    const newUser = await knex('users').where({
+      uuid: res.locals.userId
+    }).update({
+      password: hashNewPassword
+    }).returning('*')
+    
+    res.send(newUser)
 
   }
 
@@ -120,11 +96,14 @@ app.put('/update/password', authHandler, async (req, res) => {
 
 app.delete('/delete', authHandler, async (req, res) => {
   try {
-    const id = req.sanitize(req.query.id);
+    const uuid = req.sanitize(req.query.uuid);
 
-    if ( id !== res.locals.userId) throw new Error("Something went wrong");
+    if ( uuid !== res.locals.userId) throw new Error("Something went wrong");
 
-    await User.findOneAndRemove({_id: id});
+    await knex('users').where({
+      uuid
+    }).del()
+    
     res.send(200)
   }
 
@@ -134,5 +113,18 @@ app.delete('/delete', authHandler, async (req, res) => {
     next(err)
   }
 });
+
+app.get('/stories_used', authHandler, async (req, res) => {
+  try {
+    const id = res.locals.userId;
+    const stories = await knex('stories_used').where({user_id: id}).returning('*')
+
+    res.send(stories)
+  }
+
+  catch(err) {
+
+  }
+})
 
 module.exports = app;

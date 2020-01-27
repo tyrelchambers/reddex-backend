@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import config from '../config';
-
 const authHandler = async (req, res, next) => {
 
   try {
@@ -9,8 +8,9 @@ const authHandler = async (req, res, next) => {
     const token = req.headers.token;
     const userId = await jwt.verify(token, config[config.env].secret, {ignoreExpiration: true}, (err, decoded) => {
       if ( err ) throw new Error(err);
-      return decoded.id     
+      return decoded.uuid     
     });
+
 
     res.locals.userId = userId;
     next();

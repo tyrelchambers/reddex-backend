@@ -1,7 +1,7 @@
 import express from 'express'
 import { authHandler } from '../../middleware/middleware'
-import Contact from '../../models/Contact'
-import User from '../../models/User'
+import knex from '../../db/index'
+import uuidv4 from 'uuid/v4'
 
 const app = express.Router();
 
@@ -10,10 +10,14 @@ app.post('/save', authHandler, async (req, res, next) => {
 
     const name = req.sanitize(req.body.name);
     const notes = req.sanitize(req.body.notes);
-    const contact = await Contact.create({name, notes, belongs_to: res.locals.userId});
-    await User.findOneAndUpdate({_id: res.locals.userId}, { $push: { contacts: contact._id }});
-
-    res.send(contact);
+    const contact = await knex('contacts').insert({
+      name,
+      uuid: uuidv4(),
+      notes,
+      user_id: res.locals.userId
+    }).returning('*')
+ 
+    res.send(contact[0]);
   }
 
   catch(err) {
@@ -25,7 +29,10 @@ app.post('/save', authHandler, async (req, res, next) => {
 
 app.get('/all', authHandler, async (req, res, next) => {
   try {
-    const contacts = await Contact.find({belongs_to: res.locals.userId});
+    const contacts = await knex('contacts').where({
+      user_id: res.locals.userId
+    }).returning('*')
+    
     res.send(contacts);
   }
 
@@ -40,11 +47,17 @@ app.post('/update', authHandler, async (req, res, next) => {
   try {
     const name = req.sanitize(req.body.name);
     const notes = req.sanitize(req.body.notes);
-    const _id = req.sanitize(req.body._id);
+    const uuid = req.sanitize(req.body.uuid);
 
-    const contact = await Contact.findOneAndUpdate({_id}, {name, notes}, {new: true});
-    await User.findOneAndUpdate({_id: res.locals.userId}, { $pull: { contacts: contact._id}});
-    res.send(contact);
+    const contact = await knex('contacts').where({
+      uuid
+    })
+    .update({
+      name,
+      notes
+    }).returning('*')
+    
+    res.send(contact[0]);
   }
 
   catch(err) {
@@ -60,7 +73,8 @@ app.delete('/delete', authHandler, async (req, res, next) => {
       id
     } = req.query;
 
-    await Contact.findOneAndRemove({_id: id});
+    await knex('contacts').where({uuid: id}).del()
+    
     res.sendStatus(200)
   }
 
@@ -77,8 +91,9 @@ app.get('/name', authHandler, async ( req, res, next ) => {
       name
     } = req.query;
     
-    const contact = await Contact.findOne({name, belongs_to: res.locals.userId});
-    res.send(contact)
+    const contact = await knex('contacts').where({name, user_id: res.locals.userId}).returning('*')
+  
+    res.send(contact[0])
   }
 
   catch(err) {
