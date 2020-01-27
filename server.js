@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(expressSanitizer());
 app.use(cors());
 app.use(morgan('combined'));
-console.log()
+
 
 mongoose.connect(database, {useNewUrlParser: true});
 
