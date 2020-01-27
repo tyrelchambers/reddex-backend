@@ -1,3 +1,6 @@
+
+require('dotenv').config();
+
 module.exports = {
   development: {
     client: 'pg',
@@ -9,12 +12,12 @@ module.exports = {
   production: {
     client: 'pg',
     connection: {
-      host : '127.0.0.1',
+      host : process.env.PGHOST,
       user : process.env.PGUSER,
-      database : process.env.PGDATABASE
-    },
-    migrations: {
-      directory: __dirname + '/db/migrations'
-    }
+      database : process.env.PGDATABASE,
+      password: process.env.PGPASSWORD,
+      port: process.env.PGPORT
+    } 
   }
 }
+  

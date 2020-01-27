@@ -1,5 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+require('dotenv').config();
+
 import cors from 'cors';
 import register from './api/auth/register';
 import profile from './api/profile/profile';
@@ -18,7 +20,6 @@ import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
 import expressSanitizer from 'express-sanitizer'
 import dashboard from './api/dashboard/index'
-require('dotenv').config();
 
 const app = express();
 
@@ -31,8 +32,6 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(expressSanitizer());
 app.use(cors());
 app.use(morgan('combined'));
-
-
 
 app.use('/api/auth/', [register, login]);
 app.use('/api/profile', [profile, saveAuthors, stories]);
