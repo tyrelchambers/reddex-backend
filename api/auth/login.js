@@ -20,7 +20,7 @@ app.post('/login', async (req, res) => {
       expiresIn: "1d"
     });
 
-    res.send({token, user});
+    res.send(token);
   }
 
   catch(err) { 
