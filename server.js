@@ -20,6 +20,13 @@ import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
 import expressSanitizer from 'express-sanitizer'
 import dashboard from './api/dashboard/index'
+import uuidv4 from 'uuid';
+
+
+for (let i = 0; i < 7; i++) {
+  console.log(uuidv4())
+}
+
 
 const app = express();
 

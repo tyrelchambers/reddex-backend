@@ -16,6 +16,8 @@ app.post('/login', async (req, res) => {
       email
     }).returning('*');
 
+    if (!user[0]) throw new Error("User does not exist")
+    
     const hashPassword = await bcrypt.compareSync(password, user[0].password);
     if ( !hashPassword ) throw new Error("Email or password do not match");
     const token = jwt.sign({uuid: user[0].uuid, email: user[0].email}, config.development.secret, {
