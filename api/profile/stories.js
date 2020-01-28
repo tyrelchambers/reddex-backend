@@ -99,9 +99,7 @@ app.get('/reading_list', authHandler, async (req, res) => {
     const {
       permission
     } = req.query
-
     const story = await Story.find({user_id: res.locals.userId, permission, read: false});
-
     res.send(story);
   }
 
@@ -150,7 +148,7 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
     const {
       postId
     } = req.query;
-    await Story.findOneAndRemove({postId});
+    await Story.deleteOne({postId});
     res.send("Story removed");
   }
 

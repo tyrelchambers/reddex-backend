@@ -19,6 +19,7 @@ const userSchema = new Schema({
   repeatGreeting: String,
   youtubeId: String,
   is_grandfathered: Boolean,
+  reddit_profile: String,
   completedStories: [{
     type: ObjectId,
     ref: 'Story'
