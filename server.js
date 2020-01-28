@@ -23,7 +23,7 @@ import dashboard from './api/dashboard/index'
 import uuidv4 from 'uuid';
 
 
-for (let i = 0; i < 7; i++) {
+for (let i = 0; i < 5; i++) {
   console.log(uuidv4())
 }
 

@@ -8,7 +8,7 @@ app.get('/', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
 
-    const message = await knex('initial_greeting').where({
+    const message = await knex('users').where({
       user_id: userId
     }).returning('*')
 
@@ -24,7 +24,10 @@ app.post('/', authHandler, async (req, res) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await knex('initial_greeting').insert({
+    const message = await knex('users').where({
+      uuid: userId
+    })
+    .update({
       uuid: uuidv4(),
       user_id: userId,
       text
@@ -44,9 +47,12 @@ app.put('/', authHandler, async (req, res) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await knex('initial_greeting').where({
-      user_id: userId
-    }).update({
+    const message = await knex('users').where({
+      uuid: userId
+    })
+    .update({
+      uuid: uuidv4(),
+      user_id: userId,
       text
     }).returning('*')
     

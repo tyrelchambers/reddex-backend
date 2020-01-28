@@ -17,6 +17,9 @@ module.exports = {
       database : process.env.PGDATABASE,
       password: process.env.PGPASSWORD,
       port: process.env.PGPORT
+    },
+    migrations: {
+      directory: __dirname + '/db/migrations'
     } 
   }
 }

@@ -9,11 +9,14 @@ app.post('/', authHandler, async (req, res) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await knex('repeat_greeting').insert({
+    const message = await knex('users').where({
+      uuid: userId
+    })
+    .update({
       uuid: uuidv4(),
       user_id: userId,
       text
-    }).returning('*')
+    }).returning('repeat_message')
     
     res.send(message);
   }
@@ -28,9 +31,10 @@ app.get('/', authHandler, async (req, res) => {
   try {
     const userId = res.locals.userId;
 
-    const message = await knex('repeat_greeting').where({
+    const message = await knex('users').where({
       user_id: userId
-    }).returning('*')
+    }).returning('repeat_message')
+
     res.send(message);
   } catch (err) {
     console.log(err);
@@ -43,11 +47,14 @@ app.put('/', authHandler, async (req, res) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await knex('repeat_greeting').where({
-      user_id: userId
-    }).update({
+    const message = await knex('users').where({
+      uuid: userId
+    })
+    .update({
+      uuid: uuidv4(),
+      user_id: userId,
       text
-    }).returning('*')
+    }).returning('repeat_message')
     
     res.send(message);
   } catch (error) {
