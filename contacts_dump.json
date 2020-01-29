@@ -1,0 +1,7 @@
+[{"_id":{"$oid":"5dedb131996e38003db8f7b7"},"name":"EaPAtbp","belongs_to":{"$oid":"5d6b1c07b8a582003d42e622"},"__v":0,"notes":"Charges for their stories"},
+  {"_id":{"$oid":"5deee55985d552003dc47d09"},"name":"RichardSaxon","notes":"Allowed me to read any story with proper credit","belongs_to":{"$oid":"5d6b1c07b8a582003d42e622"},"__v":0},
+  {"_id":{"$oid":"5e151d4c499969003d6ce826"},"name":"Jacob712","belongs_to":{"$oid":"5d6b1c07b8a582003d42e622"},"__v":0,"notes":"Charges for stories if youre monetized. Can use if not monetizing videos"},
+  {"_id":{"$oid":"5e1e7dc1a50845003dc24128"},"name":"poloniumpoisoning","notes":"Can read stories if hers stories are the only ones in the video","belongs_to":{"$oid":"5d6b1c07b8a582003d42e622"},"__v":0},
+  {"_id":{"$oid":"5e245c16485214003d811fa2"},"name":"iloveallthebacon","belongs_to":{"$oid":"5d6b1c07b8a582003d42e622"},"__v":0,"notes":"Likely charges for stories"},
+  {"_id":{"$oid":"5e2cd199d3fdb7003d312b61"},"name":"venyum","belongs_to":{"$oid":"5da211f6f94b63003d4c424f"},"__v":0}
+  ]
