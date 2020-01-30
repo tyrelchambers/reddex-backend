@@ -104,7 +104,6 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
       permission,
       read: false || null
     }).returning('*')
-    console.log(story)
     res.send(story);
   }
 

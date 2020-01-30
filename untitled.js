@@ -1,5 +1,5 @@
 const fs = require('fs')
-const dump = require('./contacts_dump.json')
+const dump = require('./websites_dump.json')
 const uuidv4 = require('uuid')
 
 const convertObj = obj => {
@@ -52,17 +52,24 @@ const convertObj = obj => {
   ]
   const newObj = {
     "uuid": uuidv4(),
-    author: obj.author || "",
-    flair: obj.flair || "",
-    num_comments: obj.num_comments.$numberInt || "",
-    post_id: obj.postId || "",
-    self_text: obj.selftext || "",
-    title: obj.title || "",
-    ups: obj.ups.$numberInt || "",
-    url: obj.url || "",
-    subreddit: obj.subreddit || "",
-    permission: obj.permission || "",
-    read: obj.read || "",
+    subdomain: obj.subdomain,
+    title: obj.title,
+    twitter: obj.twitter,
+    facebook: obj.facebook,
+    instagram: obj.instagram,
+    patreon: obj.patreon,
+    youtube: obj.youtube,
+    podcast: obj.podcast,
+    introduction: obj.introduction,
+    submission_form: obj.submissionForm,
+    youtube_timeline: obj.youtubeTimeline,
+    youtube_id: obj.youtubeId,
+    twitter_timeline: obj.twitterTimeline,
+    twitter_id: obj.twitterId,
+    show_credit_link: obj.showCreditLink,
+    banner_url: obj.bannerURL,
+    accent: obj.accent,
+    theme: obj.theme,
     user_id: ""
   }
 
@@ -72,7 +79,7 @@ const convertObj = obj => {
     }
   })
 
-  fs.writeFileSync('stories.json', JSON.stringify(newObj), {flag: 'a'})
+  fs.writeFileSync('websites.json', JSON.stringify(newObj), {flag: 'a'})
 }
 
 for (let i = 0; i < dump.length; i++) {

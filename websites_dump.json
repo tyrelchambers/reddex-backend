@@ -1,0 +1,166 @@
+[{
+	"_id": {
+		"$oid": "5e0beb43d81185003d10d1dd"
+	},
+	"showCreditLink": true,
+	"bannerURL": "https://reddex.s3.amazonaws.com/1579744910881/1500x500.jpeg",
+	"accent": "#ff5542",
+	"theme": "dark",
+	"user_id": {
+		"$oid": "5d6b1c07b8a582003d42e622"
+	},
+	"createdAt": {
+		"$date": "2020-01-01T00:43:47.061Z"
+	},
+	"updatedAt": {
+		"$date": "2020-01-23T02:01:51.668Z"
+	},
+	"__v": 0,
+	"facebook": null,
+	"instagram": "storiesaftermidnight",
+	"introduction": "A Youtube Narrator trying to give you a good spook... with my voice.",
+	"patreon": null,
+	"podcast": "https://open.spotify.com/show/1PZtWmKZftMks0NXKO4mRw",
+	"subdomain": "storiesaftermidnight",
+	"submissionForm": null,
+	"title": "Stories After Midnight",
+	"twitter": "s_a_midnight",
+	"twitterId": "s_a_midnight",
+	"twitterTimeline": true,
+	"youtube": "https://www.youtube.com/channel/UCGB-bGTeEWfGKLNx2Wi9ytQ",
+	"youtubeId": "UCGB-bGTeEWfGKLNx2Wi9ytQ",
+	"youtubeTimeline": true
+},
+{
+	"_id": {
+		"$oid": "5e1bd937ea3b4f003d360de2"
+	},
+	"showCreditLink": true,
+	"bannerURL": "https://reddex.s3.amazonaws.com/1579102049037/dlc.jpg",
+	"accent": "#f07800",
+	"theme": "dark",
+	"user_id": {
+		"$oid": "5da211f6f94b63003d4c424f"
+	},
+	"createdAt": {
+		"$date": "2020-01-13T02:43:03.871Z"
+	},
+	"updatedAt": {
+		"$date": "2020-01-15T15:27:33.292Z"
+	},
+	"__v": 0,
+	"facebook": "",
+	"instagram": "Deadleafclover",
+	"introduction": "",
+	"patreon": "",
+	"podcast": "",
+	"subdomain": "deadleafclover",
+	"submissionForm": true,
+	"title": "Dead Leaf Clover",
+	"twitter": "https://twitter.com/DeadLeafClover",
+	"twitterId": "Dead Leaf Clover",
+	"twitterTimeline": true,
+	"youtube": "https://www.youtube.com/deadleafclover",
+	"youtubeId": null,
+	"youtubeTimeline": true
+},
+{
+	"_id": {
+		"$oid": "5e28fb3a68842f003dbefa56"
+	},
+	"showCreditLink": true,
+	"bannerURL": "https://reddex.s3.amazonaws.com/1579744609691/TDN%20Woods%20Cover%20Art.jpg",
+	"accent": "#b0bfe6",
+	"theme": "dark",
+	"user_id": {
+		"$oid": "5e28f57268842f003dbefa39"
+	},
+	"createdAt": {
+		"$date": "2020-01-23T01:47:38.836Z"
+	},
+	"updatedAt": {
+		"$date": "2020-01-23T01:56:52.229Z"
+	},
+	"__v": 0,
+	"facebook": null,
+	"instagram": "thedarknarratoryt",
+	"introduction": "Want to send me a story that you wrote so that it can be featured in one of my videos?\nBelow my videos is a little box where you can do that! Either write it in the box off the top of your noggin'\nor write it in an interdimensional sub world, and just pop it in there and send it over!",
+	"patreon": "https://www.patreon.com/TheDarkNarrator",
+	"podcast": "https://anchor.fm/j-kirk",
+	"subdomain": "thedarknarrator",
+	"submissionForm": true,
+	"title": "TheDarkNarrator Story Submissions ",
+	"twitter": "NarratorDark",
+	"twitterId": "NarratorDark",
+	"twitterTimeline": true,
+	"youtube": "UC2EAJg8xTNmBC5MGOBlfcXA",
+	"youtubeId": "UC2EAJg8xTNmBC5MGOBlfcXA",
+	"youtubeTimeline": true
+},
+{
+	"_id": {
+		"$oid": "5e2a79ec903357003db79aa4"
+	},
+	"showCreditLink": true,
+	"bannerURL": "https://reddex.s3.amazonaws.com/1579850727097/WIP%20BANNER.jpg",
+	"accent": "#000000",
+	"theme": "dark",
+	"user_id": {
+		"$oid": "5d844168c5b7fe003d714e93"
+	},
+	"createdAt": {
+		"$date": "2020-01-24T05:00:28.025Z"
+	},
+	"updatedAt": {
+		"$date": "2020-01-24T07:35:24.341Z"
+	},
+	"__v": 0,
+	"facebook": null,
+	"instagram": null,
+	"introduction": "Welcome! This is currently under construction but keep an eye out for what it will eventually become. ;)",
+	"patreon": "https://www.patreon.com/margbot",
+	"podcast": null,
+	"subdomain": "margbot",
+	"submissionForm": null,
+	"title": "Margbot",
+	"twitter": null,
+	"twitterId": null,
+	"twitterTimeline": null,
+	"youtube": "https://www.youtube.com/c/margbot",
+	"youtubeId": null,
+	"youtubeTimeline": null
+},
+{
+	"_id": {
+		"$oid": "5e2da463d3fdb7003d312b63"
+	},
+	"showCreditLink": true,
+	"bannerURL": "https://images.unsplash.com/photo-1524721696987-b9527df9e512?ixlib=rb-1.2.1\u0026amp;ixid=eyJhcHBfaWQiOjEyMDd9\u0026amp;auto=format\u0026amp;fit=crop\u0026amp;w=2090\u0026amp;q=80",
+	"accent": "#000000",
+	"theme": "light",
+	"user_id": {
+		"$oid": "5e2d8f92d3fdb7003d312b62"
+	},
+	"createdAt": {
+		"$date": "2020-01-26T14:38:27.009Z"
+	},
+	"updatedAt": {
+		"$date": "2020-01-26T16:56:23.327Z"
+	},
+	"__v": 0,
+	"facebook": null,
+	"instagram": null,
+	"introduction": "Welcome.\n\nView my author page here.\nhttps://ifdb.tads.org/showuser\n\nhttps://phlegethon-metal.bandcamp.com/",
+	"patreon": "PhlegethonMetal",
+	"podcast": null,
+	"subdomain": "phlegethon-metal",
+	"submissionForm": null,
+	"title": "Interactive fiction by Phlegethon",
+	"twitter": "PhlegethonMetal",
+	"twitterId": null,
+	"twitterTimeline": null,
+	"youtube": "UCfhL_9pNNNOLVRgCRXTxGSQ",
+	"youtubeId": null,
+	"youtubeTimeline": null
+}]
+
