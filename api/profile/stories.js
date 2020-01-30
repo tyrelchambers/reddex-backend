@@ -5,7 +5,7 @@ import knex from '../../db/index'
 
 const app = express.Router();
 
-app.post('/save_story', authHandler, async (req, res) => {
+app.post('/save_story', authHandler, async (req, res, next) => {
   try {
     const author = req.sanitize(req.body.author);
     const title = req.sanitize(req.body.title);
@@ -35,13 +35,15 @@ app.post('/save_story', authHandler, async (req, res) => {
 
     res.sendStatus(200);
   }
-
   catch(err) {
     console.log(err);
+    res.status(500).send(err.message);
+    next(err)
+
   }
 });
 
-app.get('/get_story', authHandler, async (req, res) => {
+app.get('/get_story', authHandler, async (req, res, next) => {
   try {
     const {
       author,
@@ -57,12 +59,14 @@ app.get('/get_story', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err)
+    console.log(err);
+    res.status(500).send(err.message);
+    next(err)
   }
 });
 
 // sets PERMISSION of singular story (used in InboxMessage)
-app.post('/set_permission', authHandler, async (req, res) => {
+app.post('/set_permission', authHandler, async (req, res, next) => {
   try {
      const author = req.sanitize(req.body.author);
      const title = req.sanitize(req.body.title);
@@ -81,12 +85,15 @@ app.post('/set_permission', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err)
+    console.log(err);
+    res.status(500).send(err.message);
+    next(err)
+
   }
 });
 
 // Get all stories with TRUE permission
-app.get('/reading_list', authHandler, async (req, res) => {
+app.get('/reading_list', authHandler, async (req, res, next) => {
   try {
     const {
       permission
@@ -97,12 +104,15 @@ app.get('/reading_list', authHandler, async (req, res) => {
       permission,
       read: false
     }).returning('*')
-    
+    console.log(story[0].title)
     res.send(story);
   }
 
   catch(err) {
     console.log(err);
+    res.status(500).send(err.message);
+    next(err)
+
   }
 });
 
@@ -125,7 +135,7 @@ app.post('/stories/completed', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err);
+    
   }
 });
 
@@ -141,7 +151,9 @@ app.get('/stories/completed', authHandler, async (req, res, next) => {
   
   catch(err) {
     console.log(err);
+    res.status(500).send(err.message);
     next(err)
+
   }
 })
 
@@ -156,8 +168,10 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
+    console.log(err);
+  res.status(500).send(err.message);
+  next(err)
+
   }
 });
 

@@ -42,7 +42,7 @@ app.get('/', authHandler, async (req, res) => {
   }
 })
 
-app.put('/', authHandler, async (req, res) => {
+app.put('/', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);

@@ -29,7 +29,7 @@ app.post('/saveAuthors', authHandler, async (req, res) => {
   }
 });
 
-app.get('/authors_messaged', authHandler, async (req, res) => {
+app.get('/authors_messaged', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
     const authors = await knex('authors_messaged').where({

@@ -21,7 +21,7 @@ app.get('/auth', authHandler, async (req, res) => {
   }
 });
 
-app.post('/youtube', authHandler, async (req, res) => {
+app.post('/youtube', authHandler, async (req, res, next) => {
   try {
     const youtube_id = req.sanitize(req.body.youtube_id);
     await knex('users').where({
@@ -61,7 +61,7 @@ app.put('/update/email', authHandler, async (req, res, next) => {
   }
 })
 
-app.put('/update/password', authHandler, async (req, res) => {
+app.put('/update/password', authHandler, async (req, res, next) => {
   try {
     const newPassword = req.sanitize(req.body.newPassword);
     const currentPassword = req.sanitize(req.body.currentPassword);
@@ -94,7 +94,7 @@ app.put('/update/password', authHandler, async (req, res) => {
   }
 })
 
-app.delete('/delete', authHandler, async (req, res) => {
+app.delete('/delete', authHandler, async (req, res, next) => {
   try {
     const uuid = req.sanitize(req.query.uuid);
 
@@ -114,7 +114,7 @@ app.delete('/delete', authHandler, async (req, res) => {
   }
 });
 
-app.get('/stories_used', authHandler, async (req, res) => {
+app.get('/stories_used', authHandler, async (req, res, next) => {
   try {
     const id = res.locals.userId;
     const stories = await knex('stories_used').where({user_id: id}).returning('*')
