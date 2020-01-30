@@ -102,9 +102,9 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
     const story = await knex('stories').where({
       user_id: res.locals.userId,
       permission,
-      read: false
+      read: false || null
     }).returning('*')
-    console.log(story[0].title)
+    console.log(story)
     res.send(story);
   }
 
