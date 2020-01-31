@@ -132,12 +132,12 @@ app.post('/reddit_profile', authHandler, async (req, res, next) => {
   try {
     const reddit_profile = req.body.profile;
     
-    await knex('users').where({
+    const user = await knex('users').where({
       uuid: res.locals.userId
     }).update({
       reddit_profile: reddit_profile
-    })
-    res.sendStatus(200)
+    }).returning('*')
+    res.send(user[0])
   }
 
   catch(err) {
