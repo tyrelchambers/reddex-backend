@@ -130,13 +130,13 @@ app.get('/stories_used', authHandler, async (req, res, next) => {
 
 app.post('/reddit_profile', authHandler, async (req, res, next) => {
   try {
-    const {reddit_profile} = req.body;
+    const reddit_profile = req.body.profile;
+    
     await knex('users').where({
       uuid: res.locals.userId
-    }).insert({
-      reddit_profile
+    }).update({
+      reddit_profile: reddit_profile
     })
-    console.log(reddit_profile)
     res.sendStatus(200)
   }
 
