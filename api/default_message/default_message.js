@@ -1,7 +1,6 @@
 import express from 'express'
 import { authHandler } from '../../middleware/middleware'
 import knex from '../../db/index'
-import uuidv4 from 'uuid';
 const app = express.Router();
 
 app.get('/', authHandler, async (req, res) => {

@@ -11,7 +11,7 @@ app.get('/auth', authHandler, async (req, res) => {
     const user = await knex('users').where({
       uuid: userId
     }).returning('*')
-    console.log(userId)
+
     res.send(user[0]);
   }
 
