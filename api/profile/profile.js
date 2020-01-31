@@ -128,4 +128,23 @@ app.get('/stories_used', authHandler, async (req, res, next) => {
   }
 })
 
+app.post('/reddit_profile', authHandler, async (req, res, next) => {
+  try {
+    const {reddit_profile} = req.body;
+    await knex('users').where({
+      uuid: res.locals.userId
+    }).insert({
+      reddit_profile
+    })
+    console.log(reddit_profile)
+    res.sendStatus(200)
+  }
+
+  catch(err) {
+    console.log(err)
+    res.status(500).send(err)
+    next(err)
+  }
+})
+
 module.exports = app;
