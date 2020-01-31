@@ -1,18 +1,25 @@
 import express from 'express';
-import User from '../../models/User';
 import { authHandler } from '../../middleware/middleware';
+import knex from '../../db/index'
 
 const app = express.Router();
 
 app.post('/saveAuthors', authHandler, async (req, res) => {
   try {
     const { userId } = res.locals;
-    const author = req.sanitize(req.body.author);
-    const postId = req.sanitize(req.body.postId);
+    const name = req.sanitize(req.body.name);
+    const post_id = req.sanitize(req.body.post_id);
 
+    await knex('authors_messaged').insert({
+      name,
+      user_id: userId
+    })
 
-    await User.findOneAndUpdate({_id: userId}, { $addToSet: { authorsMessaged: author, storiesUsed: postId}});
-
+    await knex('stories_used').insert({
+      post_id,
+      user_id: userId
+    })
+    
     res.sendStatus(200);
   }
 
@@ -21,5 +28,21 @@ app.post('/saveAuthors', authHandler, async (req, res) => {
     res.status(500).json({err});
   }
 });
+
+app.get('/authors_messaged', authHandler, async (req, res, next) => {
+  try {
+    const userId = res.locals.userId;
+    const authors = await knex('authors_messaged').where({
+      user_id: userId
+    }).returning('*')
+
+    res.send(authors)
+  }
+  catch(err) {
+    console.log(err);
+    res.status(500).send(err.message);
+    next(err)
+  }
+})
 
 module.exports = app;
