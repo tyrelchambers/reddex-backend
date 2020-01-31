@@ -161,8 +161,9 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
     const {
       post_id
     } = req.query;
+
     await knex('stories').where({post_id}).del()
-    
+
     res.send("Story removed");
   }
 
