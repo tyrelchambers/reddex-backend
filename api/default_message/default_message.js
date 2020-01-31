@@ -9,7 +9,7 @@ app.get('/', authHandler, async (req, res) => {
     const userId = res.locals.userId;
 
     const message = await knex('users').where({
-      user_id: userId
+      uuid: userId
     }).returning('*')
 
     res.send(message);
@@ -28,9 +28,7 @@ app.post('/', authHandler, async (req, res) => {
       uuid: userId
     })
     .update({
-      uuid: uuidv4(),
-      user_id: userId,
-      text
+      initial_message: text
     }).returning('*')
     
     res.send(message);
@@ -51,9 +49,7 @@ app.put('/', authHandler, async (req, res, next) => {
       uuid: userId
     })
     .update({
-      uuid: uuidv4(),
-      user_id: userId,
-      text
+      initial_message: text
     }).returning('*')
     
     res.send(message);

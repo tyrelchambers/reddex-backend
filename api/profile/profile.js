@@ -11,7 +11,7 @@ app.get('/auth', authHandler, async (req, res) => {
     const user = await knex('users').where({
       uuid: userId
     }).returning('*')
-    
+    console.log(userId)
     res.send(user[0]);
   }
 
@@ -118,7 +118,6 @@ app.get('/stories_used', authHandler, async (req, res, next) => {
   try {
     const id = res.locals.userId;
     const stories = await knex('stories_used').where({user_id: id}).returning('*')
-
     res.send(stories)
   }
 
