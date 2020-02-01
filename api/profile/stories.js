@@ -102,7 +102,12 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
     const story = await knex('stories').where({
       user_id: res.locals.userId,
       permission,
-      read: false || null
+      read: false
+    })
+    .orWhere({
+      user_id: res.locals.userId,
+      permission,
+      read: null
     }).returning('*')
     res.send(story);
   }
