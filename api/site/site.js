@@ -42,8 +42,9 @@ app.post('/update', authHandler, async (req, res, next) => {
     const twitter_id = req.sanitize(req.body.twitter_id);
     const twitter_timelines = req.sanitize(req.body.twitter_timelines);
     const show_credit_link = req.sanitize(req.body.show_credit_link);
-
-
+    const headline = req.sanitize(req.body.headline)
+    const submission_title = req.sanitize(req.body.submission_title);
+    const rules = req.sanitize(req.body.rules);
 
     const website = await knex('websites').where({
       user_id: res.locals.userId
@@ -65,7 +66,10 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtube_timeline,
       twitter_id,
       twitter_timelines,
-      show_credit_link
+      show_credit_link,
+      headline,
+      submission_title,
+      rules
     }).returning('*')
 
     res.send(website)

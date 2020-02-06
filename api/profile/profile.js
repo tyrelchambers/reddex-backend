@@ -130,7 +130,7 @@ app.get('/stories_used', authHandler, async (req, res, next) => {
 
 app.post('/reddit_profile', authHandler, async (req, res, next) => {
   try {
-    const reddit_profile = req.body.profile;
+    const reddit_profile = req.body;
     const user = await knex('users').where({
       uuid: res.locals.userId
     }).update({
