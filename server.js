@@ -45,4 +45,9 @@ app.use('/api/submissionForm', submissionForm);
 app.use('/api/reset', resetPassword);
 app.use('/api/dashboard', dashboard);
 
+app.use(function (err, req, res, next) {
+  console.error(err.message)
+  res.status(500).send(err.message)
+})
+
 app.listen(port, () => console.log("App running on " + port));
