@@ -4,7 +4,7 @@ exports.up = function(knex) {
     t.increments('id')
     t.uuid("uuid")
     t.json('author')
-    t.json('title')
+    t.json('page_title')
     t.json('sent_to_others')
     t.json('email')
     t.json('tags')
