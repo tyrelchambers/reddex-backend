@@ -6,7 +6,7 @@ const anyUpload = upload.any();
 
 const app = express.Router();
 
-app.post('/save', authHandler, (req, res) => {
+app.post('/save', authHandler, (req, res, next) => {
   anyUpload(req, res, (err) => {
     if (err) {
       return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}] });
@@ -18,7 +18,7 @@ app.post('/save', authHandler, (req, res) => {
 
 });
 
-app.delete('/revert', authHandler, async (req, res) => {
+app.delete('/revert', authHandler, async (req, res, next) => {
   try {
     const {
       url
@@ -29,8 +29,8 @@ app.delete('/revert', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err.message)
+    next(err)
+
   }
 });
 

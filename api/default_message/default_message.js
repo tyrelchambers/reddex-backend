@@ -3,7 +3,7 @@ import { authHandler } from '../../middleware/middleware'
 import knex from '../../db/index'
 const app = express.Router();
 
-app.get('/', authHandler, async (req, res) => {
+app.get('/', authHandler, async (req, res,next) => {
   try {
     const userId = res.locals.userId;
 
@@ -13,12 +13,11 @@ app.get('/', authHandler, async (req, res) => {
 
     res.send(message);
   } catch (err) {
-    console.log(err);
-    res.send(400).json({error: err});
+    next(err)
   }
 })
 
-app.post('/', authHandler, async (req, res) => {
+app.post('/', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
@@ -34,29 +33,9 @@ app.post('/', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.send(400).json({error: err});
+    next(err)
   }
 });
 
-app.put('/', authHandler, async (req, res, next) => {
-  try {
-    const userId = res.locals.userId;
-    const text = req.sanitize(req.body.text);
-
-    const message = await knex('users').where({
-      uuid: userId
-    })
-    .update({
-      initial_message: text
-    }).returning('*')
-    
-    res.send(message);
-  } catch (error) {
-    console.log(error)
-    res.status(500).send(error.message)
-    next(error)
-  }
-})
 
 module.exports = app;

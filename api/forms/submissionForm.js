@@ -60,9 +60,8 @@ app.post('/submit', async (req, res, next) => {
   }
   
   catch (error) {
-    console.log(error)
-    res.status(500).send(error.message)
-    next(error)
+    next(err)
+
   }
 });
 
@@ -106,9 +105,8 @@ app.post('/save', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err.message)
     next(err)
+
   }
 }) 
 
@@ -128,9 +126,8 @@ app.get('/', async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err.message)
     next(err)
+
   }
 })
 

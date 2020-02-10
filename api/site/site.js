@@ -16,9 +16,8 @@ app.post('/activate', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.status(500).send(err.message)
+    next(err)
+
   }
 })
 
@@ -76,9 +75,8 @@ app.post('/update', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -92,9 +90,8 @@ app.get('/config', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -113,9 +110,8 @@ app.get('/', async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -133,9 +129,8 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 module.exports = app;

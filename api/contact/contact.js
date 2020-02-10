@@ -21,9 +21,7 @@ app.post('/save', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.send(500, err.message);
-    next(err.message)
+    next(err)
   }
 })
 
@@ -61,9 +59,7 @@ app.post('/update', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.send(500, err.message);
-    next(err.message)
+    next(err)
   }
 });
 
@@ -79,9 +75,7 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.send(500, err.message);
-    next(err.message);
+    next(err);
   }
 })
 
@@ -97,9 +91,7 @@ app.get('/name', authHandler, async ( req, res, next ) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.send(500, err.message);
-    next(err.message);
+    next(err);
   }
 });
 

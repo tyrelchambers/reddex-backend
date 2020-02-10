@@ -4,7 +4,7 @@ import knex from '../../db/index'
 
 const app = express.Router();
 
-app.post('/saveAuthors', authHandler, async (req, res) => {
+app.post('/saveAuthors', authHandler, async (req, res, next) => {
   try {
     const { userId } = res.locals;
     const name = req.sanitize(req.body.name);
@@ -24,8 +24,8 @@ app.post('/saveAuthors', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(500).json({err});
+    next(err)
+
   }
 });
 
@@ -39,9 +39,8 @@ app.get('/authors_messaged', authHandler, async (req, res, next) => {
     res.send(authors)
   }
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
+
   }
 })
 

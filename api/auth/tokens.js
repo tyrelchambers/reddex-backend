@@ -4,7 +4,7 @@ import knex from '../../db/index'
 
 const app = express.Router();
 
-app.get('/getTokens', authHandler, async (req, res) => {
+app.get('/getTokens', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
     const user = await knex('users').where({uuid: userId}).returning(['refresh_token', 'access_token'])
@@ -18,8 +18,8 @@ app.get('/getTokens', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(503).send(err);
+    next(err)
+
   }
 });
 
@@ -38,8 +38,8 @@ app.post('/saveTokens', authHandler, async (req ,res) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(400).send(err);
+    next(err)
+
   }
 });
 

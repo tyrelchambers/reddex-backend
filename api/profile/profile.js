@@ -5,7 +5,7 @@ import knex from '../../db/index'
 
 const app = express.Router();
 
-app.get('/auth', authHandler, async (req, res) => {
+app.get('/auth', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
     const user = await knex('users').where({
@@ -16,8 +16,8 @@ app.get('/auth', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.send(400).json({error: err});
+    next(err)
+
   }
 });
 
@@ -34,9 +34,8 @@ app.post('/youtube', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err)
     next(err)
+
   }
 });
 
@@ -55,9 +54,7 @@ app.put('/update/email', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err.code === "23505" ? "Email already exists" : `Error code: ${err.code}`)
-    next(err)
+    next(err.code === "23505" ? "Email already exists" : `Error code: ${err.code}`)
   }
 })
 
@@ -88,8 +85,6 @@ app.put('/update/password', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err)
     next(err)
   }
 })
@@ -108,8 +103,6 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err)
     next(err)
   }
 });
@@ -122,8 +115,6 @@ app.get('/stories_used', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err)
     next(err)
   }
 })
@@ -140,8 +131,6 @@ app.post('/reddit_profile', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    res.status(500).send(err)
     next(err)
   }
 })

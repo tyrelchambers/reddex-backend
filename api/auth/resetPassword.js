@@ -34,9 +34,7 @@ app.post("/get_reset_token", async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err.message)
-    res.status(500).send(err.message)
+    next(err)
   }
 });
 
@@ -64,9 +62,7 @@ app.post('/', async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err.message)
-    res.status(500).send(err.message)
+    next(err)
   }
 })
 
