@@ -3,8 +3,6 @@ import emailCon from '../../libs/emailConfig'
 import knex from '../../db/index'
 import {authHandler} from '../../middleware/middleware.js'
 import uuidv4 from 'uuid'
-import { parse } from 'node-html-parser';
-import path from 'path'
 
 const app = express.Router();
 
@@ -35,7 +33,8 @@ app.post('/submit', async (req, res, next) => {
       sent_to_others,
       sid: website,
       story_title,
-      body
+      body,
+      user_id: subdomain[0].user_id
     })
 
     emailCon
