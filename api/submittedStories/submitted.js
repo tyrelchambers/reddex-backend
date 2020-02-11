@@ -16,6 +16,22 @@ app.get('/', authHandler, async (req, res, next) => {
   }
 })
 
+app.delete('/delete', authHandler, async (req, res, next) => {
+  try {
+    const {
+      uuid
+    } = req.query;
+
+    await knex('submitted_stories').where({
+      uuid
+    }).del()
+    
+    res.send("Story deleted")
+  } catch (error) {
+    next(error)
+  }
+})
+
 app.get('/:id', authHandler, async (req, res, next) => {
   try {
     const {
