@@ -16,4 +16,22 @@ app.get('/', authHandler, async (req, res, next) => {
   }
 })
 
+app.get('/:id', authHandler, async (req, res, next) => {
+  try {
+    const {
+      id
+    } = req.params;
+
+    const uuid = new URLSearchParams(id).get('id')
+    const story = await knex('submitted_stories').where({
+      uuid
+    })
+
+    res.send(story[0])
+
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = app;
