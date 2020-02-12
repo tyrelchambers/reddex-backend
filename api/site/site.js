@@ -84,7 +84,8 @@ app.get('/config', authHandler, async (req, res, next) => {
   try {
     const website = await knex('websites').where({
       user_id: res.locals.userId
-    }).returning('*')
+    })
+    .returning('*')
     
     res.send(website[0]);
   }
@@ -131,6 +132,22 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   catch(err) {
     next(err)
 
+  }
+})
+
+app.get('/options', authHandler, async (req, res, next) => {
+  try {
+    const {
+      uuid
+    } = req.query;
+
+    const options = await knex('submission_form_options').where({
+      website_id: uuid
+    })
+
+    res.send(options[0]);
+  } catch (error) {
+    next(error)
   }
 })
 module.exports = app;

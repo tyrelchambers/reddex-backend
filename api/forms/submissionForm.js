@@ -89,7 +89,7 @@ app.post('/save', authHandler, async (req, res, next) => {
         tags: JSON.stringify(tags),
       }).returning('*')
     } else {
-      await knex('submission_form_options').insert({
+      const options = await knex('submission_form_options').insert({
           story_title: JSON.stringify(story_title),
           author: JSON.stringify(author),
           email: JSON.stringify(email),
@@ -97,7 +97,13 @@ app.post('/save', authHandler, async (req, res, next) => {
           tags: JSON.stringify(tags),
           uuid: uuidv4(),
           website_id: website
-        })
+        }).returning("uuid")
+
+        await knex("websites").where({
+        uuid: website
+      }).update({
+        options_id: options[0]
+      });
     
     }
     res.sendStatus(200);
@@ -118,8 +124,6 @@ app.get('/', async (req, res, next) => {
     const form = await knex('submission_form_options').where({
       website_id: sid
     })
-    .innerJoin('websites', 'submission_form_options.website_id', 'websites.uuid')
-    .returning('*')
 
     res.send(form[0])
   }
@@ -129,6 +133,7 @@ app.get('/', async (req, res, next) => {
 
   }
 })
+
 
 
 module.exports = app;
