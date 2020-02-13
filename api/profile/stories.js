@@ -36,10 +36,7 @@ app.post('/save_story', authHandler, async (req, res, next) => {
     res.sendStatus(200);
   }
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
-
   }
 });
 
@@ -59,8 +56,6 @@ app.get('/get_story', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
   }
 });
@@ -85,8 +80,6 @@ app.post('/set_permission', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
 
   }
@@ -113,14 +106,12 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
 
   }
 });
 
-app.post('/stories/completed', authHandler, async (req, res) => {
+app.post('/stories/completed', authHandler, async (req, res, next) => {
   try {
 
     const read = req.body.read;
@@ -139,7 +130,7 @@ app.post('/stories/completed', authHandler, async (req, res) => {
   }
 
   catch(err) {
-    
+    next(err)
   }
 });
 
@@ -154,8 +145,6 @@ app.get('/stories/completed', authHandler, async (req, res, next) => {
   }
   
   catch(err) {
-    console.log(err);
-    res.status(500).send(err.message);
     next(err)
 
   }
@@ -173,9 +162,7 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-  res.status(500).send(err.message);
-  next(err)
+    next(err)
 
   }
 });

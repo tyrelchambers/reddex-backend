@@ -16,9 +16,8 @@ app.post('/activate', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.status(500).send(err.message)
+    next(err)
+
   }
 })
 
@@ -36,14 +35,15 @@ app.post('/update', authHandler, async (req, res, next) => {
     const theme = req.sanitize(req.body.theme);
     const introduction = req.sanitize(req.body.introduction);
     const banner_url = req.sanitize(req.body.banner_url);
-    const submission_form = req.sanitize(req.body.submission_form);
+    const submission_form = req.body.submission_form;
     const youtube_id = req.sanitize(req.body.youtube_id);
-    const youtube_timeline = req.sanitize(req.body.youtube_timeline);
+    const youtube_timeline = req.body.youtube_timeline;
     const twitter_id = req.sanitize(req.body.twitter_id);
-    const twitter_timelines = req.sanitize(req.body.twitter_timelines);
-    const show_credit_link = req.sanitize(req.body.show_credit_link);
-
-
+    const twitter_timeline = req.body.twitter_timeline;
+    const show_credit_link = req.body.show_credit_link;
+    const headline = req.sanitize(req.body.headline)
+    const submission_title = req.sanitize(req.body.submission_title);
+    const rules = req.sanitize(req.body.rules);
 
     const website = await knex('websites').where({
       user_id: res.locals.userId
@@ -64,17 +64,19 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtube_id,
       youtube_timeline,
       twitter_id,
-      twitter_timelines,
-      show_credit_link
+      twitter_timeline,
+      show_credit_link,
+      headline,
+      submission_title,
+      rules
     }).returning('*')
 
     res.send(website)
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -82,15 +84,15 @@ app.get('/config', authHandler, async (req, res, next) => {
   try {
     const website = await knex('websites').where({
       user_id: res.locals.userId
-    }).returning('*')
+    })
+    .returning('*')
     
     res.send(website[0]);
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -109,9 +111,8 @@ app.get('/', async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
   }
 })
 
@@ -129,9 +130,24 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err)
-    next(err);
-    res.send(500, {err: err.message})
+    next(err)
+
+  }
+})
+
+app.get('/options', authHandler, async (req, res, next) => {
+  try {
+    const {
+      uuid
+    } = req.query;
+
+    const options = await knex('submission_form_options').where({
+      website_id: uuid
+    })
+
+    res.send(options[0]);
+  } catch (error) {
+    next(error)
   }
 })
 module.exports = app;

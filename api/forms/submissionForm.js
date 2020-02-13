@@ -1,33 +1,55 @@
 import express from 'express'
 import emailCon from '../../libs/emailConfig'
 import knex from '../../db/index'
+import {authHandler} from '../../middleware/middleware.js'
+import uuidv4 from 'uuid'
 
 const app = express.Router();
 
 app.post('/submit', async (req, res, next) => {
   try {
-    const email = req.sanitize(req.body.email);
-    const senderName = req.sanitize(req.body.senderName);
-    const message = req.sanitize(req.body.message);
-    const sentToOthers = req.sanitize(req.body.sentToOthers);
-    const subdomain = req.sanitize(req.body.subdomain);
-    const website = await knex('websites').where({
-      subdomain
+    const story_email = req.sanitize(req.body.email.value);
+    const author = req.sanitize(req.body.author.value);
+    const tags = req.sanitize(req.body.tags.value);
+    const sent_to_others = req.sanitize(req.body.sent_to_others.value);
+    const website = req.sanitize(req.body.website);
+    const story_title = req.sanitize(req.body.story_title.value);
+    const body = req.sanitize(req.body.body)
+
+    const subdomain = await knex('websites').where({
+      uuid: website
+    })
+
+    const site = await knex('websites').select('email').where({
+      subdomain: subdomain[0].subdomain
     })
     .innerJoin('users', 'websites.user_id', 'users.uuid')
-    .returning('*')
+
+    await knex('submitted_stories').insert({
+      uuid: uuidv4(),
+      email: story_email,
+      author,
+      tags,
+      sent_to_others,
+      sid: website,
+      story_title,
+      body,
+      user_id: subdomain[0].user_id
+    })
 
     emailCon
     .send({
       template: 'mars',
       message: {
-        to: website[0].email
+        to: site[0].email
       },
+      
       locals: {
-        email,
-        senderName,
-        message,
-        sentToOthers
+        email: story_email,
+        story_title,
+        author,
+        body,
+        sent_to_others
       }
     })
     .then()
@@ -37,10 +59,82 @@ app.post('/submit', async (req, res, next) => {
   }
   
   catch (error) {
-    console.log(error)
-    res.status(500).send(error.message)
-    next(error)
+    next(err)
+
   }
 });
+
+app.post('/save', authHandler, async (req, res, next) => {
+  try {
+    const story_title = req.body.story_title;
+    const author = req.body.author;
+    const email = req.body.email;
+    const sent_to_others = req.body.sent_to_others;
+    const tags = req.body.tags;
+    const website = req.body.website;
+
+    const existingSite = await knex('submission_form_options').where({
+      website_id: website
+    }).returning('*')
+
+    if (existingSite[0]) {
+      await knex('submission_form_options').where({
+        website_id: website
+      })
+      .update({
+        story_title: JSON.stringify(story_title),
+        author: JSON.stringify(author),
+        email: JSON.stringify(email),
+        sent_to_others: JSON.stringify(sent_to_others),
+        tags: JSON.stringify(tags),
+      }).returning('*')
+    } else {
+      const options = await knex('submission_form_options').insert({
+          story_title: JSON.stringify(story_title),
+          author: JSON.stringify(author),
+          email: JSON.stringify(email),
+          sent_to_others: JSON.stringify(sent_to_others),
+          tags: JSON.stringify(tags),
+          uuid: uuidv4(),
+          website_id: website
+        }).returning("uuid")
+
+        await knex("websites").where({
+        uuid: website
+      }).update({
+        options_id: options[0]
+      });
+    
+    }
+    res.sendStatus(200);
+  }
+
+  catch(err) {
+    next(err)
+
+  }
+}) 
+
+app.get('/', async (req, res, next) => {
+  try {
+    const {
+      sid
+    } = req.query;
+
+    const form = await knex('submission_form_options').where({
+      website_id: sid
+    }).innerJoin('websites', 'submission_form_options.website_id', 'websites.uuid')
+
+
+    res.send(form[0])
+  }
+
+  catch(err) {
+    next(err)
+
+  }
+})
+
+
 
 module.exports = app;

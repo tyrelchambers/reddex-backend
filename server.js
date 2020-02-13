@@ -20,6 +20,7 @@ import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
 import expressSanitizer from 'express-sanitizer'
 import dashboard from './api/dashboard/index'
+import submitted from './api/submittedStories/submitted'
 
 const app = express();
 
@@ -44,5 +45,11 @@ app.use('/api/upload', upload);
 app.use('/api/submissionForm', submissionForm);
 app.use('/api/reset', resetPassword);
 app.use('/api/dashboard', dashboard);
+app.use('/api/submitted', submitted)
+
+app.use(function (err, req, res, next) {
+  console.error(err.message)
+  res.status(500).send(err.message)
+})
 
 app.listen(port, () => console.log("App running on " + port));

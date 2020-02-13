@@ -42,9 +42,7 @@ app.post('/register', async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.send(500, err.message)
-    next(err.message)
+    next(err)
   }
 })
 

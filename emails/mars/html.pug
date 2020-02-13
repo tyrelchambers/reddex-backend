@@ -9,15 +9,19 @@ div.hero
   p #{email}
 
 .group
+  h3.subtitle Title: 
+  p #{story_title}
+
+.group
   h3.subtitle Full name: 
-  p #{senderName}
+  p #{author}
 
 hr
 
-p.body #{message}
+p.body !{body}
 
 hr
 
 .group
   h3.subtitle Was this sent to someone else?
-  p #{sentToOthers ? "Yes" : "No"}
+  p #{sent_to_others ? "Yes" : "No"}
