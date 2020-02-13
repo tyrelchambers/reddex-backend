@@ -11,10 +11,12 @@ app.post('/submit', async (req, res, next) => {
     const story_email = req.sanitize(req.body.email.value);
     const author = req.sanitize(req.body.author.value);
     const tags = req.sanitize(req.body.tags.value);
-    const sent_to_others = req.sanitize(req.body.sent_to_others.value);
+    const sent_to_others = req.body.sent_to_others;
     const website = req.sanitize(req.body.website);
     const story_title = req.sanitize(req.body.story_title.value);
     const body = req.sanitize(req.body.body)
+
+    const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others;
 
     const subdomain = await knex('websites').where({
       uuid: website
@@ -30,7 +32,7 @@ app.post('/submit', async (req, res, next) => {
       email: story_email,
       author,
       tags,
-      sent_to_others,
+      sent_to_others: sent_to_others_formatted,
       sid: website,
       story_title,
       body,

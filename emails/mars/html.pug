@@ -22,7 +22,7 @@ p.body !{body}
 
 hr
 
-.group
-  h3.subtitle Was this sent to someone else?
-  p #{sent_to_others ? "Yes" : "No"}
-    
+if sent_to_others.enabled
+  .group
+    h3.subtitle Was this sent to someone else?
+    p #{sent_to_others.value ? "Yes" : "No"}
