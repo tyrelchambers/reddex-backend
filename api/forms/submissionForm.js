@@ -16,7 +16,7 @@ app.post('/submit', async (req, res, next) => {
     const story_title = req.sanitize(req.body.story_title.value);
     const body = req.sanitize(req.body.body)
 
-    const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others;
+    const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others.value;
 
     const subdomain = await knex('websites').where({
       uuid: website
