@@ -123,7 +123,8 @@ app.get('/', async (req, res, next) => {
 
     const form = await knex('submission_form_options').where({
       website_id: sid
-    })
+    }).innerJoin('websites', 'submission_form_options.website_id', 'websites.uuid')
+
 
     res.send(form[0])
   }

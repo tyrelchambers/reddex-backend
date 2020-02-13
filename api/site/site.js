@@ -39,7 +39,7 @@ app.post('/update', authHandler, async (req, res, next) => {
     const youtube_id = req.sanitize(req.body.youtube_id);
     const youtube_timeline = req.body.youtube_timeline;
     const twitter_id = req.sanitize(req.body.twitter_id);
-    const twitter_timelines = req.body.twitter_timelines;
+    const twitter_timeline = req.body.twitter_timeline;
     const show_credit_link = req.body.show_credit_link;
     const headline = req.sanitize(req.body.headline)
     const submission_title = req.sanitize(req.body.submission_title);
@@ -64,7 +64,7 @@ app.post('/update', authHandler, async (req, res, next) => {
       youtube_id,
       youtube_timeline,
       twitter_id,
-      twitter_timelines,
+      twitter_timeline,
       show_credit_link,
       headline,
       submission_title,
