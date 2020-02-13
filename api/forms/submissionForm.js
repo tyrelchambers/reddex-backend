@@ -59,7 +59,7 @@ app.post('/submit', async (req, res, next) => {
   }
   
   catch (error) {
-    next(err)
+    next(error)
 
   }
 });
