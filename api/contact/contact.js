@@ -35,11 +35,25 @@ app.get('/all', authHandler, async (req, res, next) => {
   }
 
   catch(err) {
-    console.log(err);
-    res.send(500, err.message);
-    next(err.message)
+    next(err)
   }
 });
+
+app.get('/name', authHandler, async (req, res, next) => {
+  try {
+    const {
+      name
+    } = req.query;
+    const contact = await knex('contacts').where({
+      name,
+      user_id: res.locals.userId
+    })
+
+    res.send(contact)
+  } catch (error) {
+    next(error)
+  }
+})
 
 app.post('/update', authHandler, async (req, res, next) => {
   try {
