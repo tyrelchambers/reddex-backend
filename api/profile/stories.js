@@ -160,9 +160,9 @@ app.get('/stories/completed', authHandler, async (req, res, next) => {
 app.delete('/stories/remove', authHandler, async (req, res, next) => {
   try {
     const {
-      post_id
+      uuid
     } = req.query;
-    await knex('stories').where({post_id}).del()
+    await knex('stories').where({uuid}).del()
     
     res.send("Story removed");
   }
