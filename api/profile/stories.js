@@ -123,15 +123,12 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
 
 app.post('/stories/completed', authHandler, async (req, res, next) => {
   try {
-
     const read = req.body.read;
-    const author = req.sanitize(req.body.author);
-    const title = req.sanitize(req.body.title);
+    const uuid = req.body.uuid;
 
     await knex('stories').where({
       user_id: res.locals.userId,
-      title,
-      author
+      uuid
     }).update({
       read
     })
