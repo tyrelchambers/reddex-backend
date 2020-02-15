@@ -13,12 +13,22 @@ app.post('/save_story', authHandler, async (req, res, next) => {
     const ups = req.sanitize(req.body.ups);
     const url = req.sanitize(req.body.url);
     const num_comments = req.sanitize(req.body.num_comments);
-    const flair = req.sanitize(req.body.flair);
+    const link_flair_text = req.sanitize(req.body.link_flair_text);
     const post_id = req.sanitize(req.body.post_id);
     const permission = req.body.permission;
     const subreddit = req.sanitize(req.body.subreddit);
 
-    await knex('stories').insert({
+    const existingStory = await knex('stories').where({
+      author,
+      title,
+      self_text,
+      post_id,
+      user_id: res.locals.userId
+    })
+
+   if (existingStory[0]) throw new Error("Story already exists")
+
+    const stories = await knex('stories').insert({
       uuid: uuidv4(),
       author,
       title,
@@ -26,14 +36,14 @@ app.post('/save_story', authHandler, async (req, res, next) => {
       ups,
       url,
       num_comments,
-      flair,
+      flair: link_flair_text,
       post_id,
       permission,
       subreddit,
       user_id: res.locals.userId
-    })
+    }).returning('*')
 
-    res.sendStatus(200);
+    res.send(stories);
   }
   catch(err) {
     next(err)
@@ -51,7 +61,7 @@ app.get('/get_story', authHandler, async (req, res, next) => {
                           .where({user_id: res.locals.userId})
                           .where('title', 'like', `%${title}%`)
                           .where({author})
-                          .returning('*')
+                          
     res.send(story[0]);
   }
 
@@ -74,7 +84,6 @@ app.post('/set_permission', authHandler, async (req, res, next) => {
             .update({
               permission
             })
-            .returning('*')
 
     res.sendStatus(200);
   }
@@ -101,7 +110,8 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
       user_id: res.locals.userId,
       permission,
       read: null
-    }).returning('*')
+    })
+
     res.send(story);
   }
 
