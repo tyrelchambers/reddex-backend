@@ -33,7 +33,6 @@ app.post('/submit', async (req, res, next) => {
       author,
       tags,
       sent_to_others: sent_to_others_formatted,
-      sid: website,
       story_title,
       body,
       user_id: subdomain[0].user_id
