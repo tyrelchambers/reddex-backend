@@ -163,7 +163,7 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
       uuid
     } = req.query;
     await knex('stories').where({uuid}).del()
-    
+
     res.send("Story removed");
   }
 
