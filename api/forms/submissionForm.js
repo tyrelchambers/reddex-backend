@@ -12,7 +12,7 @@ app.post('/submit', async (req, res, next) => {
     const author = req.sanitize(req.body.author.value);
     const tags = req.sanitize(req.body.tags.value);
     const sent_to_others = req.body.sent_to_others;
-    const website = req.sanitize(req.body.website);
+    const website = req.sanitize(req.body.website_id);
     const story_title = req.sanitize(req.body.story_title.value);
     const body = req.sanitize(req.body.body)
 
@@ -33,7 +33,6 @@ app.post('/submit', async (req, res, next) => {
       author,
       tags,
       sent_to_others: sent_to_others_formatted,
-      sid: website,
       story_title,
       body,
       user_id: subdomain[0].user_id
@@ -125,7 +124,7 @@ app.get('/', async (req, res, next) => {
 
     const form = await knex('submission_form_options').where({
       website_id: sid
-    }).innerJoin('websites', 'submission_form_options.website_id', 'websites.uuid')
+    })
 
 
     res.send(form[0])
