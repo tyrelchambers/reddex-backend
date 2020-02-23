@@ -56,7 +56,6 @@ app.get('/get_story', authHandler, async (req, res, next) => {
       author,
       title
     } = req.query;
-    console.log(title)
 
     const story = await knex('stories')
                           .where({user_id: res.locals.userId})
