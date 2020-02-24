@@ -79,7 +79,7 @@ app.post('/set_permission', authHandler, async (req, res, next) => {
 
      await knex('stories')
             .where({user_id: res.locals.userId})
-            .where('title', 'like', `%${title}%`)
+            .where('title', 'like', `${title.substring(0, title.length - 3)}%`)
             .where({author})
             .update({
               permission
