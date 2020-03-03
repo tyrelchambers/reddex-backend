@@ -34,7 +34,7 @@ app.post('/update', authHandler, async (req, res, next) => {
     const accent = req.sanitize(req.body.accent);
     const theme = req.sanitize(req.body.theme);
     const introduction = req.sanitize(req.body.introduction);
-    const banner_url = req.sanitize(req.body.banner_url);
+    const banner_url = req.body.banner_url;
     const submission_form = req.body.submission_form;
     const youtube_id = req.sanitize(req.body.youtube_id);
     const youtube_timeline = req.body.youtube_timeline;
@@ -44,6 +44,7 @@ app.post('/update', authHandler, async (req, res, next) => {
     const headline = req.sanitize(req.body.headline)
     const submission_title = req.sanitize(req.body.submission_title);
     const rules = req.sanitize(req.body.rules);
+    const thumbnail = req.body.thumbnail;
 
     const website = await knex('websites').where({
       user_id: res.locals.userId
@@ -68,7 +69,8 @@ app.post('/update', authHandler, async (req, res, next) => {
       show_credit_link,
       headline,
       submission_title,
-      rules
+      rules,
+      thumbnail
     }).returning('*')
 
     res.send(website)

@@ -12,7 +12,10 @@ app.post('/save', authHandler, (req, res, next) => {
       return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}] });
     }
     for ( let i = 0; i < req.files.length; i++ ) {
-      res.send(req.files[i].location);
+      res.send({
+        original: req.files[0].transforms[1].location,
+        thumbnail: req.files[0].transforms[0].location
+      })
     }
   });
 

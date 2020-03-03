@@ -1,6 +1,12 @@
-import multerS3 from 'multer-s3';
+import multerS3 from 'multer-s3-transform';
 import aws from 'aws-sdk';
 import multer from 'multer';
+import tinify from "tinify";
+import fs from 'fs'
+import sharp from 'sharp'
+
+tinify.key = process.env.TINYPNG_KEY;
+
 require('dotenv').config();
 
 aws.config.update({
@@ -12,17 +18,38 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
+const dateNow = Date.now().toString()
+
 const upload = multer({
   storage: multerS3({
     s3: s3,
     bucket: 'reddex',
-    metadata: function (req, file, cb) {
-      cb(null, {fieldName: file.fieldname});
+    shouldTransform: true,
+    transforms: [{
+      id: 'original',
+      key: async function (req, file, cb) {
+        const fullPath = `${dateNow}_${file.originalname}/original-${file.originalname}`;
+        cb(null, fullPath)
+      },
+      transform: function (req, file, cb) {
+        cb(null, sharp().jpeg())
+      }
     },
-    key: function (req, file, cb) {
-      const fullPath = `${Date.now().toString()}/${file.originalname}`;
-      cb(null, fullPath)
-    }
+    {
+      id: 'thumbnail',
+      key: function (req, file, cb) {
+        cb(null, `${dateNow}_${file.originalname}/thumbnail-${file.originalname}`)
+      },
+      transform: function (req, file, cb) {
+        cb(null, sharp().resize({
+          width: 400,
+          fit: 'cover'
+        }).jpeg({
+          quality: 90,
+          chromaSubsampling: '4:4:4'
+        }))
+      }
+    }]
   }),
   files: 1,
   fileSize: 2000000,
@@ -48,21 +75,33 @@ const upload = multer({
 });
 
 const deleteObject = (url) => {
-  const regex = /\d+\/\w+.+\w+/gim;
+  const regex = /(?<=\/)[\d][\S][^\/]+/gim;
   const key = url.match(regex).toString();
 
   var params = {
     Bucket: process.env.AWS_BUCKET,
-    Key: key
+    Prefix: key,
+    MaxKeys: 2
   }
   
-  s3.deleteObject(params, (err, data) => {
-    if ( err ) {
-      console.log(err)
-      return false;
+  s3.listObjectsV2(params, (err, data) => {
+    if ( err ) return console.log(err)
+
+    params = {
+      Bucket: process.env.AWS_BUCKET
     }
-    return true
-  });
+    params.Delete = {Objects:[]};
+
+    data.Contents.forEach(x => {
+      params.Delete.Objects.push({Key: x.Key})
+    })
+
+    s3.deleteObjects(params, (err, data) => {
+      if (err) return false;
+
+      return true;
+    })
+  })
 }
 
 module.exports = {
