@@ -1,11 +1,7 @@
 import multerS3 from 'multer-s3-transform';
 import aws from 'aws-sdk';
 import multer from 'multer';
-import tinify from "tinify";
-import fs from 'fs'
 import sharp from 'sharp'
-
-tinify.key = process.env.TINYPNG_KEY;
 
 require('dotenv').config();
 
@@ -111,6 +107,7 @@ const deleteObject = (url) => {
     params.Delete = {Objects:[]};
 
     data.Contents.forEach(x => {
+      console.log('----', x.Key, '-----')
       params.Delete.Objects.push({Key: x.Key})
     })
 

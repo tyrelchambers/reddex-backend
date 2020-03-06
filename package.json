@@ -25,7 +25,6 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
-    "ejs": "^3.0.1",
     "email-templates": "^6.1.1",
     "express": "^4.17.1",
     "express-sanitizer": "^1.0.5",
@@ -42,9 +41,7 @@
     "pg": "^7.17.1",
     "pug": "^2.0.4",
     "sharp": "^0.24.1",
-    "tinify": "^1.6.0-beta.2",
-    "uuid": "^3.4.0",
-    "voucher-code-generator": "^1.1.1"
+    "uuid": "^3.4.0"
   },
   "author": "",
   "license": "ISC",
