@@ -107,7 +107,6 @@ const deleteObject = (url) => {
     params.Delete = {Objects:[]};
 
     data.Contents.forEach(x => {
-      console.log('----', x.Key, '-----')
       params.Delete.Objects.push({Key: x.Key})
     })
 
