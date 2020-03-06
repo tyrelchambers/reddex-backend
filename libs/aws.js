@@ -32,7 +32,13 @@ const upload = multer({
         cb(null, fullPath)
       },
       transform: function (req, file, cb) {
-        cb(null, sharp().jpeg())
+        if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+          cb(null, sharp().jpeg())
+        }
+
+        if (file.mimetype === "image/png") {
+          cb(null, sharp().png())
+        }
       }
     },
     {
@@ -41,18 +47,30 @@ const upload = multer({
         cb(null, `${dateNow}_${file.originalname}/thumbnail-${file.originalname}`)
       },
       transform: function (req, file, cb) {
-        cb(null, sharp().resize({
-          width: 400,
-          fit: 'cover'
-        }).jpeg({
-          quality: 90,
-          chromaSubsampling: '4:4:4'
-        }))
+        if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+          cb(null, sharp().resize({
+            width: 400,
+            fit: 'cover'
+          }).jpeg({
+            quality: 90,
+            chromaSubsampling: '4:4:4'
+          }))
+        }
+        
+        if (file.mimetype === "image/png") {
+          cb(null, sharp().resize({
+            width: 400,
+            fit: 'cover'
+          }).png({
+            quality: 90,
+            chromaSubsampling: '4:4:4'
+          }))
+        }
       }
     }]
   }),
   files: 1,
-  fileSize: 2000000,
+  fileSize: 3000000,
   fileFilter: (req, file, cb) => {
     let isFinished = 0;
     const acceptedMimeTypes = [
