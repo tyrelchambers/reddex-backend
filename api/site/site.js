@@ -107,7 +107,6 @@ app.get('/', async (req, res, next) => {
     const website = await knex('websites').where({
       subdomain
     })
-    console.log(req.query)    
     res.send(website[0]);
   }
 
