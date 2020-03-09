@@ -22,6 +22,7 @@ import expressSanitizer from 'express-sanitizer'
 import dashboard from './api/dashboard/index'
 import submitted from './api/submittedStories/submitted'
 import channels from './api/channels/channels'
+import recently_searched from './api/recently_searched/index'
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use('/api/reset', resetPassword);
 app.use('/api/dashboard', dashboard);
 app.use('/api/submitted', submitted)
 app.use('/api/channels', channels)
+app.use('/api/recently_searched', recently_searched)
 
 app.use(function (err, req, res, next) {
   console.error(err.message)
