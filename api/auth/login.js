@@ -8,13 +8,12 @@ const app = express.Router();
 
 app.post('/login', async (req, res, next) => {
   try {
-
     const password = req.sanitize(req.body.password);
     const email = req.sanitize(req.body.email);
 
     const user = await knex('users').where({
       email
-    }).returning('*');
+    });
 
     if (!user[0]) throw new Error("User does not exist")
     
