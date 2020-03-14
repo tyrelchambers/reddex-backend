@@ -122,9 +122,14 @@ app.delete('/delete', authHandler, async (req, res, next) => {
       uuid
     } = req.query;
 
+    await knex("submission_form_options").where({
+      website_id: uuid
+    }).del();
+
     await knex('websites').where({
       uuid
     }).del()
+    
     
     res.send("Site deleted")
   }
