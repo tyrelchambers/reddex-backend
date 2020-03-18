@@ -107,7 +107,15 @@ app.get('/', async (req, res, next) => {
     const website = await knex('websites').where({
       subdomain
     })
-    res.send(website[0]);
+
+    const patron_tier = await knex('users').where({
+      uuid: website[0].user_id
+    }).select('patreon_tier')
+
+    res.send({
+      website: website[0],
+      patreon_tier: patron_tier[0]
+    });
   }
 
   catch(err) {
