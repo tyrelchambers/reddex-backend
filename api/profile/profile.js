@@ -135,4 +135,20 @@ app.post('/reddit_profile', authHandler, async (req, res, next) => {
   }
 })
 
+app.get('/patreon_tier', async (req, res) => {
+  try {
+    const {
+      user_id
+    } = req.query;
+
+    const tier = await knex('users').where({
+      uuid: user_id
+    }).select('patreon_tier')
+
+    res.send(tier[0])
+  } catch (error) {
+    
+  }
+})
+
 module.exports = app;
