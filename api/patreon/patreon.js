@@ -43,11 +43,14 @@ app.post('/getTokens', authHandler, async (req, res, next) => {
 
 app.get('/identity', authHandler, async (req, res, next) => {
   try {
-    const {
-      access_token
-    } = req.query;
+    
+    const user = await knex('users').where({
+      uuid: res.locals.userId
+    }).select('patreon_access_token')
 
-    if (!access_token) throw new Error("No token provided")
+    if (!user[0].patreon_access_token) {
+      return res.sendStatus(200)
+    }
 
     const campaignId = 4145490;
     const payload = {}
@@ -55,7 +58,7 @@ app.get('/identity', authHandler, async (req, res, next) => {
 
     const memberships = await Axios.get(`https://www.patreon.com/api/oauth2/v2/identity?include=memberships.campaign&fields${encodeURI('[user]')}=about,created,email&fields${encodeURI('[member]')}=patron_status,currently_entitled_amount_cents`, {
       headers: {
-        'Authorization': `Bearer ${access_token}`,
+        'Authorization': `Bearer ${user[0].patreon_access_token}`,
         'Content-Type': 'application/x-www-form-urlencoded'
 
       }
@@ -64,7 +67,7 @@ app.get('/identity', authHandler, async (req, res, next) => {
     .catch(err => err)
 
     if (!memberships.included) {
-      res.sendStatus(200);
+      return res.sendStatus(200);
     }
 
     for(let i = 0; i<memberships.included.length; i++) {
