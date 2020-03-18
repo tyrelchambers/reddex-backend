@@ -12,7 +12,7 @@ app.post('/getTokens', authHandler, async (req, res, next) => {
       code
     } = req.body;
 
-    const tokens = await Axios.post(`https://www.patreon.com/api/oauth2/token?code=${code}&grant_type=authorization_code&client_id=${process.env.PATREON_ID}&client_secret=${process.env.PATREON_SECRET}&redirect_uri=http://localhost:3000/dashboard/account?t=security`, {
+    const tokens = await Axios.post(`https://www.patreon.com/api/oauth2/token?code=${code}&grant_type=authorization_code&client_id=${process.env.PATREON_ID}&client_secret=${process.env.PATREON_SECRET}&redirect_uri=${process.env.FRONT_END}/dashboard/account?t=security`, {
       'Content-Type': 'application/x-www-form-urlencoded'
     })
     .then(res => res.data)
