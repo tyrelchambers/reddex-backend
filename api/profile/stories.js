@@ -43,7 +43,7 @@ app.post('/save_story', authHandler, async (req, res, next) => {
       user_id: res.locals.userId
     }).returning('*')
 
-    res.send(stories);
+    res.send(stories[0]);
   }
   catch(err) {
     next(err)
