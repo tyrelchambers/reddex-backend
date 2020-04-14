@@ -25,6 +25,7 @@ import channels from './api/channels/channels'
 import recently_searched from './api/recently_searched/index'
 import patreon from './api/patreon/patreon'
 import tags from './api/tags/index'
+import tag_story from './api/tag_story/index'
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use('/api/channels', channels)
 app.use('/api/recently_searched', recently_searched)
 app.use('/api/patreon', patreon);
 app.use('/api/tags', tags)
+app.use('/api/tag_story', tag_story)
 
 app.use(function (err, req, res, next) {
   console.error(err.message)
