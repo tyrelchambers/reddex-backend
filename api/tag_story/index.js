@@ -28,19 +28,28 @@ app.post('/save', authHandler, async (req, res, next) => {
 
 app.get('/', authHandler, async (req, res, next) => {
   try {
-    const tags = await knex.raw(`
-      SELECT 
-        tag,
-        story_uuid,
-        tag_uuid
-      FROM tag_story t_s  INNER JOIN
-      tags t
-      USING (uuid)
-      WHERE user_id='${res.locals.userId}'
-      GROUP BY story_uuid, t.tag, t_s.tag_uuid;
-    `)
+    // const tags = await knex.raw(`
+    //   SELECT 
+    //     tag,
+    //     story_uuid,
+    //     tag_uuid
+    //   FROM tag_story t_s  CROSS JOIN
+    //   tags t
+    //   USING (user_id)
+    //   WHERE user_id='${res.locals.userId}'
+    //   GROUP BY story_uuid, t.tag, t_s.tag_uuid;
+    // `)
 
-    res.send(tags.rows)
+    const tags = await knex.select(`tags.*`, knex.ref("stories.user_id").as("StoriesUserId"))
+        .from('tag_story')
+        .leftJoin('tags', `tag_uuid`, `tags.uuid`)
+        .leftJoin('stories', `story_uuid`, `stories.uuid`)
+        .where({
+          user_id: res.locals.userId
+        }).then(rows => {
+          console.log(rows)
+        })
+    res.send(tags)
   } catch (error) {
     next(error)
   }
