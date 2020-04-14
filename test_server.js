@@ -28,11 +28,13 @@ import tags from './api/tags/index'
 import tag_story from './api/tag_story/index'
 import models from './db/Models/index'
 
+import './__tests__/index'
+
 const app = express();
 
 app.use(helmet())
 
-const port = process.env.PORT || '3001';
+const port = process.env.PORT || '3002';
 app.use(bodyParser.json());
 
 app.use(bodyParser.urlencoded({ extended: true}));
