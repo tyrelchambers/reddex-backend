@@ -1,7 +1,7 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index'
-import User from './User'
-import Story from './Story'
+import { sequelize } from '../index.js'
+import User from './User.js'
+import Story from './Story.js'
 
 const StoriesUsed = sequelize.define("StoriesUsed", {
   uuid: {

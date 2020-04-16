@@ -15,11 +15,12 @@ const test = new Sequelize({
   database: 'reddex_test'
 })
 
-
 const connections = {
   development,
   test
 }
+
+console.log(connections[environment])
 
 module.exports = {
   sequelize: connections[environment]

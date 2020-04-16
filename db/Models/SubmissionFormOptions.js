@@ -1,6 +1,6 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index'
-import Website from './Website'
+import { sequelize } from '../index.js'
+import Website from './Website.js'
 
 const SubmissionFormOptions = sequelize.define("SubmissionFormOptions", {
   uuid: {

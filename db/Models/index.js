@@ -1,14 +1,14 @@
-import AuthorsMessaged from './AuthorsMessaged'
-import Contact from './Contact'
-import RecentlySearched from './RecentlySearched'
-import StoriesUsed from './StoriesUsed'
-import Story from './Story'
-import SubmissionFormOptions from './SubmissionFormOptions'
-import Tag from './Tag'
-import User from './User'
-import Website from './Website'
+import AuthorsMessaged from './AuthorsMessaged.js'
+import Contact from './Contact.js'
+import RecentlySearched from './RecentlySearched.js'
+import StoriesUsed from './StoriesUsed.js'
+import Story from './Story.js'
+import SubmissionFormOptions from './SubmissionFormOptions.js'
+import Tag from './Tag.js'
+import User from './User.js'
+import Website from './Website.js'
 
-import {sequelize} from '../index'
+import {sequelize} from '../index.js'
 
 // (async() => {
 //   sequelize.sync()
@@ -55,3 +55,5 @@ m.Website.hasOne(SubmissionFormOptions, {
 })
 
 m.SubmissionFormOptions.belongsTo(Website)
+
+module.exports = m

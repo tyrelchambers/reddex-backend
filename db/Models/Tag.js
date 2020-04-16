@@ -1,6 +1,6 @@
 import { DataTypes, Deferrable, UUIDV4 } from 'sequelize'
-import { sequelize } from '../index'
-import User from './User'
+import { sequelize } from '../index.js'
+import User from './User.js'
 
 const Tag = sequelize.define("Tag", {
   uuid: {
