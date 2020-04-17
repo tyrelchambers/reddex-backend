@@ -25,7 +25,9 @@ const Contact = sequelize.define("Contact", {
     }
   }
 }, {
-  tableName: 'contacts'
+  tableName: 'contacts',
+  timestamps: false
+
 })
 
 module.exports = Contact

@@ -1,19 +1,27 @@
 import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import knex from '../../db/index'
+import User from '../../db/Models/User'
 
 const app = express.Router();
 
 app.get('/getTokens', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const user = await knex('users').where({uuid: userId}).returning(['refresh_token', 'access_token'])
-  
+    const user = await User.findOne({
+      where: {
+        uuid: userId
+      },
+      attributes: ['refresh_token', 'access_token']
+    }).then(res => res.dataValues)
+      
     if (!user) throw new Error("No user");
+    
+    console.log(user.dataValues)
 
     res.json({
-      refresh_token: user[0].refresh_token,
-      access_token: user[0].access_token
+      refresh_token: user.refresh_token,
+      access_token: user.access_token
     })
   }
 

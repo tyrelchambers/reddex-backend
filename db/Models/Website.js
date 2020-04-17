@@ -85,7 +85,9 @@ const Website = sequelize.define("Website", {
     }
   }
 }, {
-  tableName: 'websites'
+  tableName: 'websites',
+  timestamps: false
+
 })
 
 module.exports = Website;

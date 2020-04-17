@@ -2,17 +2,20 @@ import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import bcrypt from 'bcryptjs';
 import knex from '../../db/index'
+import User from '../../db/Models/User'
 
 const app = express.Router();
 
 app.get('/auth', authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const user = await knex('users').where({
-      uuid: userId
-    }).returning('*')
+    const user = await User.findOne({
+      where: {
+        uuid: userId
+      }
+    }).then(res => res.dataValues)
 
-    res.send(user[0]);
+    res.send(user);
   }
 
   catch(err) {
@@ -24,10 +27,13 @@ app.get('/auth', authHandler, async (req, res, next) => {
 app.post('/youtube', authHandler, async (req, res, next) => {
   try {
     const youtube_id = req.sanitize(req.body.youtube_id);
-    await knex('users').where({
-      uuid: res.locals.userId
-    }).update({
+
+    User.update({
       youtube_id
+    },{
+      where: {
+        uuid: res.locals.userId
+      }
     })
 
     res.sendStatus(200);
@@ -127,6 +133,7 @@ app.post('/reddit_profile', authHandler, async (req, res, next) => {
     }).update({
       reddit_profile: reddit_profile
     }).returning('*')
+    
     res.send(user[0])
   }
 

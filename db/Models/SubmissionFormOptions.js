@@ -33,7 +33,9 @@ const SubmissionFormOptions = sequelize.define("SubmissionFormOptions", {
     }
   }
 }, {
-  tableName: 'submission_form_options'
+  tableName: 'submission_form_options',
+  timestamps: false
+
 })
 
 module.exports = SubmissionFormOptions;

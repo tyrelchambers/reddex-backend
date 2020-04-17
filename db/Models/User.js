@@ -38,7 +38,7 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
   },
   reddit_profile: {
-    type: DataTypes.STRING,
+    type: DataTypes.JSON,
     allowNull: false
   },
   patreon_access_token: {
@@ -60,7 +60,8 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
   }
 }, {
-  tableName: 'users'
+  tableName: 'users',
+  timestamps: false
 })
 
 module.exports = User

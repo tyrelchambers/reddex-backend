@@ -2,6 +2,8 @@ import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import uuidv4 from 'uuid'
 import knex from '../../db/index'
+import Story from '../../db/Models/Story'
+import { Op } from 'sequelize'
 
 const app = express.Router();
 
@@ -77,14 +79,18 @@ app.post('/set_permission', authHandler, async (req, res, next) => {
      const title = req.sanitize(req.body.title);
      const permission = req.body.permission;
 
-     await knex('stories')
-            .where({user_id: res.locals.userId})
-            .where('title', 'like', `${title.substring(0, title.length - 3)}%`)
-            .where({author})
-            .update({
-              permission
-            })
-
+    await Story.update({
+      permission
+    }, {
+      where: {
+        user_id: res.locals.userId,
+        title: {
+          [Op.iLike]: `${title.substring(0, title.length - 3)}%`
+        },
+        author
+      }
+    })
+    
     res.sendStatus(200);
   }
 
@@ -101,16 +107,23 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
       permission
     } = req.query
 
-    const story = await knex('stories').where({
-      user_id: res.locals.userId,
-      permission,
-      read: false
-    })
-    .orWhere({
-      user_id: res.locals.userId,
-      permission,
-      read: null
-    })
+    const story = await Story.findAll({
+      where: {
+        user_id: res.locals.userId,
+        [Op.or]: [
+          {
+            permission,
+            read: null
+          },
+          {
+            permission,
+            read: false,
+          }
+        ]
+      }
+    });
+    
+    story.map(x => x.dataValues)
 
     res.send(story);
   }
@@ -126,12 +139,15 @@ app.post('/stories/completed', authHandler, async (req, res, next) => {
     const read = req.body.read;
     const uuid = req.body.uuid;
 
-    await knex('stories').where({
-      user_id: res.locals.userId,
-      uuid
-    }).update({
+    await Story.update({
       read
+    }, {
+      where: {
+        user_id: res.locals.userId,
+        uuid
+      }
     })
+  
     
     res.sendStatus(200);
   }
@@ -143,11 +159,15 @@ app.post('/stories/completed', authHandler, async (req, res, next) => {
 
 app.get('/stories/completed', authHandler, async (req, res, next) => {
   try {
-    const story = await knex('stories').where({
-      user_id: res.locals.userId,
-      read: true
-    }).returning('*')
-    
+    const story = await Story.findAll({
+      where: {
+        user_id: res.locals.userId,
+        read: true
+      }
+    })
+
+    story.map(x => x.dataValues)
+
     res.send(story);
   }
   
@@ -162,7 +182,12 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
     const {
       uuid
     } = req.query;
-    await knex('stories').where({uuid}).del()
+    
+    await Story.destroy({
+      where: {
+        uuid
+      }
+    })
 
     res.send("Story removed");
   }

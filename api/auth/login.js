@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
-import knex from '../../db/index'
+import User from '../../db/Models/User'
 
 const app = express.Router();
 
@@ -11,21 +11,26 @@ app.post('/login', async (req, res, next) => {
     const password = req.sanitize(req.body.password);
     const email = req.sanitize(req.body.email);
 
-    const user = await knex('users').where({
-      email
-    });
+    if (!password || !email) throw new Error("Missing email or password")
 
-    if (!user[0]) throw new Error("User does not exist")
+    const user = await User.findOne({
+      where:{ 
+        email: email
+      }
+    }).then(res => res.dataValues)
+
+  
+    if (!user) throw new Error("User does not exist")
     
-    const hashPassword = await bcrypt.compareSync(password, user[0].password);
+    const hashPassword = await bcrypt.compareSync(password, user.password);
     if ( !hashPassword ) throw new Error("Incorrect password");
-    const token = jwt.sign({uuid: user[0].uuid, email: user[0].email}, config.development.secret, {
+    const token = jwt.sign({uuid: user.uuid, email: user.email}, config.development.secret, {
       expiresIn: "1d"
     });
 
     res.send({
       token,
-      user: user[0]
+      user
     });
   }
 

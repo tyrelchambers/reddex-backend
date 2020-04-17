@@ -27,7 +27,9 @@ const StoriesUsed = sequelize.define("StoriesUsed", {
     }
   }
 }, {
-  tableName: 'stories_used'
+  tableName: 'stories_used',
+  timestamps: false
+
 })
 
 module.exports = StoriesUsed

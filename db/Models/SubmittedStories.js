@@ -35,7 +35,9 @@ const SubmittedStories = sequelize.define("StoriesUsed", {
     }
   }
 }, {
-  tableName: 'submitted_stories'
+  tableName: 'submitted_stories',
+  timestamps: false
+
 })
 
 module.exports = SubmittedStories;

@@ -21,7 +21,9 @@ const Tag = sequelize.define("Tag", {
     }
   }
 }, {
-  tableName: 'tags'
+  tableName: 'tags',
+  timestamps: false
+
 })
 
 module.exports = Tag

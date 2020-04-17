@@ -38,7 +38,9 @@ const TagStory = sequelize.define("TagStory", {
     }
   }
 }, {
-  tableName: "tag_story"
+  tableName: "tag_story",
+  timestamps: false
+
 })
 
 module.exports = TagStory

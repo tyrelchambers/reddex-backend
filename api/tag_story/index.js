@@ -47,7 +47,7 @@ app.get('/', authHandler, async (req, res, next) => {
         .where({
           user_id: res.locals.userId
         }).then(rows => {
-          console.log(rows)
+          //console.log(rows)
         })
     res.send(tags)
   } catch (error) {

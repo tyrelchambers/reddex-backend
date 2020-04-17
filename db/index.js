@@ -6,7 +6,8 @@ const environment = process.env.NODE_ENV || 'development'
 const development = new Sequelize({
   host: 'localhost',
   dialect: 'postgres',
-  database: 'reddex'
+  database: 'reddex',
+  
 })
 
 const test = new Sequelize({
@@ -20,7 +21,6 @@ const connections = {
   test
 }
 
-console.log(connections[environment])
 
 module.exports = {
   sequelize: connections[environment]

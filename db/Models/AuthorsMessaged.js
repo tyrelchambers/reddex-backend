@@ -21,7 +21,9 @@ const AuthorsMessaged = sequelize.define("AuthorsMessaged", {
     }
   }
 }, {
-  tableName: 'authors_messaged'
+  tableName: 'authors_messaged',
+    timestamps: false
+
 })
 
 module.exports = AuthorsMessaged

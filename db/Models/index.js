@@ -22,9 +22,7 @@ m.User.hasMany(Contact,{
 m.User.hasMany(RecentlySearched,{
   onDelete: 'CASCADE'
 })
-m.User.hasMany(Story,{
-  onDelete: 'CASCADE'
-})
+
 m.User.hasMany(StoriesUsed,{
   onDelete: 'CASCADE'
 })
@@ -41,7 +39,9 @@ m.User.hasMany(AuthorsMessaged, {
 
 m.AuthorsMessaged.belongsTo(User)
 
-m.Story.belongsTo(User)
+m.Story.belongsTo(User, {
+  foreignKey: "user_id"
+})
 
 m.Story.belongsToMany(Tag, {through: "TagStory"})
 m.Tag.belongsToMany(Story, {through: "TagStory"})

@@ -2,9 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import config from '../../config';
-import knex from '../../db/index'
-import uuidv4 from 'uuid/v4'
-
+import User from '../../db/Models/User'
 const app = express.Router();
 
 app.post('/register', async (req, res, next) => {
@@ -18,27 +16,30 @@ app.post('/register', async (req, res, next) => {
     if ( !email || !password ) throw new Error("No email or password provided");
 
     const hashPassword = bcrypt.hashSync(password, 10);
-    const existingUser = await knex('users').where({email});
+    const existingUser = await User.findOne({
+      where:{ 
+        email: email
+      }
+    })
 
-    if (existingUser.length > 0) throw new Error("User already exists");
+    if (existingUser) throw new Error("User already exists");
 
-    const user = await knex('users').insert({
+    const user = await User.create({
       email,
-      uuid: uuidv4(),
       password: hashPassword,
       access_token,
       refresh_token,
       reddit_profile
-    }).returning('*')
+    })
 
-    const token = jwt.sign({uuid: user[0].uuid, email: user[0].email}, config.development.secret, {
+    const token = jwt.sign({uuid: uuid, email: email}, config.development.secret, {
       expiresIn: "1d"
     });
     
     res.status(200).send({
       token,
-      user: user[0]
-    })
+      user
+     })
   }
 
   catch(err) {

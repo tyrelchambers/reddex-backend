@@ -22,7 +22,9 @@ const RecentlySearched = sequelize.define("RecentlySearched", {
     }
   }
 }, {
-  tableName: 'recently_searched'
+  tableName: 'recently_searched',
+  timestamps: false
+
 })
 
 module.exports = RecentlySearched

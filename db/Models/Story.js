@@ -54,7 +54,9 @@ const Story = sequelize.define("Story", {
     }
   }
 }, {
-  tableName: 'stories'
+  tableName: 'stories',
+  timestamps: false
+
 })
 
 module.exports = Story;
