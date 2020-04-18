@@ -1,7 +1,7 @@
 import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import bcrypt from 'bcryptjs';
-import knex from '../../db/index'
+
 import User from '../../db/Models/User'
 import StoriesUsed from '../../db/Models/StoriesUsed'
 

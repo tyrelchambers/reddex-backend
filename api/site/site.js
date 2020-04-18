@@ -1,6 +1,6 @@
 import express from 'express'
 import {authHandler } from '../../middleware/middleware';
-import knex from '../../db/index'
+
 import Website from '../../db/Models/Website'
 import User from '../../db/Models/User'
 import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'

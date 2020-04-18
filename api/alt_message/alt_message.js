@@ -1,6 +1,6 @@
 import express from "express"
 import { authHandler } from '../../middleware/middleware'
-import knex from '../../db/index'
+
 
 const app = express.Router();
 
