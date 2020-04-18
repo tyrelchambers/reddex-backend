@@ -17,7 +17,8 @@ import {sequelize} from '../index.js'
 const m = sequelize.models
 
 m.User.hasMany(Contact,{
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: 'user_id'
 })
 
 m.User.hasMany(RecentlySearched,{

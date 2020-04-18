@@ -1,7 +1,6 @@
 import express from 'express'
 import { authHandler } from '../../middleware/middleware'
-import knex from '../../db/index'
-import uuidv4 from 'uuid/v4'
+import Contact from '../../db/Models/Contact'
 
 const app = express.Router();
 
@@ -10,14 +9,13 @@ app.post('/save', authHandler, async (req, res, next) => {
 
     const name = req.sanitize(req.body.name);
     const notes = req.sanitize(req.body.notes);
-    const contact = await knex('contacts').insert({
+    const contact = await Contact.create({
       name,
-      uuid: uuidv4(),
       notes,
       user_id: res.locals.userId
-    }).returning('*')
+    }).then(res => res.dataValues)
  
-    res.send(contact[0]);
+    res.send(contact);
   }
 
   catch(err) {
@@ -27,9 +25,13 @@ app.post('/save', authHandler, async (req, res, next) => {
 
 app.get('/all', authHandler, async (req, res, next) => {
   try {
-    const contacts = await knex('contacts').where({
-      user_id: res.locals.userId
-    }).returning('*')
+    const contacts = await Contact.findAll({
+      where: {
+        user_id: res.locals.userId
+      }
+    })
+    
+    contacts.map(x => x.dataValues)
     
     res.send(contacts);
   }
@@ -44,10 +46,12 @@ app.get('/name', authHandler, async (req, res, next) => {
     const {
       name
     } = req.query;
-    const contact = await knex('contacts').where({
-      name,
-      user_id: res.locals.userId
-    })
+    const contact = await Contact.findOne({
+      where: {
+        name,
+        user_id: res.locals.userId
+      }
+    }).then(res => res.dataValues)
 
     res.send(contact)
   } catch (error) {
@@ -61,15 +65,16 @@ app.post('/update', authHandler, async (req, res, next) => {
     const notes = req.sanitize(req.body.notes);
     const uuid = req.sanitize(req.body.uuid);
 
-    const contact = await knex('contacts').where({
-      uuid
-    })
-    .update({
+    await Contact.update({
       name,
       notes
-    }).returning('*')
+    }, {
+      where: {
+        uuid
+      }
+    })
     
-    res.send(contact[0]);
+    res.sendStatus(200);
   }
 
   catch(err) {
@@ -83,8 +88,12 @@ app.delete('/delete', authHandler, async (req, res, next) => {
       id
     } = req.query;
 
-    await knex('contacts').where({uuid: id}).del()
-    
+    await Contact.destroy({
+      where: {
+        uuid: id
+      }
+    })
+        
     res.sendStatus(200)
   }
 
@@ -99,9 +108,12 @@ app.get('/name', authHandler, async ( req, res, next ) => {
       name
     } = req.query;
     
-    const contact = await knex('contacts').where({name, user_id: res.locals.userId}).returning('*')
-  
-    res.send(contact[0])
+    const contact = await Contact.findOne({
+      name,
+      user_id: res.locals.userId
+    }).then(res => res.dataValues)
+      
+    res.send(contact)
   }
 
   catch(err) {
