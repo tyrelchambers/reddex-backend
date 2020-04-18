@@ -19,6 +19,7 @@ const m = sequelize.models
 m.User.hasMany(Contact,{
   onDelete: 'CASCADE'
 })
+
 m.User.hasMany(RecentlySearched,{
   onDelete: 'CASCADE'
 })
@@ -27,7 +28,8 @@ m.User.hasMany(StoriesUsed,{
   onDelete: 'CASCADE'
 })
 m.User.hasMany(Tag, {
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: 'user_id'
 })
 
 m.User.hasOne(Website, {
@@ -37,18 +39,24 @@ m.User.hasMany(AuthorsMessaged, {
   onDelete: 'CASCADE'
 })
 
-m.AuthorsMessaged.belongsTo(User)
-
-m.Story.belongsTo(User, {
-  foreignKey: "user_id"
+m.User.hasMany(Story, {
+  foreignKey: 'user_id',
+  onDelete:"CASCADE"
 })
+
+m.AuthorsMessaged.belongsTo(User)
 
 m.Story.belongsToMany(Tag, {through: "TagStory"})
 m.Tag.belongsToMany(Story, {through: "TagStory"})
 
-m.Contact.belongsTo(User)
 
-m.Website.belongsTo(User)
+m.Contact.belongsTo(User, {
+  foreignKey: "user_id"
+})
+
+m.Website.belongsTo(User, {
+  foreignKey: "user_id"
+})
 
 m.Website.hasOne(SubmissionFormOptions, {
   onDelete: 'CASCADE'

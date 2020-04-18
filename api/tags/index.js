@@ -1,7 +1,7 @@
 import express from 'express'
-import knex from '../../db/index'
 import {authHandler} from '../../middleware/middleware'
-import uuidv4 from 'uuid'
+import Tag from '../../db/Models/Tag'
+import {Op} from 'sequelize'
 
 const app = express.Router()
 
@@ -11,15 +11,16 @@ app.post('/save', authHandler, async (req, res, next) => {
       tag
     } = req.body;
 
-    const existingTag = await knex('tags').where({
-      tag: tag.toLowerCase(),
-      user_id: res.locals.userId
+    const existingTag = await Tag.findOne({
+      where: {
+        tag: tag.toLowerCase(),
+        user_id: res.locals.userId
+      }
     })
 
-    if(existingTag.length > 0) throw new Error("Tag already exists")
+    if(existingTag) throw new Error("Tag already exists")
 
-    await knex("tags").insert({
-      uuid: uuidv4(),
+    await Tag.create({
       tag,
       user_id: res.locals.userId
     })
@@ -32,9 +33,13 @@ app.post('/save', authHandler, async (req, res, next) => {
 
 app.get('/', authHandler, async (req, res, next) => {
   try {
-    const tags = await knex('tags').where({
-      user_id: res.locals.userId
+    const tags = await Tag.findAll({
+      where: {
+        user_id: res.locals.userId
+      }
     })
+
+    tags.map(x => x.dataValues)
 
     res.send(tags)
   } catch (error) {
@@ -48,9 +53,11 @@ app.delete('/:id', authHandler, async (req, res, next) => {
       id
     } = req.params;
 
-    await knex("tags").where({
-      uuid: id
-    }).del();
+    await Tag.destroy({
+      where: {
+        uuid: id
+      }
+    })
 
     res.sendStatus(200)
   } catch (error) {
@@ -64,9 +71,13 @@ app.get('/tag', authHandler, async (req, res, next) => {
       tag
     } = req.query;
 
-    const tags = await knex("tags").where({
-      user_id: res.locals.userId
-    }).where('tag', 'like', `%${tag}%`)
+    const tags = await Tag.findAll({
+      where: {
+        user_id: res.locals.userId,
+        [Op.iLike]: `%${tag}%`
+      }
+    })
+
     
     res.send(tags)
 
