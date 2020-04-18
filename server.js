@@ -19,7 +19,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import resetPassword from './api/auth/resetPassword'
 import expressSanitizer from 'express-sanitizer'
-import dashboard from './api/dashboard/index'
 import submitted from './api/submittedStories/submitted'
 import channels from './api/channels/channels'
 import recently_searched from './api/recently_searched/index'
@@ -50,7 +49,6 @@ app.use('/api/site', site);
 app.use('/api/upload', upload);
 app.use('/api/submissionForm', submissionForm);
 app.use('/api/reset', resetPassword);
-app.use('/api/dashboard', dashboard);
 app.use('/api/submitted', submitted)
 app.use('/api/channels', channels)
 app.use('/api/recently_searched', recently_searched)

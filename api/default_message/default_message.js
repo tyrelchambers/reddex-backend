@@ -1,15 +1,19 @@
 import express from 'express'
 import { authHandler } from '../../middleware/middleware'
 import knex from '../../db/index'
+import User from '../../db/Models/User'
+
 const app = express.Router();
 
 app.get('/', authHandler, async (req, res,next) => {
   try {
     const userId = res.locals.userId;
 
-    const message = await knex('users').where({
-      uuid: userId
-    }).returning('*')
+    const message = await User.findOne({
+      where: {
+        uuid: userId
+      }
+    }).then(res => res.dataValues)
 
     res.send(message);
   } catch (err) {
@@ -22,12 +26,14 @@ app.post('/', authHandler, async (req, res, next) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await knex('users').where({
-      uuid: userId
-    })
-    .update({
+    const message = await User.update({
       initial_message: text
-    }).returning('*')
+    }, {
+      where: {
+        uuid: userId
+
+      }
+    })
     
     res.send(message);
   }
