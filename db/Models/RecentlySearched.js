@@ -3,12 +3,6 @@ import { sequelize } from '../index.js'
 import User from './User.js'
 
 const RecentlySearched = sequelize.define("RecentlySearched", {
-  uuid: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
-    unique: true
-  },
   subreddit: {
     type: DataTypes.STRING,
     allowNull: false

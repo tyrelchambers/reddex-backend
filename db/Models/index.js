@@ -10,9 +10,9 @@ import Website from './Website.js'
 
 import {sequelize} from '../index.js'
 
-(async() => {
-  sequelize.sync()
-})()
+// (async() => {
+//   sequelize.sync()
+// })()
 
 const m = sequelize.models
 
@@ -21,11 +21,13 @@ m.User.hasMany(Contact,{
 })
 
 m.User.hasMany(RecentlySearched,{
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: "user_id"
 })
 
 m.User.hasMany(StoriesUsed,{
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: "user_id"
 })
 m.User.hasMany(Tag, {
   onDelete: 'CASCADE',
