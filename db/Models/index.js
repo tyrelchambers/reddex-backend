@@ -63,9 +63,12 @@ m.Website.belongsTo(User, {
 })
 
 m.Website.hasOne(SubmissionFormOptions, {
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: "website_id"
 })
 
-m.SubmissionFormOptions.belongsTo(Website)
+m.SubmissionFormOptions.belongsTo(Website, {
+  foreignKey: 'website_id'
+})
 
 module.exports = m

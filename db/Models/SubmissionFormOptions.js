@@ -15,7 +15,7 @@ const SubmissionFormOptions = sequelize.define("SubmissionFormOptions", {
   author: {
     type: DataTypes.JSON
   },
-  story_id: {
+  story_title: {
     type: DataTypes.STRING
   },
   sent_to_others: {

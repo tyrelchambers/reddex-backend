@@ -1,8 +1,9 @@
 import express from 'express'
 import emailCon from '../../libs/emailConfig'
-import knex from '../../db/index'
 import {authHandler} from '../../middleware/middleware.js'
-import uuidv4 from 'uuid'
+import Website from '../../db/Models/Website'
+import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
+import SubmittedStories from '../../db/Models/SubmittedStories'
 
 const app = express.Router();
 
@@ -18,31 +19,28 @@ app.post('/submit', async (req, res, next) => {
 
     const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others.value;
 
-    const subdomain = await knex('websites').where({
-      uuid: website
+    const subdomain = await Website.findOne({
+      where: {
+        uuid: website
+      },
+      include: "User"
     })
 
-    const site = await knex('websites').select('email').where({
-      subdomain: subdomain[0].subdomain
-    })
-    .innerJoin('users', 'websites.user_id', 'users.uuid')
-
-    await knex('submitted_stories').insert({
-      uuid: uuidv4(),
+    await SubmittedStories.create({
       email: story_email,
       author,
       tags,
       sent_to_others: sent_to_others_formatted,
       story_title,
       body,
-      user_id: subdomain[0].user_id
+      user_id: subdomain.User.user_id
     })
 
     emailCon
     .send({
       template: 'mars',
       message: {
-        to: site[0].email
+        to: subdomain.User.email
       },
       
       locals: {
@@ -74,39 +72,18 @@ app.post('/save', authHandler, async (req, res, next) => {
     const tags = req.body.tags;
     const website = req.body.website;
 
-    const existingSite = await knex('submission_form_options').where({
-      website_id: website
-    }).returning('*')
 
-    if (existingSite[0]) {
-      await knex('submission_form_options').where({
-        website_id: website
-      })
-      .update({
+    await SubmissionFormOptions.findOrCreate({
+      where: {
         story_title: JSON.stringify(story_title),
         author: JSON.stringify(author),
         email: JSON.stringify(email),
         sent_to_others: JSON.stringify(sent_to_others),
         tags: JSON.stringify(tags),
-      }).returning('*')
-    } else {
-      const options = await knex('submission_form_options').insert({
-          story_title: JSON.stringify(story_title),
-          author: JSON.stringify(author),
-          email: JSON.stringify(email),
-          sent_to_others: JSON.stringify(sent_to_others),
-          tags: JSON.stringify(tags),
-          uuid: uuidv4(),
-          website_id: website
-        }).returning("uuid")
+        website_id: website
+      }
+    })
 
-        await knex("websites").where({
-        uuid: website
-      }).update({
-        options_id: options[0]
-      });
-    
-    }
     res.sendStatus(200);
   }
 
@@ -122,12 +99,12 @@ app.get('/', async (req, res, next) => {
       sid
     } = req.query;
 
-    const form = await knex('submission_form_options').where({
-      website_id: sid
-    })
-
-
-    res.send(form[0])
+    const form = await SubmissionFormOptions.findOne({
+      where: {
+        website_id: sid
+      }
+    }).then(res => res.dataValues)
+    res.send(form)
   }
 
   catch(err) {
