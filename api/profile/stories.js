@@ -20,18 +20,19 @@ app.post('/save_story', authHandler, async (req, res, next) => {
     const permission = req.body.permission;
     const subreddit = req.sanitize(req.body.subreddit);
 
-    const existingStory = await knex('stories').where({
-      author,
-      title,
-      self_text,
-      post_id,
-      user_id: res.locals.userId
+    const existingStory = await Story.findOne({
+      where: {
+        author,
+        title,
+        self_text,
+        post_id,
+        user_id: res.locals.userId
+      }
     })
 
-   if (existingStory[0]) throw new Error("Story already exists")
+   if (existingStory) throw new Error("Story already exists")
 
-    const stories = await knex('stories').insert({
-      uuid: uuidv4(),
+    const stories = await Story.create({
       author,
       title,
       self_text,
@@ -43,9 +44,9 @@ app.post('/save_story', authHandler, async (req, res, next) => {
       permission,
       subreddit,
       user_id: res.locals.userId
-    }).returning('*')
+    })
 
-    res.send(stories[0]);
+    res.send(stories);
   }
   catch(err) {
     next(err)
@@ -59,12 +60,15 @@ app.get('/get_story', authHandler, async (req, res, next) => {
       title
     } = req.query;
 
-    const story = await knex('stories')
-                          .where({user_id: res.locals.userId})
-                          .where('title', 'like', `${title.substring(0, title.length - 3)}%`)
-                          .where({author})
+    const story = await Story.findOne({
+      where: {
+        user_id: res.locals.userId,
+        [Op.iLike]: `${title.substring(0, title.length - 3)}%`,
+        author
+      }
+    })
                           
-    res.send(story[0]);
+    res.send(story);
   }
 
   catch(err) {
