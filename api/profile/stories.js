@@ -28,7 +28,7 @@ app.post('/save_story', authHandler, async (req, res, next) => {
         post_id,
         user_id: res.locals.userId
       }
-    })
+    }).then(res => res.dataValues)
 
    if (existingStory) throw new Error("Story already exists")
 
@@ -66,7 +66,7 @@ app.get('/get_story', authHandler, async (req, res, next) => {
         [Op.iLike]: `${title.substring(0, title.length - 3)}%`,
         author
       }
-    })
+    }).then(res => res.dataValues)
                           
     res.send(story);
   }
