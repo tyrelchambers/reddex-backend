@@ -18,7 +18,7 @@ app.post('/register', async (req, res, next) => {
     const hashPassword = bcrypt.hashSync(password, 10);
     const existingUser = await User.findOne({
       where:{ 
-        email: email
+        email
       }
     })
 
@@ -32,7 +32,7 @@ app.post('/register', async (req, res, next) => {
       reddit_profile
     })
 
-    const token = jwt.sign({uuid: uuid, email: email}, config.development.secret, {
+    const token = jwt.sign({uuid: user.uuid, email: user.email}, config.development.secret, {
       expiresIn: "1d"
     });
     

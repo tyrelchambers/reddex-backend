@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require babel-core/register ./__tests__/*/** ",
+    "test": "env NODE_ENV=test mocha --recursive './tests/**/*'",
     "seed": "env NODE_ENV=test npx sequelize-cli db:seed:all",
     "babel-node": "babel-node --presets=env",
     "start": "nodemon --exec npm run babel-node server.js",
