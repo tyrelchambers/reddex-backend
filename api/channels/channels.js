@@ -1,11 +1,14 @@
 import express from 'express'
-import knex from '../../db/index'
+import Website from '../../db/Models/Website'
 
 const app = express.Router();
 
 app.get('/', async (req, res, next) => {
   try {
-    const channels = await knex('websites');
+    const channels = await Website.findAll()
+
+    channels.map(x => x.dataValues)
+    
     res.send(channels)
   } catch (error) {
     next(error)

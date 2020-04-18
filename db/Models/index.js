@@ -10,9 +10,9 @@ import Website from './Website.js'
 
 import {sequelize} from '../index.js'
 
-// (async() => {
-//   sequelize.sync()
-// })()
+(async() => {
+  sequelize.sync()
+})()
 
 const m = sequelize.models
 
@@ -33,7 +33,8 @@ m.User.hasMany(Tag, {
 })
 
 m.User.hasOne(Website, {
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: "user_id"
 })
 m.User.hasMany(AuthorsMessaged, {
   onDelete: 'CASCADE'
