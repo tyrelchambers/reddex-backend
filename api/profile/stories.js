@@ -1,7 +1,5 @@
 import express from 'express';
 import { authHandler } from '../../middleware/middleware';
-import uuidv4 from 'uuid'
-
 import Story from '../../db/Models/Story'
 import { Op } from 'sequelize'
 
