@@ -1,6 +1,5 @@
 import express from 'express';
 import { authHandler } from '../../middleware/middleware';
-import knex from '../../db/index'
 import User from '../../db/Models/User'
 
 const app = express.Router();
@@ -17,8 +16,6 @@ app.get('/getTokens', authHandler, async (req, res, next) => {
       
     if (!user) throw new Error("No user");
     
-    console.log(user.dataValues)
-
     res.json({
       refresh_token: user.refresh_token,
       access_token: user.access_token
@@ -37,9 +34,13 @@ app.post('/saveTokens', authHandler, async (req ,res) => {
     const access_token = req.sanitize(req.body.access_token);
     const refresh_token = req.sanitize(req.body.refresh_token);
 
-    await knex('users').where({uuid: userId}).update({
+    await User.update({
       access_token,
       refresh_token
+    }, {
+      where: {
+        uuid: userId
+      }
     })
     
     res.sendStatus(200);
