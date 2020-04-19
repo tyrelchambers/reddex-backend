@@ -11,14 +11,6 @@ const Tag = sequelize.define("Tag", {
   },
   tag: {
     type: DataTypes.STRING
-  },
-  user_id: {
-    type: DataTypes.UUID,
-    references: {
-      model: User,
-      key: 'uuid',
-      deferrable: Deferrable.INITIALLY_IMMEDIATE
-    }
   }
 }, {
   tableName: 'tags',

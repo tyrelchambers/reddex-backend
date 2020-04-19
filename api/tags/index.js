@@ -74,11 +74,14 @@ app.get('/tag', authHandler, async (req, res, next) => {
     const tags = await Tag.findAll({
       where: {
         user_id: res.locals.userId,
-        [Op.iLike]: `%${tag}%`
+        tag: {
+          [Op.substring]: `%${tag}%`
+        }
       }
     })
 
-    
+    tags.map(x => x.dataValues)
+
     res.send(tags)
 
   } catch (error) {

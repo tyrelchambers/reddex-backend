@@ -2,7 +2,7 @@ import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import Story from '../../db/Models/Story'
 import { Op } from 'sequelize'
-
+import Tag from '../../db/Models/Tag'
 const app = express.Router();
 
 app.post('/save_story', authHandler, async (req, res, next) => {
@@ -55,15 +55,19 @@ app.get('/get_story', authHandler, async (req, res, next) => {
   try {
     const {
       author,
-      title
+      title,
+      story_id
     } = req.query;
 
     const story = await Story.findOne({
-      where: {
+      where: !story_id ? {
         user_id: res.locals.userId,
         [Op.iLike]: `${title.substring(0, title.length - 3)}%`,
         author
-      }
+      } : {
+        uuid: story_id
+      },
+      include: Tag
     }).then(res => res.dataValues)
                           
     res.send(story);
@@ -121,8 +125,9 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
             permission,
             read: false,
           }
-        ]
-      }
+        ],
+      },
+      include: Tag
     });
     
     story.map(x => x.dataValues)

@@ -7,6 +7,7 @@ import SubmissionFormOptions from './SubmissionFormOptions.js'
 import Tag from './Tag.js'
 import User from './User.js'
 import Website from './Website.js'
+import TagStory from './TagStory.js'
 
 import {sequelize} from '../index.js'
 
@@ -30,10 +31,6 @@ m.User.hasMany(StoriesUsed,{
   onDelete: 'CASCADE',
   foreignKey: "user_id"
 })
-m.User.hasMany(Tag, {
-  onDelete: 'CASCADE',
-  foreignKey: 'user_id'
-})
 
 m.User.hasOne(Website, {
   onDelete: 'CASCADE',
@@ -43,20 +40,17 @@ m.User.hasMany(AuthorsMessaged, {
   onDelete: 'CASCADE'
 })
 
-m.User.hasMany(Story, {
-  foreignKey: 'user_id',
-  onDelete:"CASCADE"
+m.Tag.belongsToMany(Story, {
+  through: TagStory,
+  foreignKey: "tag_id"
+})
+
+m.Story.belongsToMany(Tag, {
+  through: TagStory,
+  foreignKey: "story_id"
 })
 
 m.AuthorsMessaged.belongsTo(User)
-
-m.Story.belongsToMany(Tag, {through: "TagStory"})
-m.Tag.belongsToMany(Story, {through: "TagStory"})
-
-
-m.Contact.belongsTo(User, {
-  foreignKey: "user_id"
-})
 
 m.Website.belongsTo(User, {
   foreignKey: "user_id"

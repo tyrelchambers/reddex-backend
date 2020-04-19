@@ -1,6 +1,6 @@
 import express from 'express'
-
 import {authHandler} from '../../middleware/middleware'
+import TagStory from '../../db/Models/TagStory'
 
 const app = express.Router();
 
@@ -12,13 +12,12 @@ app.post('/save', authHandler, async (req, res, next) => {
     } = req.body;
 
     const tagsToInsert = tags.map(x => ({
-      story_uuid: story_id,
-      tag_uuid: x,
-      user_id: res.locals.userId
+      story_id: story_id,
+      tag_id: x,
     }))
     
-    await knex("tag_story").insert(tagsToInsert)
-
+    await TagStory.bulkCreate(tagsToInsert)
+    
     res.sendStatus(200);
 
   } catch (error) {
@@ -26,59 +25,20 @@ app.post('/save', authHandler, async (req, res, next) => {
   }
 })
 
-app.get('/', authHandler, async (req, res, next) => {
-  try {
-    // const tags = await knex.raw(`
-    //   SELECT 
-    //     tag,
-    //     story_uuid,
-    //     tag_uuid
-    //   FROM tag_story t_s  CROSS JOIN
-    //   tags t
-    //   USING (user_id)
-    //   WHERE user_id='${res.locals.userId}'
-    //   GROUP BY story_uuid, t.tag, t_s.tag_uuid;
-    // `)
-
-    const tags = await knex.select(`tags.*`, knex.ref("stories.user_id").as("StoriesUserId"))
-        .from('tag_story')
-        .leftJoin('tags', `tag_uuid`, `tags.uuid`)
-        .leftJoin('stories', `story_uuid`, `stories.uuid`)
-        .where({
-          user_id: res.locals.userId
-        }).then(rows => {
-          //console.log(rows)
-        })
-    res.send(tags)
-  } catch (error) {
-    next(error)
-  }
-})
-
-app.delete('/', authHandler, async (req, res, next) => {
+app.delete('/:tag_id', authHandler, async (req, res, next) => {
   try {
     const {
-      tag_uuid,
-      story_uuid
+      tag_id
     } = req.params;
 
-    if (tag_uuid) {
-      await knex("tag_story").where({
-        tag_uuid
-      }).del()
+    await TagStory.destroy({
+      where: {
+        uuid: tag_id
+      }
+    })
 
-      res.sendStatus(200)
-    }
-
-    if (story_uuid) {
-      await knex("tag_story").where({
-        story_uuid
-      }).del()
-
-      res.sendStatus(200)
-    }
-
-
+    res.sendStatus(200)
+    
   } catch (error) {
     next(error)
   }

@@ -1,6 +1,5 @@
 import { DataTypes, Deferrable, UUIDV4 } from 'sequelize'
 import { sequelize } from '../index.js'
-import User from './User.js'
 import Tag from './Tag.js'
 import Story from './Story.js'
 
@@ -11,7 +10,7 @@ const TagStory = sequelize.define("TagStory", {
     unique: true,
     primaryKey: true
   },
-  tag_uuid: {
+  tag_id: {
     type: DataTypes.UUID,
     references: {
       model: Tag,
@@ -20,7 +19,7 @@ const TagStory = sequelize.define("TagStory", {
     },
     allowNull: false
   },
-  story_uuid: {
+  story_id: {
     type: DataTypes.UUID,
     references: {
       model: Story,
@@ -28,14 +27,6 @@ const TagStory = sequelize.define("TagStory", {
       deferrable: Deferrable.INITIALLY_IMMEDIATE
     },
     allowNull: false
-  },
-  user_id: {
-    type: DataTypes.UUID,
-    references: {
-      model: User,
-      key: 'uuid',
-      deferrable: Deferrable.INITIALLY_IMMEDIATE
-    }
   }
 }, {
   tableName: "tag_story",
