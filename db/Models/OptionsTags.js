@@ -9,10 +9,22 @@ const OptionsTags = sequelize.define("OptionsTags", {
     primaryKey: true,
     unique: true
   },
-  value: DataTypes.STRING,
-  label: DataTypes.STRING,
-  required: DataTypes.BOOLEAN,
-  enabled: DataTypes.BOOLEAN,
+  value: {
+    type: DataTypes.STRING,
+    defaultValue: ""
+  },
+  label: {
+    type: DataTypes.STRING,
+    defaultValue: "Tags"
+  },
+  required: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
   options_id: {
     type: DataTypes.UUID,
     references: {

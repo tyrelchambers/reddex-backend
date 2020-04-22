@@ -12,7 +12,10 @@ const SubmissionFormOptions = sequelize.define("SubmissionFormOptions", {
   story_title: {
     type: DataTypes.STRING
   },
-  enabled: DataTypes.BOOLEAN,
+  enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
   website_id: {
     type: DataTypes.UUID,
     references: {

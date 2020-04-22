@@ -5,6 +5,10 @@ import Website from '../../db/Models/Website'
 import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
 import SubmittedStories from '../../db/Models/SubmittedStories'
 import OptionsAuthor from '../../db/Models/OptionsAuthor'
+import OptionsEmail from '../../db/Models/OptionsEmail'
+import OptionsSentToOthers from '../../db/Models/OptionsSentToOthers'
+import OptionsTags from '../../db/Models/OptionsTags'
+import OptionsStoryTitle from '../../db/Models/OptionsStoryTitle'
 
 const app = express.Router();
 
@@ -64,20 +68,93 @@ app.post('/submit', async (req, res, next) => {
   }
 });
 
-app.post('/save', authHandler, async (req, res, next) => {
+app.put('/save', authHandler, async (req, res, next) => {
   try {
-    const website = req.body.website;
-
-    const options = await SubmissionFormOptions.create({
-      website_id: website,
-      enabled: true
+    const {
+      enabled,
+      author,
+      email,
+      sent_to_others,
+      tags,
+      story_title,
+      options_id,
+      website
+    } = req.body;
+    await SubmissionFormOptions.update({
+      enabled
+    },{
+      where: {
+        website_id: website
+      }
     }).then(res => {
       if (res) {
         return res.dataValues
       }
     })
 
-    res.send(options);
+    await OptionsAuthor.update({
+      value: author.value,
+      label: author.label,
+      required: author.required,
+      enabled: author.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    console.log(story_title)
+
+    await OptionsEmail.update({
+      value: email.value,
+      label: email.label,
+      required: email.required,
+      enabled: email.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsSentToOthers.update({
+      value: sent_to_others.value,
+      label: sent_to_others.label,
+      required: sent_to_others.required,
+      enabled: sent_to_others.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsTags.update({
+      value: tags.value,
+      label: tags.label,
+      required: tags.required,
+      enabled: tags.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsStoryTitle.update({
+      value: story_title.value,
+      label: story_title.label,
+      required: story_title.required,
+      enabled: story_title.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    res.sendStatus(200);
   }
 
   catch(err) {
@@ -95,7 +172,8 @@ app.get('/', async (req, res, next) => {
     const form = await SubmissionFormOptions.findOne({
       where: {
         website_id: sid
-      }
+      },
+      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
     }).then(res => {
       if (res) {
         return res.dataValues

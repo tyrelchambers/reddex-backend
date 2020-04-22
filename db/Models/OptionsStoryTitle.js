@@ -2,7 +2,7 @@ import { DataTypes, Deferrable } from 'sequelize'
 import { sequelize } from '../index'
 import {SubmissionFormOptions} from './SubmissionFormOptions'
 
-const OptionsEmail = sequelize.define("OptionsEmail", {
+const OptionsStoryTitle = sequelize.define("OptionsStoryTitle", {
   uuid: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -15,7 +15,7 @@ const OptionsEmail = sequelize.define("OptionsEmail", {
   },
   label: {
     type: DataTypes.STRING,
-    defaultValue: "Email"
+    defaultValue: "Story Title"
   },
   required: {
     type: DataTypes.BOOLEAN,
@@ -34,8 +34,8 @@ const OptionsEmail = sequelize.define("OptionsEmail", {
     }
   }
 }, {
-  tableName: "options_email",
+  tableName: "options_story_title",
   timestamps: false
 })
 
-module.exports = OptionsEmail
+module.exports = OptionsStoryTitle

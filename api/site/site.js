@@ -4,6 +4,11 @@ import {authHandler } from '../../middleware/middleware';
 import Website from '../../db/Models/Website'
 import User from '../../db/Models/User'
 import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
+import OptionsAuthor from '../../db/Models/OptionsAuthor'
+import OptionsEmail from '../../db/Models/OptionsEmail'
+import OptionsSentToOthers from '../../db/Models/OptionsSentToOthers'
+import OptionsTags from '../../db/Models/OptionsTags'
+import OptionsStoryTitle from '../../db/Models/OptionsStoryTitle'
 
 const app = express.Router();
 
@@ -12,9 +17,37 @@ app.post('/activate', authHandler, async (req, res, next) => {
     const website = await Website.create({
       user_id: res.locals.userId
 
+    }, {
+      returning: true
+    }).then(res => res.dataValues)
+
+    const options = await SubmissionFormOptions.create({
+      website_id: website.uuid
+    }, {
+      returning: true
+    }).then(res => res.dataValues)
+    
+    await OptionsAuthor.create({
+      options_id: options.uuid
+    })
+    await OptionsEmail.create({
+      options_id: options.uuid
+    })
+    await OptionsSentToOthers.create({
+      options_id: options.uuid
+    })
+    await OptionsTags.create({
+      options_id: options.uuid
+    })
+    await OptionsStoryTitle.create({
+      options_id: options.uuid
     })
 
-    res.send(website);
+
+    res.send({
+      website,
+      options
+    });
   }
 
   catch(err) {
@@ -170,28 +203,5 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 })
 
-app.get('/options', authHandler, async (req, res, next) => {
-  try {
-    const {
-      uuid
-    } = req.query;
 
-    const options = SubmissionFormOptions.findOne({
-      where: {
-        website_id: uuid
-      },
-      indlude: {
-        
-      }
-    }).then(res => {
-      if (res) {
-        return res.dataValues
-      }
-    })
-
-    res.send(options);
-  } catch (error) {
-    next(error)
-  }
-})
 module.exports = app;

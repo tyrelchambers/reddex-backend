@@ -12,12 +12,13 @@ import OptionsAuthor from './OptionsAuthor'
 import OptionsEmail from './OptionsEmail'
 import OptionsSentToOthers from './OptionsSentToOthers'
 import OptionsTags from './OptionsTags'
+import OptionsStoryTitle from './OptionsStoryTitle'
 
 import {sequelize} from '../index.js'
 
-(async() => {
-  sequelize.sync()
-})()
+// (async() => {
+//   sequelize.sync()
+// })()
 
 const m = sequelize.models
 
@@ -78,6 +79,10 @@ m.SubmissionFormOptions.hasOne(OptionsSentToOthers, {
   foreignKey: "options_id"
 })
 m.SubmissionFormOptions.hasOne(OptionsTags, {
+  onDelete: 'CASCADE',
+  foreignKey: "options_id"
+})
+m.SubmissionFormOptions.hasOne(OptionsStoryTitle, {
   onDelete: 'CASCADE',
   foreignKey: "options_id"
 })
