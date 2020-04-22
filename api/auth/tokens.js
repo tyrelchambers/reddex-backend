@@ -12,7 +12,11 @@ app.get('/getTokens', authHandler, async (req, res, next) => {
         uuid: userId
       },
       attributes: ['refresh_token', 'access_token']
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
       
     if (!user) throw new Error("No user");
     

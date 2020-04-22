@@ -14,7 +14,11 @@ app.get('/auth', authHandler, async (req, res, next) => {
       where: {
         uuid: userId
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     res.send(user);
   }
@@ -79,6 +83,10 @@ app.put('/update/password', authHandler, async (req, res, next) => {
     const user = await User.findOne({
       where: {
         uuid: res.locals.userId
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
       }
     })
 
@@ -174,6 +182,10 @@ app.get('/patreon_tier', async (req, res) => {
         uuid: user_id
       },
       attributes: ["patreon_tier"]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
     })
 
     res.send(tier)

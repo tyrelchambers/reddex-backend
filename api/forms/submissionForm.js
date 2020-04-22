@@ -4,6 +4,7 @@ import {authHandler} from '../../middleware/middleware.js'
 import Website from '../../db/Models/Website'
 import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
 import SubmittedStories from '../../db/Models/SubmittedStories'
+import OptionsAuthor from '../../db/Models/OptionsAuthor'
 
 const app = express.Router();
 
@@ -65,26 +66,18 @@ app.post('/submit', async (req, res, next) => {
 
 app.post('/save', authHandler, async (req, res, next) => {
   try {
-    const story_title = req.body.story_title;
-    const author = req.body.author;
-    const email = req.body.email;
-    const sent_to_others = req.body.sent_to_others;
-    const tags = req.body.tags;
     const website = req.body.website;
 
-
-    await SubmissionFormOptions.findOrCreate({
-      where: {
-        story_title: JSON.stringify(story_title),
-        author: JSON.stringify(author),
-        email: JSON.stringify(email),
-        sent_to_others: JSON.stringify(sent_to_others),
-        tags: JSON.stringify(tags),
-        website_id: website
+    const options = await SubmissionFormOptions.create({
+      website_id: website,
+      enabled: true
+    }).then(res => {
+      if (res) {
+        return res.dataValues
       }
     })
 
-    res.sendStatus(200);
+    res.send(options);
   }
 
   catch(err) {
@@ -103,7 +96,11 @@ app.get('/', async (req, res, next) => {
       where: {
         website_id: sid
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     res.send(form)
   }
 
@@ -113,6 +110,35 @@ app.get('/', async (req, res, next) => {
   }
 })
 
+app.post('/options/:option', authHandler, async (req, res, next) => {
+  try {
+    const {
+      value,
+      label,
+      required,
+      enabled,
+      options_id
+    } = req.body
+
+    const {
+      option
+    } = req.params;
+
+    if (option === "author") {
+      await OptionsAuthor.create({
+        value,
+        label,
+        required,
+        enabled,
+        options_id
+      })
+    }
+
+    res.sendStatus(200)
+  } catch (error) {
+    next(error)
+  }
+});
 
 
 module.exports = app;

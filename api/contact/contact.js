@@ -51,7 +51,11 @@ app.get('/name', authHandler, async (req, res, next) => {
         name,
         user_id: res.locals.userId
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     res.send(contact)
   } catch (error) {
@@ -102,23 +106,5 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 })
 
-app.get('/name', authHandler, async ( req, res, next ) => {
-  try {
-    const {
-      name
-    } = req.query;
-    
-    const contact = await Contact.findOne({
-      name,
-      user_id: res.locals.userId
-    }).then(res => res.dataValues)
-      
-    res.send(contact)
-  }
-
-  catch(err) {
-    next(err);
-  }
-});
 
 module.exports = app;

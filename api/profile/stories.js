@@ -26,7 +26,11 @@ app.post('/save_story', authHandler, async (req, res, next) => {
         post_id,
         user_id: res.locals.userId
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
    if (existingStory) throw new Error("Story already exists")
 
@@ -68,7 +72,11 @@ app.get('/get_story', authHandler, async (req, res, next) => {
         uuid: story_id
       },
       include: Tag
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
                           
     res.send(story);
   }

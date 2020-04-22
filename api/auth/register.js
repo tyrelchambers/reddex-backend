@@ -20,6 +20,10 @@ app.post('/register', async (req, res, next) => {
       where:{ 
         email
       }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
     })
 
     if (existingUser) throw new Error("User already exists");

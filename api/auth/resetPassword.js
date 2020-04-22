@@ -15,7 +15,11 @@ app.post("/get_reset_token", async (req, res, next) => {
       where: {
         email
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     
     if (!user) throw new Error("No user exists with that email")
     

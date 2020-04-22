@@ -49,7 +49,11 @@ app.get('/identity', authHandler, async (req, res, next) => {
         uuid: res.locals.userId
       },
       attributes: ["patreon_access_token"]
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     
 
     if (!user.patreon_access_token) {
@@ -119,7 +123,11 @@ app.get('/getUserIdentity', authHandler, async (req, res, next) => {
         uuid: res.locals.userId
       },
       attributes: ['patreon_tier', 'active_patron', 'patreon_connected']
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     
     res.send(user)
   } catch (error) {

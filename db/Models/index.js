@@ -8,12 +8,16 @@ import Tag from './Tag.js'
 import User from './User.js'
 import Website from './Website.js'
 import TagStory from './TagStory.js'
+import OptionsAuthor from './OptionsAuthor'
+import OptionsEmail from './OptionsEmail'
+import OptionsSentToOthers from './OptionsSentToOthers'
+import OptionsTags from './OptionsTags'
 
 import {sequelize} from '../index.js'
 
-// (async() => {
-//   sequelize.sync()
-// })()
+(async() => {
+  sequelize.sync()
+})()
 
 const m = sequelize.models
 
@@ -37,7 +41,9 @@ m.User.hasOne(Website, {
   foreignKey: "user_id"
 })
 m.User.hasMany(AuthorsMessaged, {
-  onDelete: 'CASCADE'
+  onDelete: 'CASCADE',
+  foreignKey: "user_id"
+
 })
 
 m.Tag.belongsToMany(Story, {
@@ -50,8 +56,6 @@ m.Story.belongsToMany(Tag, {
   foreignKey: "story_id"
 })
 
-m.AuthorsMessaged.belongsTo(User)
-
 m.Website.belongsTo(User, {
   foreignKey: "user_id"
 })
@@ -61,8 +65,23 @@ m.Website.hasOne(SubmissionFormOptions, {
   foreignKey: "website_id"
 })
 
-m.SubmissionFormOptions.belongsTo(Website, {
-  foreignKey: 'website_id'
+m.SubmissionFormOptions.hasOne(OptionsAuthor, {
+  onDelete: 'CASCADE',
+  foreignKey: "options_id"
 })
+m.SubmissionFormOptions.hasOne(OptionsEmail, {
+  onDelete: 'CASCADE',
+  foreignKey: "options_id"
+})
+m.SubmissionFormOptions.hasOne(OptionsSentToOthers, {
+  onDelete: 'CASCADE',
+  foreignKey: "options_id"
+})
+m.SubmissionFormOptions.hasOne(OptionsTags, {
+  onDelete: 'CASCADE',
+  foreignKey: "options_id"
+})
+
+
 
 module.exports = m

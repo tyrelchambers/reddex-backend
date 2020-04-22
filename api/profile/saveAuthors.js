@@ -38,7 +38,6 @@ app.get('/authors_messaged', authHandler, async (req, res, next) => {
         user_id: userId
       }
     })
-    
     authors.map(x => x.dataValues)
 
     res.send(authors)

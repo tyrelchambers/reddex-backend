@@ -17,7 +17,11 @@ app.post('/login', async (req, res, next) => {
       where:{ 
         email: email
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
   
     if (!user) throw new Error("User does not exist")

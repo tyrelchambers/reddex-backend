@@ -49,7 +49,11 @@ app.get('/:id', authHandler, async (req, res, next) => {
       where: {
         uuid
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     res.send(story)
 

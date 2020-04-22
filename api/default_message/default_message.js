@@ -13,7 +13,11 @@ app.get('/', authHandler, async (req, res,next) => {
       where: {
         uuid: userId
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     res.send(message);
   } catch (err) {

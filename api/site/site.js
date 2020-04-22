@@ -12,7 +12,7 @@ app.post('/activate', authHandler, async (req, res, next) => {
     const website = await Website.create({
       user_id: res.locals.userId
 
-    }).then(res => res.dataValues)
+    })
 
     res.send(website);
   }
@@ -95,7 +95,11 @@ app.get('/config', authHandler, async (req, res, next) => {
       where: {
         user_id: res.locals.userId
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     
     res.send(website);
   }
@@ -116,14 +120,22 @@ app.get('/', async (req, res, next) => {
       where: {
         subdomain
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     const patreon_tier = await User.findOne({
       where: {
         uuid: website.user_id
       },
       attributes: ["patreon_tier"]
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
     
     res.send({
       website,
@@ -145,7 +157,7 @@ app.delete('/delete', authHandler, async (req, res, next) => {
 
     await Website.destroy({
       where: {
-        website_id: uuid
+        uuid
       }
     })    
     
@@ -167,8 +179,15 @@ app.get('/options', authHandler, async (req, res, next) => {
     const options = SubmissionFormOptions.findOne({
       where: {
         website_id: uuid
+      },
+      indlude: {
+        
       }
-    }).then(res => res.dataValues)
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
     res.send(options);
   } catch (error) {

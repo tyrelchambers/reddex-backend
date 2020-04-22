@@ -1,6 +1,8 @@
 import express from 'express'
 import {authHandler} from '../../middleware/middleware'
 import TagStory from '../../db/Models/TagStory'
+import Tag from '../../db/Models/Tag'
+import Story from '../../db/Models/Story'
 
 const app = express.Router();
 
@@ -8,12 +10,12 @@ app.post('/save', authHandler, async (req, res, next) => {
   try {
     const {
       tags,
-      story_id
+      story_uuid
     } = req.body;
 
     const tagsToInsert = tags.map(x => ({
-      story_id: story_id,
-      tag_id: x,
+      story_id: story_uuid,
+      tag_id: x.uuid,
     }))
     
     await TagStory.bulkCreate(tagsToInsert)
@@ -25,24 +27,36 @@ app.post('/save', authHandler, async (req, res, next) => {
   }
 })
 
-app.delete('/:tag_id', authHandler, async (req, res, next) => {
+app.delete('/remove', authHandler, async (req, res, next) => {
   try {
     const {
-      tag_id
-    } = req.params;
+      tag
+    } = req.body;
 
     await TagStory.destroy({
       where: {
-        uuid: tag_id
+        uuid: tag.TagStory.uuid
       }
     })
 
     res.sendStatus(200)
-    
   } catch (error) {
     next(error)
   }
 })
 
+app.get('/', authHandler, async (req, res, next) => {
+  try {
+    const tagsInUse = await Tag.findAll({
+      where: {
+        user_id: res.locals.userId
+      },
+      include: Story
+    }).then(res => res.filter(x => x.Stories.length > 0))
 
+    res.send(tagsInUse)
+  } catch (error) {
+    next(error)
+  }
+})
 module.exports = app;

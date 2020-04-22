@@ -1,30 +1,29 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index.js'
-import Website from './Website.js'
+import { sequelize } from '../index'
+import {SubmissionFormOptions} from './SubmissionFormOptions'
 
-const SubmissionFormOptions = sequelize.define("SubmissionFormOptions", {
+const OptionsTags = sequelize.define("OptionsTags", {
   uuid: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
     unique: true
   },
-  story_title: {
-    type: DataTypes.STRING
-  },
+  value: DataTypes.STRING,
+  label: DataTypes.STRING,
+  required: DataTypes.BOOLEAN,
   enabled: DataTypes.BOOLEAN,
-  website_id: {
+  options_id: {
     type: DataTypes.UUID,
     references: {
-      model: Website,
+      model: SubmissionFormOptions,
       key: 'uuid',
       deferrable: Deferrable.INITIALLY_IMMEDIATE
     }
   }
 }, {
-  tableName: 'submission_form_options',
+  tableName: "options_tags",
   timestamps: false
-
 })
 
-module.exports = SubmissionFormOptions;
+module.exports = OptionsTags

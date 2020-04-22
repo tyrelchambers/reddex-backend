@@ -2,7 +2,7 @@ import express from 'express'
 import {authHandler} from '../../middleware/middleware'
 import Tag from '../../db/Models/Tag'
 import {Op} from 'sequelize'
-
+import Story from '../../db/Models/Story'
 const app = express.Router()
 
 app.post('/save', authHandler, async (req, res, next) => {
@@ -15,6 +15,10 @@ app.post('/save', authHandler, async (req, res, next) => {
       where: {
         tag: tag.toLowerCase(),
         user_id: res.locals.userId
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
       }
     })
 
@@ -78,11 +82,44 @@ app.get('/tag', authHandler, async (req, res, next) => {
           [Op.substring]: `%${tag}%`
         }
       }
-    })
-
-    tags.map(x => x.dataValues)
+    }).then(x => x.map(x => x.dataValues))
 
     res.send(tags)
+
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.get('/:story_id/available', authHandler, async (req, res, next) => {
+  try {
+    const {
+      story_id
+    } = req.params;
+
+    const tags = await Tag.findAll({
+      where: {
+        user_id: res.locals.userId
+      }
+    }).then(x => x.map(x => x.dataValues.uuid))
+
+    const storyTags = await Story.findOne({
+      where: {
+        uuid: story_id
+      },
+      include: Tag
+    }).then(x => x.dataValues.Tags.map(x => x.dataValues.uuid))
+
+    
+    const available = tags.filter(x => !storyTags.includes(x))
+
+    const availableTags = await Tag.findAll({
+      where: {
+        uuid: [...available]
+      }
+    }).then(x => x.map(x => x.dataValues))
+
+    res.send(availableTags)
 
   } catch (error) {
     next(error)
