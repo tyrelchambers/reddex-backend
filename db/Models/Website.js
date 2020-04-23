@@ -76,6 +76,9 @@ const Website = sequelize.define("Website", {
   thumbnail: {
     type: DataTypes.STRING
   },
+  banner_url: {
+    type: DataTypes.STRING
+  },
   user_id: {
     type: DataTypes.UUID,
     references: {
