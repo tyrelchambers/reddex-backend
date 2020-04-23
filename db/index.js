@@ -10,6 +10,8 @@ const development = new Sequelize({
   
 })
 
+const staging = new Sequelize('postgres://njayiwdbnwsdib:bf3deaff77dde54b4746aa3cc6e44cb3c19d4eed5bd49d58aed365c74823027d@ec2-52-203-98-126.compute-1.amazonaws.com:5432/dbs3ta5tho30ji?ssl=true')
+
 const test = new Sequelize({
   host: 'localhost',
   dialect: 'postgres',
@@ -18,7 +20,8 @@ const test = new Sequelize({
 
 const connections = {
   development,
-  test
+  test,
+  staging
 }
 
 
