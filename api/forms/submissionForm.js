@@ -14,12 +14,12 @@ const app = express.Router();
 
 app.post('/submit', async (req, res, next) => {
   try {
-    const story_email = req.sanitize(req.body.email.value);
-    const author = req.sanitize(req.body.author.value);
-    const tags = req.sanitize(req.body.tags.value);
-    const sent_to_others = req.body.sent_to_others;
+    const story_email = req.sanitize(req.body.OptionsEmail.value);
+    const author = req.sanitize(req.body.OptionsAuthor.value);
+    const tags = req.sanitize(req.body.OptionsTag.value);
+    const sent_to_others = req.body.OptionsSentToOther;
     const website = req.sanitize(req.body.website_id);
-    const story_title = req.sanitize(req.body.story_title.value);
+    const story_title = req.sanitize(req.body.OptionsStoryTitle.value);
     const body = req.sanitize(req.body.body)
 
     const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others.value;
@@ -72,11 +72,11 @@ app.put('/save', authHandler, async (req, res, next) => {
   try {
     const {
       enabled,
-      author,
-      email,
-      sent_to_others,
-      tags,
-      story_title,
+      OptionsAuthor: author,
+      OptionsEmail: email,
+      OptionsSentToOther: sent_to_others,
+      OptionsTag: tags,
+      OptionsStoryTitle: story_title,
       options_id,
       website
     } = req.body;
@@ -103,8 +103,6 @@ app.put('/save', authHandler, async (req, res, next) => {
         options_id
       }
     })
-
-    console.log(story_title)
 
     await OptionsEmail.update({
       value: email.value,
