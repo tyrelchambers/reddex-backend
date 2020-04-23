@@ -127,7 +127,8 @@ app.get('/config', authHandler, async (req, res, next) => {
     const website = await Website.findOne({
       where: {
         user_id: res.locals.userId
-      }
+      },
+      include: SubmissionFormOptions
     }).then(res => {
       if (res) {
         return res.dataValues
