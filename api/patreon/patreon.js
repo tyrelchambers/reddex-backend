@@ -1,7 +1,6 @@
 import express from 'express';
 import {authHandler} from '../../middleware/middleware'
-import knex from '../../db/index'
-
+import User from '../../db/Models/User'
 import Axios from 'axios';
 
 const app = express.Router();
@@ -24,19 +23,20 @@ app.post('/getTokens', authHandler, async (req, res, next) => {
       refresh_token
     } = tokens;
 
-    await knex('users').where({
-      uuid: res.locals.userId
-    }).update({
+    await User.update({
       patreon_access_token: access_token,
       patreon_access_expire: expires_in,
       patreon_refresh_token: refresh_token,
       patreon_connected: true
+    }, {
+      where: {
+        uuid: res.locals.userId
+      }
     })
     
     res.send(access_token)
 
   } catch (error) {
-    console.log(error)
     next(error)
   }
 })
@@ -44,11 +44,19 @@ app.post('/getTokens', authHandler, async (req, res, next) => {
 app.get('/identity', authHandler, async (req, res, next) => {
   try {
     
-    const user = await knex('users').where({
-      uuid: res.locals.userId
-    }).select('patreon_access_token')
+    const user = await User.findOne({
+      where: {
+        uuid: res.locals.userId
+      },
+      attributes: ["patreon_access_token"]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+    
 
-    if (!user[0].patreon_access_token) {
+    if (!user.patreon_access_token) {
       return res.sendStatus(200)
     }
 
@@ -58,7 +66,7 @@ app.get('/identity', authHandler, async (req, res, next) => {
 
     const memberships = await Axios.get(`https://www.patreon.com/api/oauth2/v2/identity?include=memberships.campaign&fields${encodeURI('[user]')}=about,created,email&fields${encodeURI('[member]')}=patron_status,currently_entitled_amount_cents`, {
       headers: {
-        'Authorization': `Bearer ${user[0].patreon_access_token}`,
+        'Authorization': `Bearer ${user.patreon_access_token}`,
         'Content-Type': 'application/x-www-form-urlencoded'
 
       }
@@ -89,17 +97,20 @@ app.get('/identity', authHandler, async (req, res, next) => {
       tier = "pro"
     }
 
-    await knex('users').where({
-      uuid: res.locals.userId
-    }).update({
+    await User.update({
       patreon_tier: tier,
       active_patron: payload.active_patron === "active_patron" ? true : false
+    }, {
+      where: {
+        uuid: res.locals.userId
+      }
     })
 
     res.send({
       active_patron: payload.active_patron,
       tier
     })
+
   } catch (error) {
     next(error)
   }
@@ -107,7 +118,17 @@ app.get('/identity', authHandler, async (req, res, next) => {
 
 app.get('/getUserIdentity', authHandler, async (req, res, next) => {
   try {
-    const user = await knex.where({uuid: res.locals.userId}).select('patreon_tier', 'active_patron', 'patreon_connected').from('users');
+    const user = await User.findOne({
+      where: {
+        uuid: res.locals.userId
+      },
+      attributes: ['patreon_tier', 'active_patron', 'patreon_connected']
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+    
     res.send(user)
   } catch (error) {
     next(error)
@@ -116,15 +137,17 @@ app.get('/getUserIdentity', authHandler, async (req, res, next) => {
 
 app.delete('/disconnect', authHandler, async (req,res,next) => {
   try {
-    await knex('users').where({
-      uuid: res.locals.userId
-    }).update({
+    await User.update({
       patreon_tier: null,
       active_patron: null,
       patreon_access_token: null,
       patreon_access_expire: null,
       patreon_refresh_token: null,
       patreon_connected: false
+    },{
+      where: {
+        uuid: res.locals.userId
+      }
     })
 
     res.sendStatus(200)

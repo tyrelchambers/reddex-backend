@@ -1,48 +1,51 @@
 import express from 'express'
 import emailCon from '../../libs/emailConfig'
-import knex from '../../db/index'
 import {authHandler} from '../../middleware/middleware.js'
-import uuidv4 from 'uuid'
+import Website from '../../db/Models/Website'
+import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
+import SubmittedStories from '../../db/Models/SubmittedStories'
+import OptionsAuthor from '../../db/Models/OptionsAuthor'
+import OptionsEmail from '../../db/Models/OptionsEmail'
+import OptionsSentToOthers from '../../db/Models/OptionsSentToOthers'
+import OptionsTags from '../../db/Models/OptionsTags'
+import OptionsStoryTitle from '../../db/Models/OptionsStoryTitle'
 
 const app = express.Router();
 
 app.post('/submit', async (req, res, next) => {
   try {
-    const story_email = req.sanitize(req.body.email.value);
-    const author = req.sanitize(req.body.author.value);
-    const tags = req.sanitize(req.body.tags.value);
-    const sent_to_others = req.body.sent_to_others;
+    const story_email = req.sanitize(req.body.OptionsEmail.value);
+    const author = req.sanitize(req.body.OptionsAuthor.value);
+    const tags = req.sanitize(req.body.OptionsTag.value);
+    const sent_to_others = req.body.OptionsSentToOther;
     const website = req.sanitize(req.body.website_id);
-    const story_title = req.sanitize(req.body.story_title.value);
+    const story_title = req.sanitize(req.body.OptionsStoryTitle.value);
     const body = req.sanitize(req.body.body)
 
     const sent_to_others_formatted = sent_to_others.value === null ? false : sent_to_others.value;
 
-    const subdomain = await knex('websites').where({
-      uuid: website
+    const subdomain = await Website.findOne({
+      where: {
+        uuid: website
+      },
+      include: "User"
     })
 
-    const site = await knex('websites').select('email').where({
-      subdomain: subdomain[0].subdomain
-    })
-    .innerJoin('users', 'websites.user_id', 'users.uuid')
-
-    await knex('submitted_stories').insert({
-      uuid: uuidv4(),
+    await SubmittedStories.create({
       email: story_email,
       author,
       tags,
       sent_to_others: sent_to_others_formatted,
       story_title,
       body,
-      user_id: subdomain[0].user_id
+      user_id: subdomain.User.user_id
     })
 
     emailCon
     .send({
       template: 'mars',
       message: {
-        to: site[0].email
+        to: subdomain.User.email
       },
       
       locals: {
@@ -65,48 +68,90 @@ app.post('/submit', async (req, res, next) => {
   }
 });
 
-app.post('/save', authHandler, async (req, res, next) => {
+app.put('/save', authHandler, async (req, res, next) => {
   try {
-    const story_title = req.body.story_title;
-    const author = req.body.author;
-    const email = req.body.email;
-    const sent_to_others = req.body.sent_to_others;
-    const tags = req.body.tags;
-    const website = req.body.website;
-
-    const existingSite = await knex('submission_form_options').where({
-      website_id: website
-    }).returning('*')
-
-    if (existingSite[0]) {
-      await knex('submission_form_options').where({
+    const {
+      enabled,
+      OptionsAuthor: author,
+      OptionsEmail: email,
+      OptionsSentToOther: sent_to_others,
+      OptionsTag: tags,
+      OptionsStoryTitle: story_title,
+      options_id,
+      website
+    } = req.body;
+    await SubmissionFormOptions.update({
+      enabled
+    },{
+      where: {
         website_id: website
-      })
-      .update({
-        story_title: JSON.stringify(story_title),
-        author: JSON.stringify(author),
-        email: JSON.stringify(email),
-        sent_to_others: JSON.stringify(sent_to_others),
-        tags: JSON.stringify(tags),
-      }).returning('*')
-    } else {
-      const options = await knex('submission_form_options').insert({
-          story_title: JSON.stringify(story_title),
-          author: JSON.stringify(author),
-          email: JSON.stringify(email),
-          sent_to_others: JSON.stringify(sent_to_others),
-          tags: JSON.stringify(tags),
-          uuid: uuidv4(),
-          website_id: website
-        }).returning("uuid")
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
 
-        await knex("websites").where({
-        uuid: website
-      }).update({
-        options_id: options[0]
-      });
-    
-    }
+    await OptionsAuthor.update({
+      value: author.value,
+      label: author.label,
+      required: author.required,
+      enabled: author.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsEmail.update({
+      value: email.value,
+      label: email.label,
+      required: email.required,
+      enabled: email.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsSentToOthers.update({
+      value: sent_to_others.value,
+      label: sent_to_others.label,
+      required: sent_to_others.required,
+      enabled: sent_to_others.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsTags.update({
+      value: tags.value,
+      label: tags.label,
+      required: tags.required,
+      enabled: tags.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
+    await OptionsStoryTitle.update({
+      value: story_title.value,
+      label: story_title.label,
+      required: story_title.required,
+      enabled: story_title.enabled,
+      options_id
+    }, {
+      where: {
+        options_id
+      }
+    })
+
     res.sendStatus(200);
   }
 
@@ -122,12 +167,17 @@ app.get('/', async (req, res, next) => {
       sid
     } = req.query;
 
-    const form = await knex('submission_form_options').where({
-      website_id: sid
+    const form = await SubmissionFormOptions.findOne({
+      where: {
+        website_id: sid
+      },
+      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
     })
-
-
-    res.send(form[0])
+    res.send(form)
   }
 
   catch(err) {
@@ -136,6 +186,35 @@ app.get('/', async (req, res, next) => {
   }
 })
 
+app.post('/options/:option', authHandler, async (req, res, next) => {
+  try {
+    const {
+      value,
+      label,
+      required,
+      enabled,
+      options_id
+    } = req.body
+
+    const {
+      option
+    } = req.params;
+
+    if (option === "author") {
+      await OptionsAuthor.create({
+        value,
+        label,
+        required,
+        enabled,
+        options_id
+      })
+    }
+
+    res.sendStatus(200)
+  } catch (error) {
+    next(error)
+  }
+});
 
 
 module.exports = app;

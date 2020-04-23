@@ -1,18 +1,53 @@
 import express from 'express'
 import {authHandler } from '../../middleware/middleware';
-import knex from '../../db/index'
-import uuidv4 from 'uuid'
+
+import Website from '../../db/Models/Website'
+import User from '../../db/Models/User'
+import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
+import OptionsAuthor from '../../db/Models/OptionsAuthor'
+import OptionsEmail from '../../db/Models/OptionsEmail'
+import OptionsSentToOthers from '../../db/Models/OptionsSentToOthers'
+import OptionsTags from '../../db/Models/OptionsTags'
+import OptionsStoryTitle from '../../db/Models/OptionsStoryTitle'
 
 const app = express.Router();
 
 app.post('/activate', authHandler, async (req, res, next) => {
   try {
-    const website = await knex('websites').insert({
-      uuid: uuidv4(),
+    const website = await Website.create({
       user_id: res.locals.userId
-    }).returning('*')
 
-    res.status(200).send(website[0]);
+    }, {
+      returning: true
+    }).then(res => res.dataValues)
+
+    const options = await SubmissionFormOptions.create({
+      website_id: website.uuid
+    }, {
+      returning: true
+    }).then(res => res.dataValues)
+    
+    await OptionsAuthor.create({
+      options_id: options.uuid
+    })
+    await OptionsEmail.create({
+      options_id: options.uuid
+    })
+    await OptionsSentToOthers.create({
+      options_id: options.uuid
+    })
+    await OptionsTags.create({
+      options_id: options.uuid
+    })
+    await OptionsStoryTitle.create({
+      options_id: options.uuid
+    })
+
+
+    res.send({
+      website,
+      options
+    });
   }
 
   catch(err) {
@@ -46,9 +81,7 @@ app.post('/update', authHandler, async (req, res, next) => {
     const rules = req.sanitize(req.body.rules);
     const thumbnail = req.body.thumbnail;
 
-    const website = await knex('websites').where({
-      user_id: res.locals.userId
-    }).update({
+    const website = await Website.update({
       subdomain,
       title,
       twitter,
@@ -71,7 +104,14 @@ app.post('/update', authHandler, async (req, res, next) => {
       submission_title,
       rules,
       thumbnail
-    }).returning('*')
+    }, {
+      where: {
+        user_id: res.locals.userId
+
+      },
+      returning: true,
+      plain: true
+    }).then(res => res[1].dataValues)
 
     res.send(website)
   }
@@ -84,12 +124,18 @@ app.post('/update', authHandler, async (req, res, next) => {
 
 app.get('/config', authHandler, async (req, res, next) => {
   try {
-    const website = await knex('websites').where({
-      user_id: res.locals.userId
+    const website = await Website.findOne({
+      where: {
+        user_id: res.locals.userId
+      },
+      include: SubmissionFormOptions
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
     })
-    .returning('*')
     
-    res.send(website[0]);
+    res.send(website);
   }
 
   catch(err) {
@@ -104,17 +150,30 @@ app.get('/', async (req, res, next) => {
       subdomain
     } = req.query;
 
-    const website = await knex('websites').where({
-      subdomain
+    const website = await Website.findOne({
+      where: {
+        subdomain
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
     })
 
-    const patron_tier = await knex('users').where({
-      uuid: website[0].user_id
-    }).select('patreon_tier')
-
+    const patreon_tier = await User.findOne({
+      where: {
+        uuid: website.user_id
+      },
+      attributes: ["patreon_tier"]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+    
     res.send({
-      website: website[0],
-      patreon_tier: patron_tier[0]
+      website,
+      patreon_tier
     });
   }
 
@@ -130,14 +189,11 @@ app.delete('/delete', authHandler, async (req, res, next) => {
       uuid
     } = req.query;
 
-    await knex("submission_form_options").where({
-      website_id: uuid
-    }).del();
-
-    await knex('websites').where({
-      uuid
-    }).del()
-    
+    await Website.destroy({
+      where: {
+        uuid
+      }
+    })    
     
     res.send("Site deleted")
   }
@@ -148,19 +204,5 @@ app.delete('/delete', authHandler, async (req, res, next) => {
   }
 })
 
-app.get('/options', authHandler, async (req, res, next) => {
-  try {
-    const {
-      uuid
-    } = req.query;
 
-    const options = await knex('submission_form_options').where({
-      website_id: uuid
-    })
-
-    res.send(options[0]);
-  } catch (error) {
-    next(error)
-  }
-})
 module.exports = app;
