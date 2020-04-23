@@ -66,7 +66,9 @@ app.get('/get_story', authHandler, async (req, res, next) => {
     const story = await Story.findOne({
       where: !story_id ? {
         user_id: res.locals.userId,
-        [Op.iLike]: `${title.substring(0, title.length - 3)}%`,
+        title: {
+          [Op.substring]: `${title.substring(0, title.length - 3)}`,
+        },
         author
       } : {
         uuid: story_id

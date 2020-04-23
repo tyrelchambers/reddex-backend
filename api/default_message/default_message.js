@@ -36,8 +36,15 @@ app.post('/', authHandler, async (req, res, next) => {
       where: {
         uuid: userId
 
+      },
+      attributes: ['initial_message'],
+      returning: true
+    }).then(res => {
+      if (res) {
+        return res.dataValues
       }
     })
+
     
     res.send(message);
   }
