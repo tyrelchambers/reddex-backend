@@ -29,12 +29,8 @@ module.exports = {
           type: Sequelize.STRING
         }, {
           transaction: t
-        }),
-        queryInterface.addConstraint("submission_form_options", ["uuid"], {
-          type: 'unique'
-        }, {
-          transaction: t
         })
+        
       ])
     })
     /*
