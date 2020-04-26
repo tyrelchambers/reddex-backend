@@ -27,9 +27,9 @@ module.exports = {
         }),
         queryInterface.changeColumn("submission_form_options", "story_title", {
           type: Sequelize.STRING
-        }), {
+        }, {
           transaction: t
-        },
+        }),
         queryInterface.addConstraint("submission_form_options", ["uuid"], {
           type: 'unique'
         }, {
