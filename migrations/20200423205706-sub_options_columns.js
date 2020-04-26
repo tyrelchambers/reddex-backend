@@ -20,6 +20,9 @@ module.exports = {
           transaction: t
         }),
         queryInterface.addColumn("SubmissionFormOptions", "enabled", {
+          type: Sequelize.BOOLEAN,
+          defaultValue: false
+        }, {
           transaction: t
         })
       ])
@@ -36,19 +39,19 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.addColumn("SubmissionFormOptions", "id", {
+        queryInterface.addColumn("SubmissionFormOptions", "id", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "author", {
+        queryInterface.addColumn("SubmissionFormOptions", "author", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "sent_to_others", {
+        queryInterface.addColumn("SubmissionFormOptions", "sent_to_others", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "email", {
+        queryInterface.addColumn("SubmissionFormOptions", "email", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "tags", {
+        queryInterface.addColumn("SubmissionFormOptions", "tags", Sequelize.STRING, {
           transaction: t
         }),
         queryInterface.removeColumn("SubmissionFormOptions", "enabled", {
