@@ -1,5 +1,6 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index.js'
+import sequelize from '../index.js'
+
 import User from './User.js'
 import Story from './Story.js'
 

@@ -1,5 +1,5 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index.js'
+import sequelize from '../index.js'
 import User from './User.js'
 const SubmittedStories = sequelize.define("StoriesUsed", {
   uuid: {

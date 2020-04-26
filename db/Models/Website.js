@@ -1,5 +1,6 @@
 import { DataTypes, Deferrable, UUIDV4 } from 'sequelize'
-import { sequelize } from '../index.js'
+import sequelize from '../index.js'
+
 import User from './User.js'
 
 const Website = sequelize.define("Website", {

@@ -14,7 +14,8 @@ import OptionsSentToOthers from './OptionsSentToOthers'
 import OptionsTags from './OptionsTags'
 import OptionsStoryTitle from './OptionsStoryTitle'
 
-import {sequelize} from '../index.js'
+import sequelize from '../index.js'
+
 
 // (async() => {
 //   sequelize.sync()

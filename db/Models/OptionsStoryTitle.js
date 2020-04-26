@@ -1,5 +1,5 @@
 import { DataTypes, Deferrable } from 'sequelize'
-import { sequelize } from '../index'
+import sequelize from '../index.js'
 import {SubmissionFormOptions} from './SubmissionFormOptions'
 
 const OptionsStoryTitle = sequelize.define("OptionsStoryTitle", {

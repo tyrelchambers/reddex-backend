@@ -1,5 +1,5 @@
 const path = require('path');
 
 module.exports = {
-  'config': path.resolve('db', 'index.js')
+  'config': path.resolve('db', 'config.js')
 }
