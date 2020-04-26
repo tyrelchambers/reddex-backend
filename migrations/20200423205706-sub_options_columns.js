@@ -30,7 +30,6 @@ module.exports = {
         }, {
           transaction: t
         })
-        
       ])
     })
     /*

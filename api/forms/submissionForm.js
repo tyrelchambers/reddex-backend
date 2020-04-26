@@ -177,6 +177,36 @@ app.get('/', async (req, res, next) => {
         return res.dataValues
       }
     })
+
+    if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
+      await OptionsAuthor.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsEmail.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsSentToOthers.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsTags.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsStoryTitle.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+  
+    }
+
     res.send(form)
   }
 
@@ -185,36 +215,6 @@ app.get('/', async (req, res, next) => {
 
   }
 })
-
-app.post('/options/:option', authHandler, async (req, res, next) => {
-  try {
-    const {
-      value,
-      label,
-      required,
-      enabled,
-      options_id
-    } = req.body
-
-    const {
-      option
-    } = req.params;
-
-    if (option === "author") {
-      await OptionsAuthor.create({
-        value,
-        label,
-        required,
-        enabled,
-        options_id
-      })
-    }
-
-    res.sendStatus(200)
-  } catch (error) {
-    next(error)
-  }
-});
 
 
 module.exports = app;

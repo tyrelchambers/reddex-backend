@@ -134,7 +134,46 @@ app.get('/config', authHandler, async (req, res, next) => {
         return res.dataValues
       }
     })
-    
+
+    const form = await SubmissionFormOptions.findOne({
+      where: {
+        website_id: sid
+      },
+      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+
+    if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
+     await OptionsAuthor.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsEmail.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsSentToOthers.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsTags.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+      await OptionsStoryTitle.findOrCreate({
+        where: {
+          options_id: form.uuid
+        }
+      })
+  
+    }
     res.send(website);
   }
 
