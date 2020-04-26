@@ -4,22 +4,22 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.removeColumn("SubmissionFormOptions", "id", {
+        queryInterface.removeColumn("submission_form_options", "id", {
           transaction: t
         }),
-        queryInterface.removeColumn("SubmissionFormOptions", "author", {
+        queryInterface.removeColumn("submission_form_options", "author", {
           transaction: t
         }),
-        queryInterface.removeColumn("SubmissionFormOptions", "sent_to_others", {
+        queryInterface.removeColumn("submission_form_options", "sent_to_others", {
           transaction: t
         }),
-        queryInterface.removeColumn("SubmissionFormOptions", "email", {
+        queryInterface.removeColumn("submission_form_options", "email", {
           transaction: t
         }),
-        queryInterface.removeColumn("SubmissionFormOptions", "tags", {
+        queryInterface.removeColumn("submission_form_options", "tags", {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "enabled", {
+        queryInterface.addColumn("submission_form_options", "enabled", {
           type: Sequelize.BOOLEAN,
           defaultValue: false
         }, {
@@ -39,25 +39,25 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.addColumn("SubmissionFormOptions", "id", Sequelize.STRING, {
+        queryInterface.addColumn("submission_form_options", "id", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "author", Sequelize.STRING, {
+        queryInterface.addColumn("submission_form_options", "author", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "sent_to_others", {
+        queryInterface.addColumn("submission_form_options", "sent_to_others", {
           type:Sequelize.BOOLEAN,
           defaultValue: false
         }, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "email", Sequelize.STRING, {
+        queryInterface.addColumn("submission_form_options", "email", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "tags", Sequelize.STRING, {
+        queryInterface.addColumn("submission_form_options", "tags", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.removeColumn("SubmissionFormOptions", "enabled", {
+        queryInterface.removeColumn("submission_form_options", "enabled", {
           transaction: t
         })
       ])
