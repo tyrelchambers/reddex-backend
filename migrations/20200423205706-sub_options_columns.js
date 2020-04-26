@@ -45,7 +45,10 @@ module.exports = {
         queryInterface.addColumn("SubmissionFormOptions", "author", Sequelize.STRING, {
           transaction: t
         }),
-        queryInterface.addColumn("SubmissionFormOptions", "sent_to_others", Sequelize.STRING, {
+        queryInterface.addColumn("SubmissionFormOptions", "sent_to_others", {
+          type:Sequelize.BOOLEAN,
+          defaultValue: false
+        }, {
           transaction: t
         }),
         queryInterface.addColumn("SubmissionFormOptions", "email", Sequelize.STRING, {
