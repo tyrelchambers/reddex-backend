@@ -24,6 +24,12 @@ module.exports = {
           defaultValue: false
         }, {
           transaction: t
+        }),
+        queryInterface.changeColumn("submission_form_options", "story_title", {
+          type: Sequelize.STRING
+        }),
+        queryInterface.addConstraint("submission_form_options", ["uuid"], {
+          type: 'unique'
         })
       ])
     })
@@ -59,6 +65,9 @@ module.exports = {
         }),
         queryInterface.removeColumn("submission_form_options", "enabled", {
           transaction: t
+        }),
+        queryInterface.changeColumn("submission_form_options", "story_title", {
+          type: Sequelize.JSON
         })
       ])
     })
