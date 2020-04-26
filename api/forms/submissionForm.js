@@ -167,7 +167,7 @@ app.get('/', async (req, res, next) => {
       sid
     } = req.query;
 
-    const form = await SubmissionFormOptions.findOne({
+    let form = await SubmissionFormOptions.findOne({
       where: {
         website_id: sid
       },
@@ -206,6 +206,18 @@ app.get('/', async (req, res, next) => {
       })
   
     }
+
+    form = await SubmissionFormOptions.findOne({
+      where: {
+        website_id: sid
+      },
+      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+
 
     res.send(form)
   }

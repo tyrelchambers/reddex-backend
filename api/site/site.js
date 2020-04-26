@@ -137,7 +137,7 @@ app.get('/config', authHandler, async (req, res, next) => {
 
     const form = await SubmissionFormOptions.findOne({
       where: {
-        website_id: sid
+        website_id: website.uuid
       },
       include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
     }).then(res => {
