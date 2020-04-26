@@ -4,19 +4,19 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.dropColumn("SubmissionFormOptions", "id", {
+        queryInterface.removeColumn("SubmissionFormOptions", "id", {
           transaction: t
         }),
-        queryInterface.dropColumn("SubmissionFormOptions", "author", {
+        queryInterface.removeColumn("SubmissionFormOptions", "author", {
           transaction: t
         }),
-        queryInterface.dropColumn("SubmissionFormOptions", "sent_to_others", {
+        queryInterface.removeColumn("SubmissionFormOptions", "sent_to_others", {
           transaction: t
         }),
-        queryInterface.dropColumn("SubmissionFormOptions", "email", {
+        queryInterface.removeColumn("SubmissionFormOptions", "email", {
           transaction: t
         }),
-        queryInterface.dropColumn("SubmissionFormOptions", "tags", {
+        queryInterface.removeColumn("SubmissionFormOptions", "tags", {
           transaction: t
         }),
         queryInterface.addColumn("SubmissionFormOptions", "enabled", {
@@ -51,7 +51,7 @@ module.exports = {
         queryInterface.addColumn("SubmissionFormOptions", "tags", {
           transaction: t
         }),
-        queryInterface.dropColumn("SubmissionFormOptions", "enabled", {
+        queryInterface.removeColumn("SubmissionFormOptions", "enabled", {
           transaction: t
         })
       ])
