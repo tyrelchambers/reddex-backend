@@ -4,13 +4,13 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.removeConstraint('Tags', 'tags_story_id_foreign', {
+        queryInterface.removeConstraint('tags', 'tags_story_id_foreign', {
           transaction: t
         }),
-        queryInterface.removeColumn("Tags", "id", {
+        queryInterface.removeColumn("tags", "id", {
           transaction: t
         }),
-        queryInterface.removeColumn("Tags", "story_id", {
+        queryInterface.removeColumn("tags", "story_id", {
           transaction: t
         })
       ])
@@ -27,7 +27,7 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.sequelize.transaction(t => {
       return Promise.all([
-        queryInterface.addConstraint('Tags', ['story_id'], {
+        queryInterface.addConstraint('tags', ['story_id'], {
           type: 'foreign key',
           name: 'tags_story_id_foreign',
           references: { //Required field
@@ -38,10 +38,10 @@ module.exports = {
         },{
           transaction: t
         }),
-        queryInterface.addColumn("Tags", "id", Sequelize.INTEGER, {
+        queryInterface.addColumn("tags", "id", Sequelize.INTEGER, {
           transaction: t
         }),
-        queryInterface.addColumn("Tags", "story_id", Sequelize.UUID, {
+        queryInterface.addColumn("tags", "story_id", Sequelize.UUID, {
           transaction: t
         })
       ])
