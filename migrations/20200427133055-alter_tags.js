@@ -38,10 +38,10 @@ module.exports = {
         },{
           transaction: t
         }),
-        queryInterface.removeColumn("Tags", "id", {
+        queryInterface.addColumn("Tags", "id", Sequelize.INTEGER, {
           transaction: t
         }),
-        queryInterface.removeColumn("Tags", "story_id", {
+        queryInterface.addColumn("Tags", "story_id", Sequelize.UUID, {
           transaction: t
         })
       ])
