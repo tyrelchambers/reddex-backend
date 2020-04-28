@@ -123,6 +123,8 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
       permission
     } = req.query
 
+    let headers = [];
+
     const story = await Story.findAll({
       where: {
         user_id: res.locals.userId,
@@ -138,11 +140,18 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
         ],
       },
       include: Tag
-    });
+    }).then(res => res.map(x => x.dataValues));
     
-    story.map(x => x.dataValues)
-
-    res.send(story);
+    story.map(x => {
+      if (!headers.includes(x.subreddit)) {
+        headers.push(x.subreddit)
+      }
+    })
+  
+    res.send({
+      headers,
+      stories: story
+    });
   }
 
   catch(err) {
@@ -214,5 +223,32 @@ app.delete('/stories/remove', authHandler, async (req, res, next) => {
 
   }
 });
+
+app.get('/reading_list/sort', authHandler, async (req, res, next) => {
+  try {
+    const {
+      subreddit,
+      tag
+    } = req.query
+
+   const stories = await Story.findAll({
+     where: subreddit ? {
+      subreddit: {
+        [Op.iLike]: subreddit
+      }
+     } : {},
+     include: {
+      model: Tag,
+      where: {
+        tag
+      }
+    }
+   }).then(res => res.map(x => x.dataValues))
+
+   res.send({stories})
+  } catch (error) {
+    next(error)
+  }
+})
 
 module.exports = app;
