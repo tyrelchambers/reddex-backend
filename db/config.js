@@ -7,7 +7,7 @@ module.exports = {
     database: 'reddex',
   },
   production: {
-    dialect: 'pg',
+    dialect: 'postgres',
     host : process.env.PGHOST,
     user : process.env.PGUSER,
     database : process.env.PGDATABASE,
