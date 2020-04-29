@@ -1,5 +1,7 @@
 
+const { Sequelize } = require('sequelize');
+
 const environment = process.env.NODE_ENV || 'development'
-const config = require('../knexfile.js')[environment]
-const knex = require('knex')(config);
-module.exports = knex
+import config from './config'
+
+module.exports = new Sequelize(config[environment])

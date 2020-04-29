@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import emailCon from '../../libs/emailConfig'
 import config from '../../config'
 import bcrypt from 'bcryptjs'
-import knex from '../../db/index'
+import User from '../../db/Models/User'
 
 const app = express.Router();
 
@@ -11,11 +11,19 @@ app.post("/get_reset_token", async (req, res, next) => {
   try {
     const email = req.sanitize(req.body.email)
 
-    const user = await knex('users').where({email}).returning('*');
-
+    const user = await User.findOne({
+      where: {
+        email
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+    
     if (!user) throw new Error("No user exists with that email")
     
-    const resetToken = jwt.sign({uuid: user[0].uuid, email: user[0].email}, config.development.secret, {
+    const resetToken = jwt.sign({uuid: user.uuid, email: user.email}, config.development.secret, {
       expiresIn: "1d"
     });
 
@@ -23,7 +31,7 @@ app.post("/get_reset_token", async (req, res, next) => {
       .send({
         template: 'resetPassword',
         message: {
-          to: user[0].email
+          to: user.email
         },
         locals: {
           resetToken
@@ -54,9 +62,11 @@ app.post('/', async (req, res, next) => {
 
     const hashNewPassword = await bcrypt.hashSync(password, 10);
 
-    await knex('users').where({uuid: userId}).update({
+    await User.update({
       password: hashNewPassword
-    })
+    }, {
+      uuid: userId
+    }) 
     
     res.send("Password changed successfully")
   }
