@@ -7,17 +7,12 @@ module.exports = {
     database: 'reddex',
   },
   production: {
-    client: 'pg',
-    connection: {
-      host : process.env.PGHOST,
-      user : process.env.PGUSER,
-      database : process.env.PGDATABASE,
-      password: process.env.PGPASSWORD,
-      port: process.env.PGPORT
-    },
-    migrations: {
-      directory: __dirname + '/db/migrations'
-    } 
+    dialect: 'pg',
+    host : process.env.PGHOST,
+    user : process.env.PGUSER,
+    database : process.env.PGDATABASE,
+    password: process.env.PGPASSWORD,
+    port: process.env.PGPORT
   },
   staging: {
     host: process.env.STAGING_HOST,
