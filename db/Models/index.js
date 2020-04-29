@@ -17,9 +17,9 @@ import OptionsStoryTitle from './OptionsStoryTitle'
 import sequelize from '../index.js'
 
 
-// (async() => {
-//   sequelize.sync()
-// })()
+(async() => {
+  sequelize.sync()
+})()
 
 
 sequelize
