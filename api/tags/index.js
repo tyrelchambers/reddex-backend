@@ -24,12 +24,14 @@ app.post('/save', authHandler, async (req, res, next) => {
 
     if(existingTag) throw new Error("Tag already exists")
 
-    await Tag.create({
+    const newTag = await Tag.create({
       tag,
       user_id: res.locals.userId
+    }, {
+      returning: true
     })
 
-    res.sendStatus(200)
+    res.send(newTag.dataValues)
   } catch (error) {
     next(error)
   }
@@ -59,7 +61,8 @@ app.delete('/:id', authHandler, async (req, res, next) => {
 
     await Tag.destroy({
       where: {
-        uuid: id
+        uuid: id,
+        user_id: res.locals.userId
       }
     })
 
