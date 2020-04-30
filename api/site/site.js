@@ -21,13 +21,13 @@ app.post('/activate', authHandler, async (req, res, next) => {
       returning: true
     }).then(res => res.dataValues)
     
-    await User.update({
-      website_id: website.uuid
-    }, {
-      where: {
-        uuid: res.locals.userId
-      }
-    })
+    // await User.update({
+    //   website_id: website.uuid
+    // }, {
+    //   where: {
+    //     uuid: res.locals.userId
+    //   }
+    // })
 
     const options = await SubmissionFormOptions.create({
       website_id: website.uuid
@@ -143,44 +143,46 @@ app.get('/config', authHandler, async (req, res, next) => {
       }
     })
 
-    const form = await SubmissionFormOptions.findOne({
-      where: {
-        website_id: website.uuid
-      },
-      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
-    }).then(res => {
-      if (res) {
-        return res.dataValues
-      }
-    })
-
-    if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
-     await OptionsAuthor.findOrCreate({
+    if (website) {
+      const form = await SubmissionFormOptions.findOne({
         where: {
-          options_id: form.uuid
-        }
-      })
-      await OptionsEmail.findOrCreate({
-        where: {
-          options_id: form.uuid
-        }
-      })
-      await OptionsSentToOthers.findOrCreate({
-        where: {
-          options_id: form.uuid
-        }
-      })
-      await OptionsTags.findOrCreate({
-        where: {
-          options_id: form.uuid
-        }
-      })
-      await OptionsStoryTitle.findOrCreate({
-        where: {
-          options_id: form.uuid
+          website_id: website.uuid
+        },
+        include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
+      }).then(res => {
+        if (res) {
+          return res.dataValues
         }
       })
   
+      if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
+       await OptionsAuthor.findOrCreate({
+          where: {
+            options_id: form.uuid
+          }
+        })
+        await OptionsEmail.findOrCreate({
+          where: {
+            options_id: form.uuid
+          }
+        })
+        await OptionsSentToOthers.findOrCreate({
+          where: {
+            options_id: form.uuid
+          }
+        })
+        await OptionsTags.findOrCreate({
+          where: {
+            options_id: form.uuid
+          }
+        })
+        await OptionsStoryTitle.findOrCreate({
+          where: {
+            options_id: form.uuid
+          }
+        })
+    
+      }
     }
     res.send(website);
   }
