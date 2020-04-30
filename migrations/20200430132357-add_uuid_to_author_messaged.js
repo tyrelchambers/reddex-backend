@@ -1,4 +1,5 @@
 'use strict';
+import {DataTypes} from 'sequelize'
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
