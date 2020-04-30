@@ -59,7 +59,8 @@ const User = sequelize.define('User', {
   },
   patreon_connected: {
     type: DataTypes.STRING,
-  }
+  },
+  website_id: DataTypes.UUID
 }, {
   tableName: 'users',
   timestamps: false

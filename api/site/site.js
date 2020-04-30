@@ -20,6 +20,14 @@ app.post('/activate', authHandler, async (req, res, next) => {
     }, {
       returning: true
     }).then(res => res.dataValues)
+    
+    await User.update({
+      website_id: website.uuid
+    }, {
+      where: {
+        uuid: res.locals.userId
+      }
+    })
 
     const options = await SubmissionFormOptions.create({
       website_id: website.uuid
