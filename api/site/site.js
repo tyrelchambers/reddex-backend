@@ -21,6 +21,8 @@ app.post('/activate', authHandler, async (req, res, next) => {
       returning: true
     }).then(res => res.dataValues)
 
+    const User 
+
     const options = await SubmissionFormOptions.create({
       website_id: website.uuid
     }, {
