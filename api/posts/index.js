@@ -35,12 +35,38 @@ app.post('/save', async (req, res, next) => {
 
 app.get('/', async (req, res, next) => {
   try {
+    const {
+      operator,
+      upvotes,
+      keywords,
+      seriesOnly,
+      omitSeries
+    } = req.query;
+
     const posts = await Post.find({
       visitor_token: req.headers.visitortoken
 
     })
     
     res.send(posts)
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.put('/update', async (req, res, next) => {
+  try {
+    const {
+      post_id
+    } = req.body;
+
+    await Post.findOneAndUpdate({
+      post_id
+    }, {
+      viewed: true
+    })
+
+    res.sendStatus(200)
   } catch (error) {
     next(error)
   }
