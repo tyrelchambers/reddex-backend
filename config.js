@@ -1,6 +1,8 @@
 module.exports = {
   "development": {
-    "secret": "my furry cat house"
+    "secret": "my furry cat house",
+    "database": "mongodb://localhost/reddex",
+
   },
   "production": {
     "secret": "my furry cat house"
