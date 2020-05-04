@@ -40,12 +40,17 @@ app.get('/', async (req, res, next) => {
       upvotes,
       keywords,
       seriesOnly,
-      omitSeries
+      omitSeries,
+      limit,
+      skip
     } = req.query;
+
 
     const posts = await Post.find({
       visitor_token: req.headers.visitortoken
-
+    },null, {
+      skip: Number(skip),
+      limit: Number(limit) 
     })
     
     res.send(posts)
