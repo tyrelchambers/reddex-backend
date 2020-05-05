@@ -7,7 +7,8 @@ module.exports = {
     "database": "mongodb://localhost/reddex",
   },
   "production": {
-    "secret": "my furry cat house"
+    "secret": "my furry cat house",
+    "database": `mongodb+srv://Admin:${process.env.PROD_MONGO_PASSWORD}@reddex1-srvlk.mongodb.net/test?retryWrites=true&w=majority`
   },
   "staging": {
     "secret": "my furry cat house",
