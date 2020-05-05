@@ -1,6 +1,8 @@
 import express from 'express';
 import { authHandler } from '../../middleware/middleware';
 import User from '../../db/Models/User'
+import jwt from 'jsonwebtoken'
+import config from '../../config'
 
 const app = express.Router();
 
@@ -55,6 +57,15 @@ app.post('/saveTokens', authHandler, async (req ,res) => {
 
   }
 });
+
+app.get('/visitorToken', async (req, res, next) => {
+  try {
+    const token = jwt.sign({}, config.development.secret);
+    res.send(token)
+  } catch (error) {
+    next(error)
+  }
+})
 
 
 module.exports = app;
