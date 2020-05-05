@@ -29,8 +29,9 @@ app.post('/save', async (req, res, next) => {
       visitor_token: req.headers.visitortoken
     })
 
-    const posts = await Post.create(toInsert)
-    const results = posts.splice(0, 100);
+    Post.create(toInsert)
+    const results = req.body.splice(0, 100);
+    
     
     res.send(results)
   } catch (error) {
