@@ -1,10 +1,15 @@
 import express from 'express'
 import Post from '../../db/Models/PostMongoose'
-
+import jwt from 'jsonwebtoken';
+import config from '../../config'
 const app = express.Router();
 
 app.post('/save', async (req, res, next) => {
   try {
+    await jwt.verify(req.headers.visitortoken, config.development.secret)
+    
+    if (!verified) throw new Error("Something went wrong")
+
     const toInsert = req.body.map(x => ({
       author: x.author,
       title: x.title,
@@ -41,6 +46,8 @@ app.get('/', async (req, res, next) => {
       seriesOnly,
       excludeSeries
     } = req.query;
+
+    await jwt.verify(req.headers.visitortoken, config.development.secret)
 
     let resLimit = 100;
     let page = req.query.page || 1;
