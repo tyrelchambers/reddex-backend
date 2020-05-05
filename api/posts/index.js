@@ -6,10 +6,11 @@ const app = express.Router();
 
 app.post('/save', async (req, res, next) => {
   try {
-    await jwt.verify(req.headers.visitortoken, config.development.secret)
+    jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
+      if (err) throw new Error("Visitor token invalid")
+      return true
+    })
     
-    if (!verified) throw new Error("Something went wrong")
-
     const toInsert = req.body.map(x => ({
       author: x.author,
       title: x.title,
@@ -47,7 +48,10 @@ app.get('/', async (req, res, next) => {
       excludeSeries
     } = req.query;
 
-    await jwt.verify(req.headers.visitortoken, config.development.secret)
+    jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
+      if (err) throw new Error("Visitor token invalid")
+      return true
+    })
 
     let resLimit = 100;
     let page = req.query.page || 1;
