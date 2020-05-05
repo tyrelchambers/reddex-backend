@@ -34,11 +34,13 @@ const app = express();
 const database = config[config.env].database;
 const db = mongoose.connection;
 
+
+
 app.use(helmet())
 
 const port = process.env.PORT || '3001';
 app.use(bodyParser.json({
-  limit:30000000000000
+  limit:30000000
 }));
 
 app.use(bodyParser.urlencoded({ 

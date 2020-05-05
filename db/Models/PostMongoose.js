@@ -18,8 +18,18 @@ const postSchema = new Schema({
     type: Boolean,
     default: false
   },
-  visitor_token: String
+  visitor_token: String,
+  page: Number
 })
-
+postSchema.index({
+  title: "text",
+  self_text: "text",
+  author: 'text'
+}, {
+  weights: {
+    self_text: 15,
+    title: 7
+  }
+})
 const Post = mongoose.model("Post", postSchema)
 module.exports = Post
