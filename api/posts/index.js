@@ -48,6 +48,9 @@ app.get('/', async (req, res, next) => {
     const query = {
       visitor_token: req.headers.visitortoken,
     }
+    const projections = {
+
+    }
 
     if (upvotes > 0) {
       if (operator === ">") {
@@ -71,7 +74,7 @@ app.get('/', async (req, res, next) => {
 
     if (keywords) {
       query.$text = {
-        $search: keywords,
+        $search: `\"${keywords}\"`,
         $caseSensitive: false,
       }
     }
@@ -89,14 +92,15 @@ app.get('/', async (req, res, next) => {
 
     const posts = await Post.find(query,null, {
       limit: resLimit,
-      skip: ((resLimit * page) - resLimit) 
+      skip: ((resLimit * page) - resLimit)
+      
     })
 
     page++
 
     res.send({
       posts,
-      nextPage: posts.length === 100 ? page : null
+      nextPage: posts.length === 100 ? page : -1
     })
   } catch (error) {
     next(error)
