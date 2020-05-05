@@ -48,9 +48,6 @@ app.get('/', async (req, res, next) => {
     const query = {
       visitor_token: req.headers.visitortoken,
     }
-    const projections = {
-
-    }
 
     if (upvotes > 0) {
       if (operator === ">") {
