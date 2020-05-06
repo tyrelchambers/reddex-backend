@@ -38,7 +38,7 @@ app.post('/submit', async (req, res, next) => {
       sent_to_others: sent_to_others_formatted,
       story_title,
       body,
-      user_id: subdomain.User.user_id
+      user_id: subdomain.User.uuid
     })
 
     emailCon
