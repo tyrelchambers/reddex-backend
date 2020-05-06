@@ -171,14 +171,12 @@ app.get('/', async (req, res, next) => {
       where: {
         website_id: sid
       },
+      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
     }).then(res => {
       if (res) {
-        console.log(res, '----- res')
         return res.dataValues
       }
     })
-
-    console.log(form, '--- before init')
 
     if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
       await OptionsAuthor.findOrCreate({
@@ -220,10 +218,6 @@ app.get('/', async (req, res, next) => {
         return res.dataValues
       }
     })
-
-    console.log(formRefetched, '--- after init')
-
-
 
     res.send(formRefetched)
   }
