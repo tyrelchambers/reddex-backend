@@ -178,6 +178,8 @@ app.get('/', async (req, res, next) => {
       }
     })
 
+    console.log(form, '--- before init')
+
     if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
       await OptionsAuthor.findOrCreate({
         where: {
@@ -208,6 +210,7 @@ app.get('/', async (req, res, next) => {
     }
 
     form = await SubmissionFormOptions.findOne({
+
       where: {
         website_id: sid
       },
@@ -217,6 +220,9 @@ app.get('/', async (req, res, next) => {
         return res.dataValues
       }
     })
+
+    console.log(form, '--- after init')
+
 
 
     res.send(form)
