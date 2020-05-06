@@ -12,7 +12,8 @@ module.exports = {
     user : process.env.PGUSER,
     database : process.env.PGDATABASE,
     password: process.env.PGPASSWORD,
-    port: process.env.PGPORT
+    port: process.env.PGPORT,
+    logging: false
   },
   staging: {
     host: process.env.STAGING_HOST,
