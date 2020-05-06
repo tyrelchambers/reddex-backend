@@ -30,9 +30,9 @@ app.post('/save', async (req, res, next) => {
     })
 
     Post.create(toInsert)
-    const results = req.body.splice(0, 100);
+    const results = req.body.slice(0, 100);
     
-    
+  
     res.send(results)
   } catch (error) {
     next(error)
