@@ -167,13 +167,14 @@ app.get('/', async (req, res, next) => {
       sid
     } = req.query;
 
-    let form = await SubmissionFormOptions.findOne({
+    const form = await SubmissionFormOptions.findOne({
       where: {
         website_id: sid
       },
       include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
     }).then(res => {
       if (res) {
+        console.log(res, '----- res')
         return res.dataValues
       }
     })
@@ -209,7 +210,7 @@ app.get('/', async (req, res, next) => {
   
     }
 
-    form = await SubmissionFormOptions.findOne({
+    const formRefetched = await SubmissionFormOptions.findOne({
 
       where: {
         website_id: sid
@@ -221,11 +222,11 @@ app.get('/', async (req, res, next) => {
       }
     })
 
-    console.log(form, '--- after init')
+    console.log(formRefetched, '--- after init')
 
 
 
-    res.send(form)
+    res.send(formRefetched)
   }
 
   catch(err) {
