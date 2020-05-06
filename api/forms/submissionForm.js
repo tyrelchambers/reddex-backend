@@ -167,7 +167,7 @@ app.get('/', async (req, res, next) => {
       sid
     } = req.query;
 
-    const form = await SubmissionFormOptions.findOne({
+    const form = await SubmissionFormOptions.findOrCreate({
       where: {
         website_id: sid
       },
