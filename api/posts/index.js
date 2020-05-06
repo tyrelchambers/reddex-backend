@@ -22,7 +22,7 @@ app.post('/save', async (req, res, next) => {
       link_flair_text: x.link_flair_text,
       post_id: x.post_id,
       subreddit: x.subreddit,
-      upvote_ratio: Math.round(x.upvote_ratio),
+      upvote_ratio: Math.round(x.upvote_ratio.toFixed(2) * 100),
       visitor_token: req.headers.visitortoken
     }))
     await Post.deleteMany({
