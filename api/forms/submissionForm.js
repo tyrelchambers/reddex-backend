@@ -171,7 +171,6 @@ app.get('/', async (req, res, next) => {
       where: {
         website_id: sid
       },
-      include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
     }).then(res => {
       if (res) {
         console.log(res, '----- res')

@@ -142,6 +142,7 @@ app.get('/config', authHandler, async (req, res, next) => {
         return res.dataValues
       }
     })
+    
 
     if (website) {
       const form = await SubmissionFormOptions.findOne({
@@ -152,6 +153,14 @@ app.get('/config', authHandler, async (req, res, next) => {
       }).then(res => {
         if (res) {
           return res.dataValues
+        }
+      })
+
+      await User.update({
+        website_id: website.uuid
+      }, {
+        where: {
+          uuid: res.locals.userId
         }
       })
   
