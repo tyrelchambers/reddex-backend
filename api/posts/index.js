@@ -30,7 +30,7 @@ app.post('/save', async (req, res, next) => {
     })
 
     Post.create(toInsert)
-    const results = req.body.slice(0, 100);
+    const results = toInsert.slice(0, 100);
     
   
     res.send(results)
