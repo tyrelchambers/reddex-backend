@@ -19,7 +19,8 @@ const postSchema = new Schema({
     default: false
   },
   visitor_token: String,
-  page: Number
+  page: Number,
+  readTime: Number
 })
 postSchema.index({
   title: "text",

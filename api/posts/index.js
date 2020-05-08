@@ -11,6 +11,21 @@ app.post('/save', async (req, res, next) => {
       return true
     })
     
+    const avgReadingTime = (text) => {
+
+      const wordsPerMinute = 200; // Average case.
+      let result;
+      
+      let textLength = text.split(" ").length; // Split by words
+      if(textLength > 0){
+        let value = Math.ceil(textLength / wordsPerMinute);
+        result = value;
+      }
+    
+      return result;
+    }
+
+    
     const toInsert = req.body.map(x => ({
       author: x.author,
       title: x.title,
@@ -23,12 +38,14 @@ app.post('/save', async (req, res, next) => {
       post_id: x.post_id,
       subreddit: x.subreddit,
       upvote_ratio: x.upvote_ratio.toFixed(2),
-      visitor_token: req.headers.visitortoken
+      visitor_token: req.headers.visitortoken,
+      readTime: avgReadingTime(x.self_text)
     }))
     await Post.deleteMany({
       visitor_token: req.headers.visitortoken
     })
 
+    
     Post.create(toInsert)
     const results = toInsert.slice(0, 100);
     
@@ -46,7 +63,9 @@ app.get('/', async (req, res, next) => {
       upvotes,
       keywords,
       seriesOnly,
-      excludeSeries
+      excludeSeries,
+      readTime,
+      readTimeOperator
     } = req.query;
 
     jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
@@ -64,7 +83,7 @@ app.get('/', async (req, res, next) => {
     if (upvotes > 0) {
       if (operator === ">") {
         query.ups = {
-          $gt: Number(upvotes)
+          $gte: Number(upvotes)
         }
       }
 
@@ -76,7 +95,21 @@ app.get('/', async (req, res, next) => {
 
       if (operator === "<") {
         query.ups = {
-          $lt: Number(upvotes)
+          $lte: Number(upvotes)
+        }
+      }
+    }
+
+    if (readTime > 0) {
+      if (readTimeOperator === ">") {
+        query.readTime = {
+          $gte: Number(readTime)
+        }
+      }
+
+      if (readTimeOperator === "<") {
+        query.readTime = {
+          $lte: Number(readTime)
         }
       }
     }
