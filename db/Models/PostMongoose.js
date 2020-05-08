@@ -21,7 +21,8 @@ const postSchema = new Schema({
   visitor_token: String,
   page: Number,
   readTime: Number
-})
+},{ timestamps: { createdAt: 'created_at' } })
+
 postSchema.index({
   title: "text",
   self_text: "text",
