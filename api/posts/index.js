@@ -41,16 +41,16 @@ app.post('/save', async (req, res, next) => {
       visitor_token: req.headers.visitortoken,
       readTime: avgReadingTime(x.self_text)
     }))
+    
     await Post.deleteMany({
       visitor_token: req.headers.visitortoken
     })
 
     
-    Post.create(toInsert)
-    const results = toInsert.slice(0, 100);
+    const posts = await Post.create(toInsert)
     
   
-    res.send(results)
+    res.send(posts)
   } catch (error) {
     next(error)
   }
