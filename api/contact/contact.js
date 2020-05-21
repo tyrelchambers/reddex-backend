@@ -63,7 +63,7 @@ app.get('/name', authHandler, async (req, res, next) => {
   }
 })
 
-app.post('/update', authHandler, async (req, res, next) => {
+app.patch('/update', authHandler, async (req, res, next) => {
   try {
     const name = req.sanitize(req.body.name);
     const notes = req.sanitize(req.body.notes);
@@ -103,6 +103,29 @@ app.delete('/delete', authHandler, async (req, res, next) => {
 
   catch(err) {
     next(err);
+  }
+})
+
+app.get('/:id', authHandler, async (req, res, next) => {
+  try {
+    const {
+      id
+    } = req.params;
+
+    const contact = await Contact.findOne({
+      where: {
+        uuid: id,
+        user_id: res.locals.userId
+      }
+    }).then(res => {
+      if (res) {
+        return res.dataValues
+      }
+    })
+
+    res.send(contact)
+  } catch (error) {
+    next(error)
   }
 })
 
