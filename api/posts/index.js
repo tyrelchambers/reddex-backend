@@ -48,9 +48,7 @@ app.post('/save', async (req, res, next) => {
 
     
     const posts = await Post.create(toInsert)
-    
-  
-    res.send(posts)
+    res.send(posts.slice(0,101))
   } catch (error) {
     next(error)
   }
