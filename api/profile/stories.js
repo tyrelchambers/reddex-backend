@@ -122,8 +122,10 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
     const {
       permission,
       subreddit,
-      tag
+      tag,
+      keywords
     } = req.query
+
 
     let headers = [];
 
@@ -143,6 +145,15 @@ app.get('/reading_list', authHandler, async (req, res, next) => {
       },
       include: {
         model: Tag
+      }
+    }
+
+    if (keywords) {
+      query.where = {
+        permission,
+        self_text: {
+          [Op.substring]: keywords
+        }
       }
     }
 
