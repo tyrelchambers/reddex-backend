@@ -9,17 +9,15 @@ app.post('/', authHandler, async (req, res, next) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    const message = await User.update({
+    await User.update({
       repeat_message: text
     }, {
       where: {
         uuid: userId
-      },
-      attributes: ['repeat_message'],
-      returning: true
-    }).then(res => res.dataValues)
+      }
+    })
     
-    res.send(message);
+    res.sendStatus(200);
   }
 
   catch(err) {
