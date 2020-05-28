@@ -48,7 +48,12 @@ app.post('/save', async (req, res, next) => {
 
     
     const posts = await Post.create(toInsert)
-    res.send(posts.slice(0,101))
+
+    res.send({
+      posts,
+      maxPages: Math.round(posts.length / 25)
+
+    })
   } catch (error) {
     next(error)
   }
@@ -71,7 +76,7 @@ app.get('/', async (req, res, next) => {
       return true
     })
 
-    let resLimit = 100;
+    let resLimit = 25;
     let page = req.query.page || 1;
 
     const query = {
@@ -136,11 +141,13 @@ app.get('/', async (req, res, next) => {
       
     })
 
-    page++
+    const count = await Post.count(query);
 
     res.send({
       posts,
-      nextPage: posts.length === 100 ? page : -1
+      nextPage: posts.length === resLimit ? page : -1,
+      maxPages: Math.round(count / resLimit)
+
     })
   } catch (error) {
     next(error)
