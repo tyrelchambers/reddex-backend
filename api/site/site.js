@@ -88,7 +88,7 @@ app.post('/update', authHandler, async (req, res, next) => {
     const submission_title = req.sanitize(req.body.submission_title);
     const rules = req.sanitize(req.body.rules);
     const thumbnail = req.body.thumbnail;
-
+    
     const website = await Website.update({
       subdomain,
       title,
@@ -141,8 +141,7 @@ app.get('/config', authHandler, async (req, res, next) => {
       if (res) {
         return res.dataValues
       }
-    })
-    
+    })    
 
     if (website) {
       const form = await SubmissionFormOptions.findOne({
