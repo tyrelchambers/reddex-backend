@@ -26,6 +26,9 @@ const Website = sequelize.define("Website", {
   patreon: {
     type: DataTypes.STRING
   },
+  facebook: {
+    type: DataTypes.STRING
+  },
   youtube: {
     type: DataTypes.STRING
   },

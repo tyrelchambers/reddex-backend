@@ -141,8 +141,7 @@ app.get('/config', authHandler, async (req, res, next) => {
       if (res) {
         return res.dataValues
       }
-    })
-    
+    })    
 
     if (website) {
       const form = await SubmissionFormOptions.findOne({
