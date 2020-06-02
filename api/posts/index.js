@@ -4,28 +4,27 @@ import jwt from 'jsonwebtoken';
 import config from '../../config'
 const app = express.Router();
 
+const avgReadingTime = (text) => {
+
+  const wordsPerMinute = 200; // Average case.
+  let result;
+  
+  let textLength = text.split(" ").length; // Split by words
+  if(textLength > 0){
+    let value = Math.ceil(textLength / wordsPerMinute);
+    result = value;
+  }
+
+  return result;
+}
+
 app.post('/save', async (req, res, next) => {
   try {
     jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
       if (err) throw new Error("Visitor token invalid")
       return true
     })
-    
-    const avgReadingTime = (text) => {
-
-      const wordsPerMinute = 200; // Average case.
-      let result;
-      
-      let textLength = text.split(" ").length; // Split by words
-      if(textLength > 0){
-        let value = Math.ceil(textLength / wordsPerMinute);
-        result = value;
-      }
-    
-      return result;
-    }
-
-    
+        
     const toInsert = req.body.map(x => ({
       author: x.author,
       title: x.title,
@@ -42,11 +41,13 @@ app.post('/save', async (req, res, next) => {
       readTime: avgReadingTime(x.self_text)
     }))
     
+    console.log('### pre-delete')
     await Post.deleteMany({
       visitor_token: req.headers.visitortoken
     })
 
-    
+    console.log('### pre-creaete')
+
     const posts = await Post.create(toInsert)
 
     res.send({
