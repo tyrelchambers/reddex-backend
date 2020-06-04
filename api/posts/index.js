@@ -18,6 +18,20 @@ const avgReadingTime = (text) => {
   return result;
 }
 
+app.delete('/delete', async (req, res, next) => {
+  try {
+    await Post.deleteMany({
+      visitor_token: req.headers.visitortoken
+    })
+
+    res.sendStatus(200)
+  }
+
+  catch(err) {
+    next(err)
+  }
+})
+
 app.post('/save', async (req, res, next) => {
   try {
     jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
@@ -40,21 +54,10 @@ app.post('/save', async (req, res, next) => {
       visitor_token: req.headers.visitortoken,
       readTime: avgReadingTime(x.self_text)
     }))
-    
-    console.log('### pre-delete')
-    await Post.deleteMany({
-      visitor_token: req.headers.visitortoken
-    })
-
-    console.log('### pre-creaete')
 
     const posts = await Post.create(toInsert)
 
-    res.send({
-      posts,
-      maxPages: Math.round(posts.length / 25)
-
-    })
+    res.send(posts)
   } catch (error) {
     next(error)
   }
@@ -146,7 +149,6 @@ app.get('/', async (req, res, next) => {
 
     res.send({
       posts,
-      nextPage: posts.length === resLimit ? page : -1,
       maxPages: Math.round(count / resLimit)
 
     })
