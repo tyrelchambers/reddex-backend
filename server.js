@@ -36,7 +36,7 @@ const db = mongoose.connection;
 
 app.use(helmet());
 
-const port = process.env.PORT || "3001";
+const port = process.env.PORT || "4000";
 app.use(
   bodyParser.json({
     limit: 30000000,

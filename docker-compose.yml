@@ -1,17 +1,40 @@
 version: "3.3"
 services:
   server:
-    container_name: reddex_backend
+    container_name: reddex_server
     image: tyrelchambers/reddex
     ports:
       - "4000:4000"
     env_file:
       - .env
-    environment:
-      NODE_ENV: "${NODE_ENV}"
     restart: unless-stopped
+    command: npm start
+    depends_on:
+      - db
+      - mongodb
+  db:
+    container_name: reddex_db
+    image: postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - pg_dump:/home/reddex-backend/pg_dump
+    restart: unless-stopped
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "6000:6000"
+    restart: unless-stopped
+
 
 networks:
   default:
     external:
-      name: backend
+      name: reddex_backend
+volumes:
+  postgres_data:
+  pg_dump:

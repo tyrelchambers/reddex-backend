@@ -13,10 +13,9 @@ COPY --chown=node:node . .
 
 RUN apk add --update nodejs npm
 
-
 COPY package*.json ./
 
-RUN npm install --unsafe-perm
+RUN npm install --prefix ./
 
 RUN npm install -g sequelize-cli
 
