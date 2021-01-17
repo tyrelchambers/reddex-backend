@@ -32,7 +32,7 @@ const mongoose = require("mongoose");
 
 const app = express();
 const database = config[config.env].database;
-// const db = mongoose.connection;
+const db = mongoose.connection;
 
 app.use(helmet());
 
@@ -51,7 +51,7 @@ app.use(
 app.use(expressSanitizer());
 app.use(cors());
 app.use(morgan("combined"));
-// mongoose.connect(database, { useNewUrlParser: true });
+mongoose.connect(database, { useNewUrlParser: true });
 
 app.use("/api/auth/", [register, login]);
 app.use("/api/profile", [profile, saveAuthors, stories]);
@@ -71,8 +71,8 @@ app.use("/api/tags", tags);
 app.use("/api/tag_story", tag_story);
 app.use("/api/posts", posts);
 
-// db.on("error", console.error.bind(console, "Connection error - Mongodb"));
-// db.once("open", () => console.log("Connected sucessfully to Mongo database"));
+db.on("error", console.error.bind(console, "Connection error - Mongodb"));
+db.once("open", () => console.log("Connected sucessfully to Mongo database"));
 
 app.use(function (err, req, res, next) {
   console.error(err.message);
