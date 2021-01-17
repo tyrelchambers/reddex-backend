@@ -1,12 +1,12 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const SubmittedStories = require("../../db/Models/SubmittedStories");
+const db = require("../../models");
 
 const app = express.Router();
 
 app.get("/", authHandler, async (req, res, next) => {
   try {
-    const stories = await SubmittedStories.findAll({
+    const stories = await db.models.submitted_stories.findAll({
       where: {
         user_id: res.locals.userId,
       },
@@ -24,7 +24,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
   try {
     const { uuid } = req.query;
 
-    await SubmittedStories.destroy({
+    await db.models.submitted_stories.destroy({
       where: {
         uuid,
       },
@@ -41,15 +41,17 @@ app.get("/:id", authHandler, async (req, res, next) => {
     const { id } = req.params;
 
     const uuid = new URLSearchParams(id).get("id");
-    const story = await SubmittedStories.findOne({
-      where: {
-        uuid,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const story = await db.models.submitted_stories
+      .findOne({
+        where: {
+          uuid,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(story);
   } catch (error) {

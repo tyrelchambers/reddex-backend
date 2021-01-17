@@ -5,7 +5,6 @@ module.exports = {
       uuid: {
         type: Sequelize.UUID,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
       },
       createdAt: {

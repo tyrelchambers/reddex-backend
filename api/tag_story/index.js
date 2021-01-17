@@ -1,8 +1,6 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const TagStory = require("../../db/Models/TagStory");
-const Tag = require("../../db/Models/Tag");
-const Story = require("../../db/Models/Story");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -15,7 +13,7 @@ app.post("/save", authHandler, async (req, res, next) => {
       tag_id: x.uuid,
     }));
 
-    await TagStory.bulkCreate(tagsToInsert);
+    await db.models.tag_story.bulkCreate(tagsToInsert);
 
     res.sendStatus(200);
   } catch (error) {
@@ -27,9 +25,9 @@ app.delete("/remove", authHandler, async (req, res, next) => {
   try {
     const { tag } = req.body;
 
-    await TagStory.destroy({
+    await db.models.tag_story.destroy({
       where: {
-        uuid: tag.TagStory.uuid,
+        uuid: tag.tag_story.uuid,
       },
     });
 
@@ -41,12 +39,14 @@ app.delete("/remove", authHandler, async (req, res, next) => {
 
 app.get("/", authHandler, async (req, res, next) => {
   try {
-    const tagsInUse = await Tag.findAll({
-      where: {
-        user_id: res.locals.userId,
-      },
-      include: Story,
-    }).then((res) => res.filter((x) => x.Stories.length > 0));
+    const tagsInUse = await db.models.tags
+      .findAll({
+        where: {
+          user_id: res.locals.userId,
+        },
+        include: db.models.stories,
+      })
+      .then((res) => res.filter((x) => x.stories.length > 0));
 
     res.send(tagsInUse);
   } catch (error) {

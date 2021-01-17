@@ -1,7 +1,7 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const User = require("../../db/Models/User");
 const Axios = require("axios");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -20,7 +20,7 @@ app.post("/getTokens", authHandler, async (req, res, next) => {
 
     const { access_token, expires_in, refresh_token } = tokens;
 
-    await User.update(
+    await db.models.user.update(
       {
         patreon_access_token: access_token,
         patreon_access_expire: expires_in,
@@ -42,16 +42,18 @@ app.post("/getTokens", authHandler, async (req, res, next) => {
 
 app.get("/identity", authHandler, async (req, res, next) => {
   try {
-    const user = await User.findOne({
-      where: {
-        uuid: res.locals.userId,
-      },
-      attributes: ["patreon_access_token"],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          uuid: res.locals.userId,
+        },
+        attributes: ["patreon_access_token"],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (!user.patreon_access_token) {
       return res.sendStatus(200);
@@ -106,6 +108,10 @@ app.get("/identity", authHandler, async (req, res, next) => {
       tier = "pro";
     }
 
+    if (payload.payment === 5000) {
+      tier = "omega";
+    }
+
     await User.update(
       {
         patreon_tier: tier,
@@ -129,16 +135,18 @@ app.get("/identity", authHandler, async (req, res, next) => {
 
 app.get("/getUserIdentity", authHandler, async (req, res, next) => {
   try {
-    const user = await User.findOne({
-      where: {
-        uuid: res.locals.userId,
-      },
-      attributes: ["patreon_tier", "active_patron", "patreon_connected"],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          uuid: res.locals.userId,
+        },
+        attributes: ["patreon_tier", "active_patron", "patreon_connected"],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(user);
   } catch (error) {
@@ -148,7 +156,7 @@ app.get("/getUserIdentity", authHandler, async (req, res, next) => {
 
 app.delete("/disconnect", authHandler, async (req, res, next) => {
   try {
-    await User.update(
+    await db.models.user.update(
       {
         patreon_tier: null,
         active_patron: null,

@@ -1,28 +1,29 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const Tag = require("../../db/Models/Tag");
 const { Op } = require("sequelize");
-const Story = require("../../db/Models/Story");
+const db = require("../../models");
 const app = express.Router();
 
 app.post("/save", authHandler, async (req, res, next) => {
   try {
     const { tag } = req.body;
 
-    const existingTag = await Tag.findOne({
-      where: {
-        tag: tag.toLowerCase(),
-        user_id: res.locals.userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const existingTag = await db.models.tags
+      .findOne({
+        where: {
+          tag: tag.toLowerCase(),
+          user_id: res.locals.userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (existingTag) throw new Error("Tag already exists");
 
-    const newTag = await Tag.create(
+    const newTag = await db.models.tags.create(
       {
         tag,
         user_id: res.locals.userId,
@@ -40,7 +41,7 @@ app.post("/save", authHandler, async (req, res, next) => {
 
 app.get("/", authHandler, async (req, res, next) => {
   try {
-    const tags = await Tag.findAll({
+    const tags = await db.models.tags.findAll({
       where: {
         user_id: res.locals.userId,
       },
@@ -58,7 +59,7 @@ app.delete("/:id", authHandler, async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    await Tag.destroy({
+    await db.models.tags.destroy({
       where: {
         uuid: id,
         user_id: res.locals.userId,
@@ -75,14 +76,16 @@ app.get("/tag", authHandler, async (req, res, next) => {
   try {
     const { tag } = req.query;
 
-    const tags = await Tag.findAll({
-      where: {
-        user_id: res.locals.userId,
-        tag: {
-          [Op.substring]: `%${tag}%`,
+    const tags = await db.models.tags
+      .findAll({
+        where: {
+          user_id: res.locals.userId,
+          tag: {
+            [Op.substring]: `%${tag}%`,
+          },
         },
-      },
-    }).then((x) => x.map((x) => x.dataValues));
+      })
+      .then((x) => x.map((x) => x.dataValues));
 
     res.send(tags);
   } catch (error) {
@@ -94,26 +97,32 @@ app.get("/:story_id/available", authHandler, async (req, res, next) => {
   try {
     const { story_id } = req.params;
 
-    const tags = await Tag.findAll({
-      where: {
-        user_id: res.locals.userId,
-      },
-    }).then((x) => x.map((x) => x.dataValues.uuid));
+    const tags = await db.models.tags
+      .findAll({
+        where: {
+          user_id: res.locals.userId,
+        },
+      })
+      .then((x) => x.map((x) => x.dataValues.uuid));
 
-    const storyTags = await Story.findOne({
-      where: {
-        uuid: story_id,
-      },
-      include: Tag,
-    }).then((x) => x.dataValues.Tags.map((x) => x.dataValues.uuid));
+    const storyTags = await db.models.stories
+      .findOne({
+        where: {
+          uuid: story_id,
+        },
+        include: db.models.tags,
+      })
+      .then((x) => x.dataValues.tags.map((x) => x.dataValues.uuid));
 
     const available = tags.filter((x) => !storyTags.includes(x));
 
-    const availableTags = await Tag.findAll({
-      where: {
-        uuid: [...available],
-      },
-    }).then((x) => x.map((x) => x.dataValues));
+    const availableTags = await db.models.tags
+      .findAll({
+        where: {
+          uuid: [...available],
+        },
+      })
+      .then((x) => x.map((x) => x.dataValues));
 
     res.send(availableTags);
   } catch (error) {

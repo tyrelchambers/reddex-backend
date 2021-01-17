@@ -63,30 +63,33 @@ app.put("/save", authHandler, async (req, res, next) => {
   try {
     const {
       enabled,
-      OptionsAuthor: author,
-      OptionsEmail: email,
-      OptionsSentToOther: sent_to_others,
-      OptionsTag: tags,
-      OptionsStoryTitle: story_title,
+      options_author: author,
+      options_email: email,
+      options_sent_to_others: sent_to_others,
+      options_tags: tags,
+      options_story_title: story_title,
       options_id,
       website,
     } = req.body;
-    await SubmissionFormOptions.update(
-      {
-        enabled,
-      },
-      {
-        where: {
-          website_id: website,
-        },
-      }
-    ).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
 
-    await OptionsAuthor.update(
+    await db.models.submission_form_options
+      .update(
+        {
+          enabled,
+        },
+        {
+          where: {
+            website_id: website,
+          },
+        }
+      )
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
+
+    await db.models[options_author].update(
       {
         value: author.value,
         label: author.label,
@@ -101,7 +104,7 @@ app.put("/save", authHandler, async (req, res, next) => {
       }
     );
 
-    await OptionsEmail.update(
+    await db.models[options_email].update(
       {
         value: email.value,
         label: email.label,
@@ -116,7 +119,7 @@ app.put("/save", authHandler, async (req, res, next) => {
       }
     );
 
-    await OptionsSentToOthers.update(
+    await db.mdoels[options_sent_to_others].update(
       {
         value: sent_to_others.value,
         label: sent_to_others.label,
@@ -131,7 +134,7 @@ app.put("/save", authHandler, async (req, res, next) => {
       }
     );
 
-    await OptionsTags.update(
+    await db.models[options_tags].update(
       {
         value: tags.value,
         label: tags.label,
@@ -146,7 +149,7 @@ app.put("/save", authHandler, async (req, res, next) => {
       }
     );
 
-    await OptionsStoryTitle.update(
+    await db.models[options_story_title].update(
       {
         value: story_title.value,
         label: story_title.label,
@@ -171,73 +174,77 @@ app.get("/", async (req, res, next) => {
   try {
     const { sid } = req.query;
 
-    const form = await SubmissionFormOptions.findOne({
-      where: {
-        website_id: sid,
-      },
-      include: [
-        OptionsAuthor,
-        OptionsTags,
-        OptionsEmail,
-        OptionsSentToOthers,
-        OptionsStoryTitle,
-      ],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const form = await db.models.submission_form_options
+      .findOne({
+        where: {
+          website_id: sid,
+        },
+        include: [
+          options_author,
+          options_tags,
+          options_email,
+          options_sent_to_others,
+          options_story_title,
+        ],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (
-      !form.OptionsAuthor ||
-      !form.OptionsEmail ||
-      !form.OptionsTag ||
-      !form.OptionsStoryTitle ||
-      !form.OptionsSentToOther
+      !form.options_author ||
+      !form.options_email ||
+      !form.options_tags ||
+      !form.options_story_title ||
+      !form.options_sent_to_others
     ) {
-      await OptionsAuthor.findOrCreate({
+      await db.models.options_author.findOrCreate({
         where: {
           options_id: form.uuid,
         },
       });
-      await OptionsEmail.findOrCreate({
+      await db.models.options_email.findOrCreate({
         where: {
           options_id: form.uuid,
         },
       });
-      await OptionsSentToOthers.findOrCreate({
+      await db.models.options_sent_to_others.findOrCreate({
         where: {
           options_id: form.uuid,
         },
       });
-      await OptionsTags.findOrCreate({
+      await db.models.options_tags.findOrCreate({
         where: {
           options_id: form.uuid,
         },
       });
-      await OptionsStoryTitle.findOrCreate({
+      await db.models.options_story_title.findOrCreate({
         where: {
           options_id: form.uuid,
         },
       });
     }
 
-    const formRefetched = await SubmissionFormOptions.findOne({
-      where: {
-        website_id: sid,
-      },
-      include: [
-        OptionsAuthor,
-        OptionsTags,
-        OptionsEmail,
-        OptionsSentToOthers,
-        OptionsStoryTitle,
-      ],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const formRefetched = await db.models.submission_form_options
+      .findOne({
+        where: {
+          website_id: sid,
+        },
+        include: [
+          options_author,
+          options_tags,
+          options_email,
+          options_sent_to_others,
+          options_story_title,
+        ],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(formRefetched);
   } catch (err) {

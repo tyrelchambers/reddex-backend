@@ -2,10 +2,10 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn("stories_used", "user_Id", {
+    await queryInterface.addColumn("stories_used", "user_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Users",
+        model: "users",
         key: "uuid",
       },
       onDelete: "CASCADE",
@@ -14,7 +14,7 @@ module.exports = {
     await queryInterface.addColumn("stories_used", "post_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Users",
+        model: "users",
         key: "uuid",
       },
       onDelete: "CASCADE",
@@ -22,7 +22,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn("stories_used", "user_Id");
-    await queryInterface.removeColumn("stories_used", "post_Id");
+    await queryInterface.removeColumn("stories_used", "user_id");
+    await queryInterface.removeColumn("stories_used", "post_id");
   },
 };

@@ -1,5 +1,4 @@
 const express = require("express");
-const Website = require("../../db/Models/Website");
 const db = require("../../models");
 
 const app = express.Router();

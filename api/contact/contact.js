@@ -1,6 +1,5 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const Contact = require("../../db/Models/Contact");
 const db = require("../../models");
 
 const app = express.Router();

@@ -1,7 +1,6 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const AuthorsMessaged = require("../../db/Models/AuthorsMessaged");
-const StoriesUsed = require("../../db/Models/StoriesUsed");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -11,12 +10,12 @@ app.post("/saveAuthors", authHandler, async (req, res, next) => {
     const name = req.sanitize(req.body.name);
     const post_id = req.sanitize(req.body.post_id);
 
-    await AuthorsMessaged.create({
+    await db.models.authors_messaged.create({
       name,
       user_id: userId,
     });
 
-    await StoriesUsed.create({
+    await db.models.stories_used.create({
       post_id,
       user_id: userId,
     });
@@ -30,7 +29,7 @@ app.post("/saveAuthors", authHandler, async (req, res, next) => {
 app.get("/authors_messaged", authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const authors = await AuthorsMessaged.findAll({
+    const authors = await db.models.author_messaged.findAll({
       where: {
         user_id: userId,
       },

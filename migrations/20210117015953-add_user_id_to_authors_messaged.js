@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn("authors_messaged", "user_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Users",
+        model: "users",
         key: "uuid",
       },
       onDelete: "CASCADE",

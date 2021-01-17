@@ -1,24 +1,24 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
 const bcrypt = require("bcryptjs");
-
-const User = require("../../db/Models/User");
-const StoriesUsed = require("../../db/Models/StoriesUsed");
+const db = require("../../models");
 
 const app = express.Router();
 
 app.get("/auth", authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const user = await User.findOne({
-      where: {
-        uuid: userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          uuid: userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(user);
   } catch (err) {
@@ -30,7 +30,7 @@ app.post("/youtube", authHandler, async (req, res, next) => {
   try {
     const youtube_id = req.sanitize(req.body.youtube_id);
 
-    await User.update(
+    await db.models.user.update(
       {
         youtube_id,
       },
@@ -53,7 +53,7 @@ app.put("/update/email", authHandler, async (req, res, next) => {
 
     if (!email) throw new Error("No email provided");
 
-    const user = User.update(
+    const user = db.models.user.update(
       {
         email,
       },
@@ -80,15 +80,17 @@ app.put("/update/password", authHandler, async (req, res, next) => {
     if (!newPassword || !currentPassword)
       throw new Error("No passwords provided");
 
-    const user = await User.findOne({
-      where: {
-        uuid: res.locals.userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          uuid: res.locals.userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     const comparePasswords = await bcrypt.compareSync(
       currentPassword,
@@ -99,7 +101,7 @@ app.put("/update/password", authHandler, async (req, res, next) => {
 
     const hashNewPassword = await bcrypt.hashSync(newPassword, 10);
 
-    await User.update(
+    await db.models.user.update(
       {
         password: hashNewPassword,
       },
@@ -122,7 +124,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
 
     if (uuid !== res.locals.userId) throw new Error("Something went wrong");
 
-    await User.destroy({
+    await db.models.user.destroy({
       where: {
         uuid,
       },
@@ -137,7 +139,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
 app.get("/stories_used", authHandler, async (req, res, next) => {
   try {
     const id = res.locals.userId;
-    const stories = await StoriesUsed.findAll({
+    const stories = await db.models.stories_used.findAll({
       where: {
         user_id: id,
       },
@@ -154,7 +156,7 @@ app.get("/stories_used", authHandler, async (req, res, next) => {
 app.post("/reddit_profile", authHandler, async (req, res, next) => {
   try {
     const reddit_profile = req.body;
-    const user = await User.update(
+    const user = await db.models.user.update(
       {
         reddit_profile,
       },
@@ -175,19 +177,23 @@ app.get("/patreon_tier", async (req, res) => {
   try {
     const { user_id } = req.query;
 
-    const tier = await User.findOne({
-      where: {
-        uuid: user_id,
-      },
-      attributes: ["patreon_tier"],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const tier = await db.models.user
+      .findOne({
+        where: {
+          uuid: user_id,
+        },
+        attributes: ["patreon_tier"],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(tier);
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = app;

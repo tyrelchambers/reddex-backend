@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn("websites", "user_id", {
       type: Sequelize.UUID,
       references: {
-        model: "User",
+        model: "users",
         key: "uuid",
       },
     });

@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn("submission_form_options", "website_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Website",
+        model: "websites",
         key: "uuid",
       },
       onDelete: "CASCADE",

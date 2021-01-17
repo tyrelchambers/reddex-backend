@@ -5,7 +5,7 @@ module.exports = {
     await queryInterface.addColumn("tag_story", "user_id", {
       type: Sequelize.UUID,
       references: {
-        model: "User",
+        model: "users",
         key: "uuid",
       },
       onDelete: "CASCADE",
@@ -14,7 +14,7 @@ module.exports = {
     await queryInterface.addColumn("tag_story", "tag_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Tag",
+        model: "tags",
         key: "uuid",
       },
       onDelete: "CASCADE",
@@ -23,7 +23,7 @@ module.exports = {
     await queryInterface.addColumn("tag_story", "story_id", {
       type: Sequelize.UUID,
       references: {
-        model: "Story",
+        model: "stories",
         key: "uuid",
       },
       onDelete: "CASCADE",

@@ -5,26 +5,25 @@ module.exports = {
       uuid: {
         type: Sequelize.UUID,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
       },
       email: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       author: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       story_title: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
       },
       sent_to_others: {
-        type: DataTypes.BOOLEAN,
+        type: Sequelize.BOOLEAN,
       },
       tags: {
-        type: DataTypes.JSON,
+        type: Sequelize.JSON,
       },
       body: {
-        type: DataTypes.TEXT,
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,

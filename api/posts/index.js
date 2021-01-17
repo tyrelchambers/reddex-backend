@@ -1,5 +1,5 @@
 const express = require("express");
-const Post = require("../../db/Models/PostMongoose");
+const Post = require("../../models/PostMongoose");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
 const app = express.Router();

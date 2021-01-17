@@ -1,29 +1,23 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-
-const Website = require("../../db/Models/Website");
-const User = require("../../db/Models/User");
-const SubmissionFormOptions = require("../../db/Models/SubmissionFormOptions");
-const OptionsAuthor = require("../../db/Models/OptionsAuthor");
-const OptionsEmail = require("../../db/Models/OptionsEmail");
-const OptionsSentToOthers = require("../../db/Models/OptionsSentToOthers");
-const OptionsTags = require("../../db/Models/OptionsTags");
-const OptionsStoryTitle = require("../../db/Models/OptionsStoryTitle");
+const db = require("../../models");
 
 const app = express.Router();
 
 app.post("/activate", authHandler, async (req, res, next) => {
   try {
-    const website = await Website.create(
-      {
-        user_id: res.locals.userId,
-      },
-      {
-        returning: true,
-      }
-    ).then((res) => res.dataValues);
+    const website = await db.models.website
+      .create(
+        {
+          user_id: res.locals.userId,
+        },
+        {
+          returning: true,
+        }
+      )
+      .then((res) => res.dataValues);
 
-    await User.update(
+    await db.models.user.update(
       {
         website_id: website.uuid,
       },
@@ -34,28 +28,30 @@ app.post("/activate", authHandler, async (req, res, next) => {
       }
     );
 
-    const options = await SubmissionFormOptions.create(
-      {
-        website_id: website.uuid,
-      },
-      {
-        returning: true,
-      }
-    ).then((res) => res.dataValues);
+    const options = await db.models.submission_form_options
+      .create(
+        {
+          website_id: website.uuid,
+        },
+        {
+          returning: true,
+        }
+      )
+      .then((res) => res.dataValues);
 
-    await OptionsAuthor.create({
+    await db.models.options_author.create({
       options_id: options.uuid,
     });
-    await OptionsEmail.create({
+    await db.models.options_email.create({
       options_id: options.uuid,
     });
-    await OptionsSentToOthers.create({
+    await db.models.options_sent_to_others.create({
       options_id: options.uuid,
     });
-    await OptionsTags.create({
+    await db.models.options_tags.create({
       options_id: options.uuid,
     });
-    await OptionsStoryTitle.create({
+    await db.models.options_story_title.create({
       options_id: options.uuid,
     });
 
@@ -93,39 +89,41 @@ app.post("/update", authHandler, async (req, res, next) => {
     const rules = req.sanitize(req.body.rules);
     const thumbnail = req.body.thumbnail;
 
-    const website = await Website.update(
-      {
-        subdomain,
-        title,
-        twitter,
-        facebook,
-        instagram,
-        patreon,
-        youtube,
-        podcast,
-        accent,
-        theme,
-        introduction,
-        banner_url,
-        submission_form,
-        youtube_id,
-        youtube_timeline,
-        twitter_id,
-        twitter_timeline,
-        show_credit_link,
-        headline,
-        submission_title,
-        rules,
-        thumbnail,
-      },
-      {
-        where: {
-          user_id: res.locals.userId,
+    const website = await db.models.website
+      .update(
+        {
+          subdomain,
+          title,
+          twitter,
+          facebook,
+          instagram,
+          patreon,
+          youtube,
+          podcast,
+          accent,
+          theme,
+          introduction,
+          banner_url,
+          submission_form,
+          youtube_id,
+          youtube_timeline,
+          twitter_id,
+          twitter_timeline,
+          show_credit_link,
+          headline,
+          submission_title,
+          rules,
+          thumbnail,
         },
-        returning: true,
-        plain: true,
-      }
-    ).then((res) => res[1].dataValues);
+        {
+          where: {
+            user_id: res.locals.userId,
+          },
+          returning: true,
+          plain: true,
+        }
+      )
+      .then((res) => res[1].dataValues);
 
     res.send(website);
   } catch (err) {
@@ -135,36 +133,40 @@ app.post("/update", authHandler, async (req, res, next) => {
 
 app.get("/config", authHandler, async (req, res, next) => {
   try {
-    const website = await Website.findOne({
-      where: {
-        user_id: res.locals.userId,
-      },
-      include: SubmissionFormOptions,
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
-
-    if (website) {
-      const form = await SubmissionFormOptions.findOne({
+    const website = await db.models.website
+      .findOne({
         where: {
-          website_id: website.uuid,
+          user_id: res.locals.userId,
         },
-        include: [
-          OptionsAuthor,
-          OptionsTags,
-          OptionsEmail,
-          OptionsSentToOthers,
-          OptionsStoryTitle,
-        ],
-      }).then((res) => {
+        include: submission_form_options,
+      })
+      .then((res) => {
         if (res) {
           return res.dataValues;
         }
       });
 
-      await User.update(
+    if (website) {
+      const form = await db.models.submission_form_options
+        .findOne({
+          where: {
+            website_id: website.uuid,
+          },
+          include: [
+            options_author,
+            options_tags,
+            options_email,
+            options_sent_to_others,
+            options_story_title,
+          ],
+        })
+        .then((res) => {
+          if (res) {
+            return res.dataValues;
+          }
+        });
+
+      await db.models.user.update(
         {
           website_id: website.uuid,
         },
@@ -176,33 +178,33 @@ app.get("/config", authHandler, async (req, res, next) => {
       );
 
       if (
-        !form.OptionsAuthor ||
-        !form.OptionsEmail ||
-        !form.OptionsTag ||
-        !form.OptionsStoryTitle ||
-        !form.OptionsSentToOther
+        !form.options_author ||
+        !form.options_email ||
+        !form.options_tags ||
+        !form.options_story_title ||
+        !form.options_sent_to_others
       ) {
-        await OptionsAuthor.findOrCreate({
+        await db.models.options_author.findOrCreate({
           where: {
             options_id: form.uuid,
           },
         });
-        await OptionsEmail.findOrCreate({
+        await db.models.options_email.findOrCreate({
           where: {
             options_id: form.uuid,
           },
         });
-        await OptionsSentToOthers.findOrCreate({
+        await db.models.options_sent_to_others.findOrCreate({
           where: {
             options_id: form.uuid,
           },
         });
-        await OptionsTags.findOrCreate({
+        await db.models.options_tags.findOrCreate({
           where: {
             options_id: form.uuid,
           },
         });
-        await OptionsStoryTitle.findOrCreate({
+        await db.models.options_story_title.findOrCreate({
           where: {
             options_id: form.uuid,
           },
@@ -219,26 +221,30 @@ app.get("/", async (req, res, next) => {
   try {
     const { subdomain } = req.query;
 
-    const website = await Website.findOne({
-      where: {
-        subdomain,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const website = await db.models.website
+      .findOne({
+        where: {
+          subdomain,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
-    const patreon_tier = await User.findOne({
-      where: {
-        uuid: website.user_id,
-      },
-      attributes: ["patreon_tier"],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const patreon_tier = await db.models.user
+      .findOne({
+        where: {
+          uuid: website.user_id,
+        },
+        attributes: ["patreon_tier"],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send({
       website,
@@ -253,7 +259,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
   try {
     const { uuid } = req.query;
 
-    await Website.destroy({
+    await db.models.website.destroy({
       where: {
         uuid,
       },

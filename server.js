@@ -25,7 +25,7 @@ const recently_searched = require("./api/recently_searched/index");
 const patreon = require("./api/patreon/patreon");
 const tags = require("./api/tags/index");
 const tag_story = require("./api/tag_story/index");
-const models = require("./db/Models/index");
+const models = require("./models/index");
 const posts = require("./api/posts/index");
 const config = require("./config");
 const mongoose = require("mongoose");
@@ -36,7 +36,7 @@ const db = mongoose.connection;
 
 app.use(helmet());
 
-const port = process.env.PORT || "3001";
+const port = process.env.PORT || "4000";
 app.use(
   bodyParser.json({
     limit: 30000000,

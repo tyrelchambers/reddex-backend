@@ -1,6 +1,5 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const User = require("../../db/Models/User");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
 const db = require("../../models");
@@ -40,7 +39,7 @@ app.post("/saveTokens", authHandler, async (req, res) => {
     const access_token = req.sanitize(req.body.access_token);
     const refresh_token = req.sanitize(req.body.refresh_token);
 
-    await User.update(
+    await db.models.user.update(
       {
         access_token,
         refresh_token,

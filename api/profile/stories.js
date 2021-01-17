@@ -1,8 +1,6 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const Story = require("../../db/Models/Story");
 const { Op } = require("sequelize");
-const Tag = require("../../db/Models/Tag");
 const app = express.Router();
 
 app.post("/save_story", authHandler, async (req, res, next) => {
@@ -18,23 +16,25 @@ app.post("/save_story", authHandler, async (req, res, next) => {
     const permission = req.body.permission;
     const subreddit = req.sanitize(req.body.subreddit);
 
-    const existingStory = await Story.findOne({
-      where: {
-        author,
-        title,
-        self_text,
-        post_id,
-        user_id: res.locals.userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const existingStory = await db.models.stories
+      .findOne({
+        where: {
+          author,
+          title,
+          self_text,
+          post_id,
+          user_id: res.locals.userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (existingStory) throw new Error("Story already exists");
 
-    const stories = await Story.create({
+    const stories = await db.models.stories.create({
       author,
       title,
       self_text,
@@ -58,24 +58,26 @@ app.get("/get_story", authHandler, async (req, res, next) => {
   try {
     const { author, title, story_id } = req.query;
 
-    const story = await Story.findOne({
-      where: !story_id
-        ? {
-            user_id: res.locals.userId,
-            title: {
-              [Op.substring]: `${title.substring(0, title.length - 3)}`,
+    const story = await db.models.stories
+      .findOne({
+        where: !story_id
+          ? {
+              user_id: res.locals.userId,
+              title: {
+                [Op.substring]: `${title.substring(0, title.length - 3)}`,
+              },
+              author,
+            }
+          : {
+              uuid: story_id,
             },
-            author,
-          }
-        : {
-            uuid: story_id,
-          },
-      include: Tag,
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+        include: Tag,
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(story);
   } catch (err) {
@@ -90,7 +92,7 @@ app.post("/set_permission", authHandler, async (req, res, next) => {
     const title = req.sanitize(req.body.title);
     const permission = req.body.permission;
 
-    await Story.update(
+    await db.models.stories.update(
       {
         permission,
       },
@@ -158,9 +160,9 @@ app.get("/reading_list", authHandler, async (req, res, next) => {
       };
     }
 
-    const story = await Story.findAll(query).then((res) =>
-      res.map((x) => x.dataValues)
-    );
+    const story = await db.models.stories
+      .findAll(query)
+      .then((res) => res.map((x) => x.dataValues));
 
     story.map((x) => {
       if (!headers.includes(x.subreddit)) {
@@ -181,7 +183,7 @@ app.post("/stories/completed", authHandler, async (req, res, next) => {
     const read = req.body.read;
     const uuid = req.body.uuid;
 
-    await Story.update(
+    await db.models.stories.update(
       {
         read,
       },
@@ -201,7 +203,7 @@ app.post("/stories/completed", authHandler, async (req, res, next) => {
 
 app.get("/stories/completed", authHandler, async (req, res, next) => {
   try {
-    const story = await Story.findAll({
+    const story = await db.models.stories.findAll({
       where: {
         user_id: res.locals.userId,
         read: true,

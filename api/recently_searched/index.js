@@ -1,11 +1,11 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-const RecentlySearched = require("../../db/Models/RecentlySearched");
+const db = require("../../models");
 const app = express.Router();
 
 app.get("/", authHandler, async (req, res, next) => {
   try {
-    const terms = await RecentlySearched.findAll({
+    const terms = await db.models.recently_searched.findAll({
       where: {
         user_id: res.locals.userId,
       },
@@ -25,7 +25,7 @@ app.post("/", authHandler, async (req, res, next) => {
 
     if (!subreddit) throw new Error("No subreddit given");
 
-    const term = await RecentlySearched.findOrCreate({
+    const term = await db.models.recently_searched.findOrCreate({
       where: {
         subreddit,
         user_id: res.locals.userId,
