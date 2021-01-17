@@ -4,7 +4,7 @@ module.exports = {
   development: {
     database: process.env.POSTGRES_DB,
     host: "reddex_db",
-    username: process.env.POSTGRES_USER,
+    user: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     dialect: "postgres",
     port: 5432,
