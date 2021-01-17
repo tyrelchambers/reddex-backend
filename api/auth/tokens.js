@@ -3,22 +3,25 @@ const { authHandler } = require("../../middleware/middleware");
 const User = require("../../db/Models/User");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
+const db = require("../../models");
 
 const app = express.Router();
 
 app.get("/getTokens", authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
-    const user = await User.findOne({
-      where: {
-        uuid: userId,
-      },
-      attributes: ["refresh_token", "access_token"],
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          uuid: userId,
+        },
+        attributes: ["refresh_token", "access_token"],
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (!user) throw new Error("No user");
 

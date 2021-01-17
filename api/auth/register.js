@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
-const User = require("../../db/Models/User");
+const db = require("../../models");
 const app = express.Router();
 
 app.post("/register", async (req, res, next) => {
@@ -16,19 +16,21 @@ app.post("/register", async (req, res, next) => {
     if (!email || !password) throw new Error("No email or password provided");
 
     const hashPassword = bcrypt.hashSync(password, 10);
-    const existingUser = await User.findOne({
-      where: {
-        email,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const existingUser = await db.models.user
+      .findOne({
+        where: {
+          email,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (existingUser) throw new Error("User already exists");
 
-    const user = await User.create({
+    const user = await db.models.user.create({
       email,
       password: hashPassword,
       access_token,

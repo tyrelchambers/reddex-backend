@@ -1,14 +1,7 @@
 const express = require("express");
 const emailCon = require("../../libs/emailConfig");
 const { authHandler } = require("../../middleware/middleware.js");
-const Website = require("../../db/Models/Website");
-const SubmissionFormOptions = require("../../db/Models/SubmissionFormOptions");
-const SubmittedStories = require("../../db/Models/SubmittedStories");
-const OptionsAuthor = require("../../db/Models/OptionsAuthor");
-const OptionsEmail = require("../../db/Models/OptionsEmail");
-const OptionsSentToOthers = require("../../db/Models/OptionsSentToOthers");
-const OptionsTags = require("../../db/Models/OptionsTags");
-const OptionsStoryTitle = require("../../db/Models/OptionsStoryTitle");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -25,14 +18,14 @@ app.post("/submit", async (req, res, next) => {
     const sent_to_others_formatted =
       sent_to_others.value === null ? false : sent_to_others.value;
 
-    const subdomain = await Website.findOne({
+    const subdomain = await db.models.website.findOne({
       where: {
         uuid: website,
       },
       include: "User",
     });
 
-    await SubmittedStories.create({
+    await db.models.submitted_stories.create({
       email: story_email,
       author,
       tags,

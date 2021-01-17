@@ -9,23 +9,23 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      SubmissionFormOptions.hasOne(models.OptionsAuthor, {
+      submission_form_options.hasOne(models.options_author, {
         onDelete: "CASCADE",
         foreignKey: "options_id",
       });
-      SubmissionFormOptions.hasOne(models.OptionsEmail, {
+      submission_form_options.hasOne(models.options_email, {
         onDelete: "CASCADE",
         foreignKey: "options_id",
       });
-      SubmissionFormOptions.hasOne(models.OptionsSentToOthers, {
+      submission_form_options.hasOne(models.options_sent_to_others, {
         onDelete: "CASCADE",
         foreignKey: "options_id",
       });
-      SubmissionFormOptions.hasOne(models.OptionsTags, {
+      submission_form_options.hasOne(models.options_tags, {
         onDelete: "CASCADE",
         foreignKey: "options_id",
       });
-      SubmissionFormOptions.hasOne(models.OptionsStoryTitle, {
+      submission_form_options.hasOne(models.options_story_title, {
         onDelete: "CASCADE",
         foreignKey: "options_id",
       });
@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       website_id: {
         type: DataTypes.UUID,
         references: {
-          model: Website,
+          model: sequelize.models.Website,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

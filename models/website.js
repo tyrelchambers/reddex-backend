@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Website.belongsTo(models.User, {
+      website.belongsTo(models.user, {
         foreignKey: "user_id",
       });
 
-      Website.hasOne(models.SubmissionFormOptions, {
+      website.hasOne(models.submission_form_options, {
         onDelete: "CASCADE",
         foreignKey: "website_id",
       });
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: {
         type: DataTypes.UUID,
-        defaultValue: UUIDV4,
+        defaultValue: DataTypes.UUIDV4(),
         unique: true,
         primaryKey: true,
       },
@@ -103,7 +103,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.UUID,
         references: {
-          model: User,
+          model: sequelize.models.User,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

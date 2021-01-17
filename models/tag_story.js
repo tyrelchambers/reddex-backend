@@ -16,14 +16,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: {
         type: DataTypes.UUID,
-        defaultValue: UUIDV4,
+        defaultValue: DataTypes.UUIDV4(),
         unique: true,
         primaryKey: true,
       },
       tag_id: {
         type: DataTypes.UUID,
         references: {
-          model: Tag,
+          model: sequelize.models.Tag,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       story_id: {
         type: DataTypes.UUID,
         references: {
-          model: Story,
+          model: sequelize.models.Story,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

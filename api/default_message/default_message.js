@@ -1,23 +1,23 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
-
-const User = require("../../db/Models/User");
-
+const db = require("../../models");
 const app = express.Router();
 
 app.get("/", authHandler, async (req, res, next) => {
   try {
     const userId = res.locals.userId;
 
-    const message = await User.findOne({
-      where: {
-        uuid: userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const message = await db.models.user
+      .findOne({
+        where: {
+          uuid: userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(message);
   } catch (err) {
@@ -30,7 +30,7 @@ app.post("/", authHandler, async (req, res, next) => {
     const userId = res.locals.userId;
     const text = req.sanitize(req.body.text);
 
-    await User.update(
+    await db.models.user.update(
       {
         initial_message: text,
       },

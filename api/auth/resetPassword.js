@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const emailCon = require("../../libs/emailConfig");
 const config = require("../../config");
 const bcrypt = require("bcryptjs");
-const User = require("../../db/Models/User");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -11,15 +11,17 @@ app.post("/get_reset_token", async (req, res, next) => {
   try {
     const email = req.sanitize(req.body.email);
 
-    const user = await User.findOne({
-      where: {
-        email,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          email,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (!user) throw new Error("No user exists with that email");
 

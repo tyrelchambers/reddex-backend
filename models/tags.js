@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Tag.belongsToMany(models.Story, {
-        through: TagStory,
+      tags.belongsToMany(models.stories, {
+        through: models.tag_story,
         foreignKey: "tag_id",
       });
     }
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       uuid: {
         type: DataTypes.UUID,
-        defaultValue: UUIDV4,
+        defaultValue: DataTypes.UUIDV4(),
         unique: true,
         primaryKey: true,
       },
@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.UUID,
         references: {
-          model: User,
+          model: sequelize.models.User,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

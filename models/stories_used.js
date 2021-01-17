@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: {
         type: DataTypes.UUID,
         references: {
-          model: User,
+          model: sequelize.models.User,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       post_id: {
         type: DataTypes.UUID,
         references: {
-          model: Story,
+          model: sequelize.models.Story,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

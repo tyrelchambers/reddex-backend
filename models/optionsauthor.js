@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       options_id: {
         type: DataTypes.UUID,
         references: {
-          model: SubmissionFormOptions,
+          model: sequelize.models.SubmissionFormOptions,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },

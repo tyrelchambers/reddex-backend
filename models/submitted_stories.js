@@ -2,7 +2,7 @@
 const { Deferrable } = require("sequelize");
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class OptionsEmail extends Model {
+  class submitted_stories extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,34 +12,36 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  OptionsEmail.init(
+  submitted_stories.init(
     {
       uuid: {
         type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4(),
         primaryKey: true,
         unique: true,
       },
-      value: {
+      email: {
         type: DataTypes.STRING,
-        defaultValue: "",
       },
-      label: {
+      author: {
         type: DataTypes.STRING,
-        defaultValue: "Email",
       },
-      required: {
+      story_title: {
+        type: DataTypes.STRING,
+      },
+      sent_to_others: {
         type: DataTypes.BOOLEAN,
-        defaultValue: true,
       },
-      enabled: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
+      tags: {
+        type: DataTypes.JSON,
       },
-      options_id: {
+      body: {
+        type: DataTypes.TEXT,
+      },
+      user_id: {
         type: DataTypes.UUID,
         references: {
-          model: sequelize.models.SubmissionFormOptions,
+          model: sequelize.models.user,
           key: "uuid",
           deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },
@@ -47,8 +49,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "options_email",
+      modelName: "submitted_stories",
     }
   );
-  return OptionsEmail;
+  return submitted_stories;
 };

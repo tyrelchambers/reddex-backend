@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
-const User = require("../../db/Models/User");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -13,15 +13,17 @@ app.post("/login", async (req, res, next) => {
 
     if (!password || !email) throw new Error("Missing email or password");
 
-    const user = await User.findOne({
-      where: {
-        email: email,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const user = await db.models.user
+      .findOne({
+        where: {
+          email: email,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     if (!user) throw new Error("User does not exist");
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const { authHandler } = require("../../middleware/middleware");
 const Contact = require("../../db/Models/Contact");
+const db = require("../../models");
 
 const app = express.Router();
 
@@ -8,11 +9,13 @@ app.post("/save", authHandler, async (req, res, next) => {
   try {
     const name = req.sanitize(req.body.name);
     const notes = req.sanitize(req.body.notes);
-    const contact = await Contact.create({
-      name,
-      notes,
-      user_id: res.locals.userId,
-    }).then((res) => res.dataValues);
+    const contact = await db.models.contact
+      .create({
+        name,
+        notes,
+        user_id: res.locals.userId,
+      })
+      .then((res) => res.dataValues);
 
     res.send(contact);
   } catch (err) {
@@ -22,7 +25,7 @@ app.post("/save", authHandler, async (req, res, next) => {
 
 app.get("/all", authHandler, async (req, res, next) => {
   try {
-    const contacts = await Contact.findAll({
+    const contacts = await db.models.contact.findAll({
       where: {
         user_id: res.locals.userId,
       },
@@ -39,16 +42,18 @@ app.get("/all", authHandler, async (req, res, next) => {
 app.get("/name", authHandler, async (req, res, next) => {
   try {
     const { name } = req.query;
-    const contact = await Contact.findOne({
-      where: {
-        name,
-        user_id: res.locals.userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const contact = await db.models.contact
+      .findOne({
+        where: {
+          name,
+          user_id: res.locals.userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(contact);
   } catch (error) {
@@ -62,7 +67,7 @@ app.patch("/update", authHandler, async (req, res, next) => {
     const notes = req.sanitize(req.body.notes);
     const uuid = req.sanitize(req.body.uuid);
 
-    await Contact.update(
+    await db.models.contact.update(
       {
         name,
         notes,
@@ -84,7 +89,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
   try {
     const { id } = req.query;
 
-    await Contact.destroy({
+    await db.models.contact.destroy({
       where: {
         uuid: id,
       },
@@ -100,16 +105,18 @@ app.get("/:id", authHandler, async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = await Contact.findOne({
-      where: {
-        uuid: id,
-        user_id: res.locals.userId,
-      },
-    }).then((res) => {
-      if (res) {
-        return res.dataValues;
-      }
-    });
+    const contact = await db.models.contact
+      .findOne({
+        where: {
+          uuid: id,
+          user_id: res.locals.userId,
+        },
+      })
+      .then((res) => {
+        if (res) {
+          return res.dataValues;
+        }
+      });
 
     res.send(contact);
   } catch (error) {

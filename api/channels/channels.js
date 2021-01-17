@@ -1,11 +1,12 @@
 const express = require("express");
 const Website = require("../../db/Models/Website");
+const db = require("../../models");
 
 const app = express.Router();
 
 app.get("/", async (req, res, next) => {
   try {
-    const channels = await Website.findAll();
+    const channels = await db.models.website.findAll();
 
     channels.map((x) => x.dataValues);
 
