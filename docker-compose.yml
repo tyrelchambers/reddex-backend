@@ -11,7 +11,7 @@ services:
     command: npm start
     depends_on:
       - db
-      - mongodb
+      # - mongodb
   db:
     container_name: reddex_db
     image: postgres
@@ -23,13 +23,12 @@ services:
       - postgres_data:/var/lib/postgresql/data/
       - pg_dump:/home/reddex-backend/pg_dump
     restart: unless-stopped
-  mongodb:
-    container_name: mongodb
-    image: mongo
-    ports:
-      - "6000:6000"
-    restart: unless-stopped
-
+  # mongodb:
+  #   container_name: mongodb
+  #   image: mongo
+  #   ports:
+  #     - "6000:6000"
+  #   restart: unless-stopped
 
 networks:
   default:

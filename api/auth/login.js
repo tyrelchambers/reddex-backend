@@ -22,8 +22,6 @@ app.post("/login", async (req, res, next) => {
       }
     });
 
-    console.log(user);
-
     if (!user) throw new Error("User does not exist");
 
     const hashPassword = await bcrypt.compareSync(password, user.password);

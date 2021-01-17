@@ -15,8 +15,16 @@ const OptionsTags = require("./OptionsTags");
 const OptionsStoryTitle = require("./OptionsStoryTitle");
 
 const sequelize = require("../index.js");
+
 (async () => {
-  sequelize.sync();
+  sequelize
+    .sync()
+    .then(() => {
+      console.log("Sync successfully.");
+    })
+    .catch((err) => {
+      console.error("Unable to sync to the database:", err);
+    });
 })();
 
 sequelize

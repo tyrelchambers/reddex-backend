@@ -7,6 +7,7 @@ module.exports = {
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     dialect: "postgres",
+    port: 5432,
   },
   production: {
     dialect: "postgres",

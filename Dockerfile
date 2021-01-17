@@ -1,6 +1,6 @@
 FROM alpine
 
-WORKDIR /
+WORKDIR /code
 
 # Create a group and user
 RUN addgroup -S node && adduser -S node -G node
@@ -15,7 +15,7 @@ RUN apk add --update nodejs npm
 
 COPY package*.json ./
 
-RUN npm install --prefix ./
+RUN npm install 
 
 RUN npm install -g sequelize-cli
 
