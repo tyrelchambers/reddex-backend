@@ -1,7 +1,6 @@
+const { Sequelize } = require("sequelize");
 
-const { Sequelize } = require('sequelize');
+const environment = process.env.NODE_ENV || "development";
+const config = require("./config");
 
-const environment = process.env.NODE_ENV || 'development'
-import config from './config'
-
-module.exports = new Sequelize(config[environment])
+module.exports = new Sequelize(config[environment]);

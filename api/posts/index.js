@@ -1,45 +1,46 @@
-import express from 'express'
-import Post from '../../db/Models/PostMongoose'
-import jwt from 'jsonwebtoken';
-import config from '../../config'
+const express = require("express");
+const Post = require("../../db/Models/PostMongoose");
+const jwt = require("jsonwebtoken");
+const config = require("../../config");
 const app = express.Router();
 
 const avgReadingTime = (text) => {
-
   const wordsPerMinute = 200; // Average case.
   let result;
-  
+
   let textLength = text.split(" ").length; // Split by words
-  if(textLength > 0){
+  if (textLength > 0) {
     let value = Math.ceil(textLength / wordsPerMinute);
     result = value;
   }
 
   return result;
-}
+};
 
-app.delete('/delete', async (req, res, next) => {
+app.delete("/delete", async (req, res, next) => {
   try {
     await Post.deleteMany({
-      visitor_token: req.headers.visitortoken
-    })
+      visitor_token: req.headers.visitortoken,
+    });
 
-    res.sendStatus(200)
+    res.sendStatus(200);
+  } catch (err) {
+    next(err);
   }
+});
 
-  catch(err) {
-    next(err)
-  }
-})
-
-app.post('/save', async (req, res, next) => {
+app.post("/save", async (req, res, next) => {
   try {
-    jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
-      if (err) throw new Error("Visitor token invalid")
-      return true
-    })
-        
-    const toInsert = req.body.map(x => ({
+    jwt.verify(
+      req.headers.visitortoken,
+      config.development.secret,
+      (err, decoded) => {
+        if (err) throw new Error("Visitor token invalid");
+        return true;
+      }
+    );
+
+    const toInsert = req.body.map((x) => ({
       author: x.author,
       title: x.title,
       self_text: x.self_text,
@@ -52,18 +53,18 @@ app.post('/save', async (req, res, next) => {
       subreddit: x.subreddit,
       upvote_ratio: x.upvote_ratio.toFixed(2),
       visitor_token: req.headers.visitortoken,
-      readTime: avgReadingTime(x.self_text)
-    }))
+      readTime: avgReadingTime(x.self_text),
+    }));
 
-    const posts = await Post.create(toInsert)
+    const posts = await Post.create(toInsert);
 
-    res.send(posts)
+    res.send(posts);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-app.get('/', async (req, res, next) => {
+app.get("/", async (req, res, next) => {
   try {
     const {
       operator,
@@ -72,52 +73,56 @@ app.get('/', async (req, res, next) => {
       seriesOnly,
       excludeSeries,
       readTime,
-      readTimeOperator
+      readTimeOperator,
     } = req.query;
 
-    jwt.verify(req.headers.visitortoken, config.development.secret, (err, decoded) => {
-      if (err) throw new Error("Visitor token invalid")
-      return true
-    })
+    jwt.verify(
+      req.headers.visitortoken,
+      config.development.secret,
+      (err, decoded) => {
+        if (err) throw new Error("Visitor token invalid");
+        return true;
+      }
+    );
 
     let resLimit = 25;
     let page = req.query.page || 1;
 
     const query = {
       visitor_token: req.headers.visitortoken,
-    }
+    };
 
     if (upvotes > 0) {
       if (operator === ">") {
         query.ups = {
-          $gte: Number(upvotes)
-        }
+          $gte: Number(upvotes),
+        };
       }
 
       if (operator === "=") {
         query.ups = {
-          $eq: Number(upvotes)
-        }
+          $eq: Number(upvotes),
+        };
       }
 
       if (operator === "<") {
         query.ups = {
-          $lte: Number(upvotes)
-        }
+          $lte: Number(upvotes),
+        };
       }
     }
 
     if (readTime > 0) {
       if (readTimeOperator === ">") {
         query.readTime = {
-          $gte: Number(readTime)
-        }
+          $gte: Number(readTime),
+        };
       }
 
       if (readTimeOperator === "<") {
         query.readTime = {
-          $lte: Number(readTime)
-        }
+          $lte: Number(readTime),
+        };
       }
     }
 
@@ -125,54 +130,52 @@ app.get('/', async (req, res, next) => {
       query.$text = {
         $search: `\"${keywords}\"`,
         $caseSensitive: false,
-      }
+      };
     }
 
     if (seriesOnly) {
-      query.link_flair_text = "Series"
+      query.link_flair_text = "Series";
     }
 
     if (excludeSeries) {
       query.link_flair_text = {
-        $ne: "Series"
-      }
-
+        $ne: "Series",
+      };
     }
 
-    const posts = await Post.find(query,null, {
+    const posts = await Post.find(query, null, {
       limit: resLimit,
-      skip: ((resLimit * page) - resLimit)
-      
-    })
+      skip: resLimit * page - resLimit,
+    });
 
     const count = await Post.count(query);
 
     res.send({
       posts,
-      maxPages: Math.round(count / resLimit)
-
-    })
+      maxPages: Math.round(count / resLimit),
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-app.put('/update', async (req, res, next) => {
+app.put("/update", async (req, res, next) => {
   try {
-    const {
-      post_id
-    } = req.body;
+    const { post_id } = req.body;
 
-    await Post.findOneAndUpdate({
-      post_id
-    }, {
-      viewed: true
-    })
+    await Post.findOneAndUpdate(
+      {
+        post_id,
+      },
+      {
+        viewed: true,
+      }
+    );
 
-    res.sendStatus(200)
+    res.sendStatus(200);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
-module.exports = app
+module.exports = app;

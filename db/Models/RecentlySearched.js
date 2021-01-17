@@ -1,25 +1,28 @@
-import { DataTypes, Deferrable } from 'sequelize'
-import sequelize from '../index.js'
+const { DataTypes, Deferrable } = require("sequelize");
+const sequelize = require("../index.js");
 
-import User from './User.js'
+const User = require("./User.js");
 
-const RecentlySearched = sequelize.define("RecentlySearched", {
-  subreddit: {
-    type: DataTypes.STRING,
-    allowNull: false
+const RecentlySearched = sequelize.define(
+  "RecentlySearched",
+  {
+    subreddit: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: User,
+        key: "uuid",
+        deferrable: Deferrable.INITIALLY_IMMEDIATE,
+      },
+    },
   },
-  user_id: {
-    type: DataTypes.UUID,
-    references: {
-      model: User,
-      key: 'uuid',
-      deferrable: Deferrable.INITIALLY_IMMEDIATE
-    }
+  {
+    tableName: "recently_searched",
+    timestamps: false,
   }
-}, {
-  tableName: 'recently_searched',
-  timestamps: false
+);
 
-})
-
-module.exports = RecentlySearched
+module.exports = RecentlySearched;
