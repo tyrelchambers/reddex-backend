@@ -1,70 +1,74 @@
-import express from 'express'
-import {authHandler } from '../../middleware/middleware';
+const express = require("express");
+const { authHandler } = require("../../middleware/middleware");
 
-import Website from '../../db/Models/Website'
-import User from '../../db/Models/User'
-import SubmissionFormOptions from '../../db/Models/SubmissionFormOptions'
-import OptionsAuthor from '../../db/Models/OptionsAuthor'
-import OptionsEmail from '../../db/Models/OptionsEmail'
-import OptionsSentToOthers from '../../db/Models/OptionsSentToOthers'
-import OptionsTags from '../../db/Models/OptionsTags'
-import OptionsStoryTitle from '../../db/Models/OptionsStoryTitle'
+const Website = require("../../db/Models/Website");
+const User = require("../../db/Models/User");
+const SubmissionFormOptions = require("../../db/Models/SubmissionFormOptions");
+const OptionsAuthor = require("../../db/Models/OptionsAuthor");
+const OptionsEmail = require("../../db/Models/OptionsEmail");
+const OptionsSentToOthers = require("../../db/Models/OptionsSentToOthers");
+const OptionsTags = require("../../db/Models/OptionsTags");
+const OptionsStoryTitle = require("../../db/Models/OptionsStoryTitle");
 
 const app = express.Router();
 
-app.post('/activate', authHandler, async (req, res, next) => {
+app.post("/activate", authHandler, async (req, res, next) => {
   try {
-    const website = await Website.create({
-      user_id: res.locals.userId
-
-    }, {
-      returning: true
-    }).then(res => res.dataValues)
-    
-    await User.update({
-      website_id: website.uuid
-    }, {
-      where: {
-        uuid: res.locals.userId
+    const website = await Website.create(
+      {
+        user_id: res.locals.userId,
+      },
+      {
+        returning: true,
       }
-    })
+    ).then((res) => res.dataValues);
 
-    const options = await SubmissionFormOptions.create({
-      website_id: website.uuid
-    }, {
-      returning: true
-    }).then(res => res.dataValues)
-    
+    await User.update(
+      {
+        website_id: website.uuid,
+      },
+      {
+        where: {
+          uuid: res.locals.userId,
+        },
+      }
+    );
+
+    const options = await SubmissionFormOptions.create(
+      {
+        website_id: website.uuid,
+      },
+      {
+        returning: true,
+      }
+    ).then((res) => res.dataValues);
+
     await OptionsAuthor.create({
-      options_id: options.uuid
-    })
+      options_id: options.uuid,
+    });
     await OptionsEmail.create({
-      options_id: options.uuid
-    })
+      options_id: options.uuid,
+    });
     await OptionsSentToOthers.create({
-      options_id: options.uuid
-    })
+      options_id: options.uuid,
+    });
     await OptionsTags.create({
-      options_id: options.uuid
-    })
+      options_id: options.uuid,
+    });
     await OptionsStoryTitle.create({
-      options_id: options.uuid
-    })
-
+      options_id: options.uuid,
+    });
 
     res.send({
       website,
-      options
+      options,
     });
+  } catch (err) {
+    next(err);
   }
+});
 
-  catch(err) {
-    next(err)
-
-  }
-})
-
-app.post('/update', authHandler, async (req, res, next) => {
+app.post("/update", authHandler, async (req, res, next) => {
   try {
     const subdomain = req.sanitize(req.body.subdomain);
     const title = req.sanitize(req.body.title);
@@ -84,182 +88,181 @@ app.post('/update', authHandler, async (req, res, next) => {
     const twitter_id = req.sanitize(req.body.twitter_id);
     const twitter_timeline = req.body.twitter_timeline;
     const show_credit_link = req.body.show_credit_link;
-    const headline = req.sanitize(req.body.headline)
+    const headline = req.sanitize(req.body.headline);
     const submission_title = req.sanitize(req.body.submission_title);
     const rules = req.sanitize(req.body.rules);
     const thumbnail = req.body.thumbnail;
-    
-    const website = await Website.update({
-      subdomain,
-      title,
-      twitter,
-      facebook,
-      instagram,
-      patreon,
-      youtube,
-      podcast,
-      accent,
-      theme,
-      introduction,
-      banner_url,
-      submission_form,
-      youtube_id,
-      youtube_timeline,
-      twitter_id,
-      twitter_timeline,
-      show_credit_link,
-      headline,
-      submission_title,
-      rules,
-      thumbnail
-    }, {
-      where: {
-        user_id: res.locals.userId
 
+    const website = await Website.update(
+      {
+        subdomain,
+        title,
+        twitter,
+        facebook,
+        instagram,
+        patreon,
+        youtube,
+        podcast,
+        accent,
+        theme,
+        introduction,
+        banner_url,
+        submission_form,
+        youtube_id,
+        youtube_timeline,
+        twitter_id,
+        twitter_timeline,
+        show_credit_link,
+        headline,
+        submission_title,
+        rules,
+        thumbnail,
       },
-      returning: true,
-      plain: true
-    }).then(res => res[1].dataValues)
+      {
+        where: {
+          user_id: res.locals.userId,
+        },
+        returning: true,
+        plain: true,
+      }
+    ).then((res) => res[1].dataValues);
 
-    res.send(website)
+    res.send(website);
+  } catch (err) {
+    next(err);
   }
+});
 
-  catch(err) {
-    next(err)
-
-  }
-})
-
-app.get('/config', authHandler, async (req, res, next) => {
+app.get("/config", authHandler, async (req, res, next) => {
   try {
     const website = await Website.findOne({
       where: {
-        user_id: res.locals.userId
+        user_id: res.locals.userId,
       },
-      include: SubmissionFormOptions
-    }).then(res => {
+      include: SubmissionFormOptions,
+    }).then((res) => {
       if (res) {
-        return res.dataValues
+        return res.dataValues;
       }
-    })    
+    });
 
     if (website) {
       const form = await SubmissionFormOptions.findOne({
         where: {
-          website_id: website.uuid
+          website_id: website.uuid,
         },
-        include: [OptionsAuthor, OptionsTags, OptionsEmail, OptionsSentToOthers, OptionsStoryTitle]
-      }).then(res => {
+        include: [
+          OptionsAuthor,
+          OptionsTags,
+          OptionsEmail,
+          OptionsSentToOthers,
+          OptionsStoryTitle,
+        ],
+      }).then((res) => {
         if (res) {
-          return res.dataValues
+          return res.dataValues;
         }
-      })
+      });
 
-      await User.update({
-        website_id: website.uuid
-      }, {
-        where: {
-          uuid: res.locals.userId
-        }
-      })
-  
-      if (!form.OptionsAuthor || !form.OptionsEmail || !form.OptionsTag || !form.OptionsStoryTitle || !form.OptionsSentToOther) {
-       await OptionsAuthor.findOrCreate({
+      await User.update(
+        {
+          website_id: website.uuid,
+        },
+        {
           where: {
-            options_id: form.uuid
-          }
-        })
+            uuid: res.locals.userId,
+          },
+        }
+      );
+
+      if (
+        !form.OptionsAuthor ||
+        !form.OptionsEmail ||
+        !form.OptionsTag ||
+        !form.OptionsStoryTitle ||
+        !form.OptionsSentToOther
+      ) {
+        await OptionsAuthor.findOrCreate({
+          where: {
+            options_id: form.uuid,
+          },
+        });
         await OptionsEmail.findOrCreate({
           where: {
-            options_id: form.uuid
-          }
-        })
+            options_id: form.uuid,
+          },
+        });
         await OptionsSentToOthers.findOrCreate({
           where: {
-            options_id: form.uuid
-          }
-        })
+            options_id: form.uuid,
+          },
+        });
         await OptionsTags.findOrCreate({
           where: {
-            options_id: form.uuid
-          }
-        })
+            options_id: form.uuid,
+          },
+        });
         await OptionsStoryTitle.findOrCreate({
           where: {
-            options_id: form.uuid
-          }
-        })
-    
+            options_id: form.uuid,
+          },
+        });
       }
     }
     res.send(website);
+  } catch (err) {
+    next(err);
   }
+});
 
-  catch(err) {
-    next(err)
-
-  }
-})
-
-app.get('/', async (req, res, next) => {
+app.get("/", async (req, res, next) => {
   try {
-    const {
-      subdomain
-    } = req.query;
+    const { subdomain } = req.query;
 
     const website = await Website.findOne({
       where: {
-        subdomain
-      }
-    }).then(res => {
+        subdomain,
+      },
+    }).then((res) => {
       if (res) {
-        return res.dataValues
+        return res.dataValues;
       }
-    })
+    });
 
     const patreon_tier = await User.findOne({
       where: {
-        uuid: website.user_id
+        uuid: website.user_id,
       },
-      attributes: ["patreon_tier"]
-    }).then(res => {
+      attributes: ["patreon_tier"],
+    }).then((res) => {
       if (res) {
-        return res.dataValues
+        return res.dataValues;
       }
-    })
-    
+    });
+
     res.send({
       website,
-      patreon_tier
+      patreon_tier,
     });
+  } catch (err) {
+    next(err);
   }
+});
 
-  catch(err) {
-    next(err)
-
-  }
-})
-
-app.delete('/delete', authHandler, async (req, res, next) => {
+app.delete("/delete", authHandler, async (req, res, next) => {
   try {
-    const {
-      uuid
-    } = req.query;
+    const { uuid } = req.query;
 
     await Website.destroy({
       where: {
-        uuid
-      }
-    })    
-    
-    res.send("Site deleted")
+        uuid,
+      },
+    });
+
+    res.send("Site deleted");
+  } catch (err) {
+    next(err);
   }
-
-  catch(err) {
-    next(err)
-
-  }
-})
-
+});
 
 module.exports = app;
