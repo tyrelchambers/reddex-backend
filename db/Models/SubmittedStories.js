@@ -2,7 +2,7 @@ const { DataTypes, Deferrable } = require("sequelize");
 const sequelize = require("../index.js");
 const User = require("./User.js");
 const SubmittedStories = sequelize.define(
-  "StoriesUsed",
+  "SubmittedStories",
   {
     uuid: {
       type: DataTypes.UUID,
