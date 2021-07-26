@@ -31,14 +31,10 @@ app.delete("/delete", async (req, res, next) => {
 
 app.post("/save", async (req, res, next) => {
   try {
-    jwt.verify(
-      req.headers.visitortoken,
-      config.development.secret,
-      (err, decoded) => {
-        if (err) throw new Error("Visitor token invalid");
-        return true;
-      }
-    );
+    jwt.verify(req.headers.token, config.development.secret, (err, decoded) => {
+      if (err) throw new Error("Visitor token invalid");
+      return true;
+    });
 
     const toInsert = req.body.map((x) => ({
       author: x.author,
