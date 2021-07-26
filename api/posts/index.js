@@ -72,14 +72,10 @@ app.get("/", async (req, res, next) => {
       readTimeOperator,
     } = req.query;
 
-    jwt.verify(
-      req.headers.visitortoken,
-      config.development.secret,
-      (err, decoded) => {
-        if (err) throw new Error("Visitor token invalid");
-        return true;
-      }
-    );
+    jwt.verify(req.headers.token, config.development.secret, (err, decoded) => {
+      if (err) throw new Error("Visitor token invalid");
+      return true;
+    });
 
     let resLimit = 25;
     let page = req.query.page || 1;
