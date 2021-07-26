@@ -81,7 +81,7 @@ app.get("/", async (req, res, next) => {
     let page = req.query.page || 1;
 
     const query = {
-      visitor_token: req.headers.visitortoken,
+      visitor_token: req.headers.token,
     };
 
     if (upvotes > 0) {
