@@ -20,7 +20,7 @@ const avgReadingTime = (text) => {
 app.delete("/delete", async (req, res, next) => {
   try {
     await Post.deleteMany({
-      visitor_token: req.headers.visitortoken,
+      visitor_token: req.headers.token,
     });
 
     res.sendStatus(200);
