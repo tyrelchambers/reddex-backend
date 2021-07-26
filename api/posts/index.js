@@ -48,7 +48,7 @@ app.post("/save", async (req, res, next) => {
       post_id: x.post_id,
       subreddit: x.subreddit,
       upvote_ratio: x.upvote_ratio.toFixed(2),
-      visitor_token: req.headers.visitortoken,
+      visitor_token: req.headers.token,
       readTime: avgReadingTime(x.self_text),
     }));
 
