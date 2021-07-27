@@ -7,7 +7,7 @@ module.exports = {
   },
   production: {
     secret: "my furry cat house",
-    database: `mongodb://mongodb/reddex`,
+    database: process.env.MONGO_URL,
   },
   staging: {
     secret: "my furry cat house",
