@@ -30,8 +30,7 @@ app.post("/login", async (req, res, next) => {
       { uuid: user.uuid, email: user.email },
       config.development.secret,
       {
-        expiresIn: "1d",
-      }
+       expiresIn: "1w",      }
     );
 
     res.send({

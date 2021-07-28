@@ -40,8 +40,7 @@ app.post("/register", async (req, res, next) => {
       { uuid: user.uuid, email: user.email },
       config.development.secret,
       {
-        expiresIn: "1d",
-      }
+       expiresIn: "1w",      }
     );
 
     res.status(200).send({
