@@ -31,12 +31,13 @@ app.delete("/delete", async (req, res, next) => {
 
 app.post("/save", async (req, res, next) => {
   try {
+    const {subreddit} = req.body
     jwt.verify(req.headers.token, config.development.secret, (err, decoded) => {
       if (err) throw new Error("Visitor token invalid");
       return true;
     });
 
-    const toInsert = req.body.map((x) => ({
+    const toInsert = req.body.posts.map((x) => ({
       author: x.author,
       title: x.title,
       self_text: x.self_text,
@@ -48,11 +49,11 @@ app.post("/save", async (req, res, next) => {
       post_id: x.post_id,
       subreddit: x.subreddit,
       upvote_ratio: x.upvote_ratio.toFixed(2),
-      visitor_token: req.headers.token,
       readTime: avgReadingTime(x.self_text),
     }));
 
-    const posts = await Post.create(toInsert);
+
+    const posts = await Post.create({posts: toInsert, subreddit, visitor_token: req.headers.token});
 
     res.send(posts);
   } catch (error) {
@@ -135,7 +136,7 @@ app.get("/", async (req, res, next) => {
       };
     }
 
-    const posts = await Post.find(query, null, {
+    const post = await Post.findOne(query, null, {
       limit: resLimit,
       skip: resLimit * page - resLimit,
     });
@@ -143,7 +144,7 @@ app.get("/", async (req, res, next) => {
     const count = await Post.count(query);
 
     res.send({
-      posts,
+      post,
       maxPages: Math.round(count / resLimit),
     });
   } catch (error) {
@@ -154,15 +155,16 @@ app.get("/", async (req, res, next) => {
 app.put("/update", async (req, res, next) => {
   try {
     const { post_id } = req.body;
+  
+    const postOwner = await Post.findOne({
+      visitor_token: req.headers.token
+    })
 
-    await Post.findOneAndUpdate(
-      {
-        post_id,
-      },
-      {
-        viewed: true,
-      }
-    );
+    const post = postOwner.posts.filter(p => p.post_id === post_id)[0]
+
+    post.viewed = true
+
+    await postOwner.save()
 
     res.sendStatus(200);
   } catch (error) {
