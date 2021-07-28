@@ -11,7 +11,7 @@ module.exports = {
   },
   production: {
     dialect: "postgres",
-    host: "reddex",
+    host: "reddex_db",
     username: process.env.POSTGRES_USER,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
