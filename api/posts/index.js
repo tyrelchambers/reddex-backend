@@ -2,20 +2,14 @@ const express = require("express");
 const Post = require("../../db/Models/PostMongoose");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
+const { avgReadingTime } = require("../../libs/avgReadingTime");
+const filterByUpvotes = require("../../libs/filterByUpvotes");
+const filterByReadTime = require("../../libs/filterByReadTime");
+const filterBySeries = require("../../libs/filterBySeriesOnly");
+const filterByKeywords = require("../../libs/filterByKeywords");
 const app = express.Router();
 
-const avgReadingTime = (text) => {
-  const wordsPerMinute = 200; // Average case.
-  let result;
 
-  let textLength = text.split(" ").length; // Split by words
-  if (textLength > 0) {
-    let value = Math.ceil(textLength / wordsPerMinute);
-    result = value;
-  }
-
-  return result;
-};
 
 app.delete("/delete", async (req, res, next) => {
   try {
@@ -68,7 +62,7 @@ app.get("/", async (req, res, next) => {
       upvotes,
       keywords,
       seriesOnly,
-      excludeSeries,
+      omitSeries,
       readTime,
       readTimeOperator,
     } = req.query;
@@ -80,72 +74,75 @@ app.get("/", async (req, res, next) => {
 
     let resLimit = 25;
     let page = req.query.page || 1;
-
-    const query = {
-      visitor_token: req.headers.token,
-    };
+    const limit = resLimit;
+    const skip = resLimit * page - resLimit;
+    let query = {};
 
     if (upvotes > 0) {
       if (operator === ">") {
         query.ups = {
-          $gte: Number(upvotes),
+          operator: "gte",
+          value: Number(upvotes),
         };
       }
 
       if (operator === "=") {
         query.ups = {
-          $eq: Number(upvotes),
+          operator: "eq",
+          value: Number(upvotes),
         };
       }
 
       if (operator === "<") {
         query.ups = {
-          $lte: Number(upvotes),
+          operator: "lte",
+          value: Number(upvotes),
         };
       }
     }
 
-    if (readTime > 0) {
+    if (readTime > 0) {      
       if (readTimeOperator === ">") {
         query.readTime = {
-          $gte: Number(readTime),
+          operator: "gte",
+          value: Number(readTime),
         };
       }
 
       if (readTimeOperator === "<") {
         query.readTime = {
-          $lte: Number(readTime),
+          operator: "lte",
+          value: Number(readTime),
         };
       }
     }
 
     if (keywords) {
-      query.$text = {
-        $search: `\"${keywords}\"`,
-        $caseSensitive: false,
-      };
+      query.keywords = `${keywords}`;
     }
 
-    if (seriesOnly) {
-      query.link_flair_text = "Series";
+    if (seriesOnly === 'true') {
+      query.seriesOnly = true;
     }
 
-    if (excludeSeries) {
-      query.link_flair_text = {
-        $ne: "Series",
-      };
+    if (omitSeries === 'true') {
+      query.omitSeries = true
     }
 
-    const post = await Post.findOne(query, null, {
-      limit: resLimit,
-      skip: resLimit * page - resLimit,
-    });
-
-    const count = await Post.count(query);
-
+    const postOwner = await Post.findOne({visitor_token: req.headers.token})
+    const posts = postOwner.posts
+                    .filter(post => filterByUpvotes({post, query}))
+                    .filter(post => filterByReadTime({post, query}))
+                    .filter(post => filterByKeywords({post, query}))
+                    .filter(post => filterBySeries({post, query}))
+                    .slice(skip, limit)
+    
     res.send({
-      post,
-      maxPages: Math.round(count / resLimit),
+      post: {
+        subreddit: postOwner.subreddit,
+        posts
+      },
+      maxPages: Math.round(postOwner.posts.length / resLimit),
     });
   } catch (error) {
     next(error);
