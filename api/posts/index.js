@@ -74,7 +74,7 @@ app.get("/", async (req, res, next) => {
 
     let resLimit = 25;
     let page = req.query.page || 1;
-    const limit = resLimit;
+    const limit = resLimit * page;
     const skip = resLimit * page - resLimit;
     let query = {};
 
@@ -130,19 +130,18 @@ app.get("/", async (req, res, next) => {
     }
 
     const postOwner = await Post.findOne({visitor_token: req.headers.token})
-    const posts = postOwner.posts
+    const posts = postOwner === null ? [] : postOwner.posts
                     .filter(post => filterByUpvotes({post, query}))
                     .filter(post => filterByReadTime({post, query}))
                     .filter(post => filterByKeywords({post, query}))
                     .filter(post => filterBySeries({post, query}))
-                    .slice(skip, limit)
-    
+                    
     res.send({
       post: {
-        subreddit: postOwner.subreddit,
-        posts
+        subreddit: postOwner?.subreddit,
+        posts: posts.slice(skip, limit)
       },
-      maxPages: Math.round(postOwner.posts.length / resLimit),
+      maxPages: postOwner ? Math.round(posts.length / 25) : 0,
     });
   } catch (error) {
     next(error);
