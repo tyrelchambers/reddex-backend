@@ -4,6 +4,8 @@ const sequelize = require("../index.js");
 const User = require("./User.js");
 const Story = require("./Story.js");
 
+// Determines whether or not a story has been used. This shows as a green checkmark on SubredditPost. Used to show that the author has already been messaged about that particular story.
+
 const StoriesUsed = sequelize.define(
   "StoriesUsed",
   {

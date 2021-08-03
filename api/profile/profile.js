@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 
 const User = require("../../db/Models/User");
 const StoriesUsed = require("../../db/Models/StoriesUsed");
+const Story = require("../../db/Models/Story");
 
 const app = express.Router();
 
@@ -137,7 +138,7 @@ app.delete("/delete", authHandler, async (req, res, next) => {
 app.get("/stories_used", authHandler, async (req, res, next) => {
   try {
     const id = res.locals.userId;
-    const stories = await StoriesUsed.findAll({
+    const stories = await Story.findAll({
       where: {
         user_id: id,
       },
