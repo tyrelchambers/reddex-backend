@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+const { v4: uuidv4 } = require('uuid');
+
 const authHandler = async (req, res, next) => {
   try {
     if (!req.headers.token) throw new Error("No token provided");
@@ -26,6 +28,23 @@ const authHandler = async (req, res, next) => {
   }
 };
 
+const visitorHandler = async (req, res, next) => {
+  try {
+    let token = req.headers.temptoken;
+
+    if (!token) {
+      token = uuidv4()
+    }
+
+    res.locals.temptoken = token
+
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   authHandler,
+  visitorHandler
 };

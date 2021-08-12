@@ -1,20 +1,20 @@
 const express = require("express");
 const Post = require("../../db/Models/PostMongoose");
 const jwt = require("jsonwebtoken");
-const config = require("../../config");
 const { avgReadingTime } = require("../../libs/avgReadingTime");
 const filterByUpvotes = require("../../libs/filterByUpvotes");
 const filterByReadTime = require("../../libs/filterByReadTime");
 const filterBySeries = require("../../libs/filterBySeriesOnly");
 const filterByKeywords = require("../../libs/filterByKeywords");
+const { visitorHandler } = require("../../middleware/middleware");
 const app = express.Router();
 
 
 
-app.delete("/delete", async (req, res, next) => {
+app.delete("/delete", visitorHandler, async (req, res, next) => {
   try {
     await Post.deleteMany({
-      visitor_token: req.headers.token,
+      visitor_token: res.locals.temptoken,
     });
 
     res.sendStatus(200);
@@ -23,13 +23,10 @@ app.delete("/delete", async (req, res, next) => {
   }
 });
 
-app.post("/save", async (req, res, next) => {
+app.post("/save", visitorHandler, async (req, res, next) => {
   try {
     const {subreddit} = req.body
-    jwt.verify(req.headers.token, config.development.secret, (err, decoded) => {
-      if (err) throw new Error("Visitor token invalid");
-      return true;
-    });
+    
 
     const toInsert = req.body.posts.map((x) => ({
       author: x.author,
@@ -47,7 +44,7 @@ app.post("/save", async (req, res, next) => {
     }));
 
 
-    const posts = await Post.create({posts: toInsert, subreddit, visitor_token: req.headers.token});
+    const posts = await Post.create({posts: toInsert, subreddit, visitor_token: res.locals.temptoken});
 
     res.send(posts);
   } catch (error) {
@@ -55,7 +52,7 @@ app.post("/save", async (req, res, next) => {
   }
 });
 
-app.get("/", async (req, res, next) => {
+app.get("/", visitorHandler, async (req, res, next) => {
   try {
     const {
       operator,
@@ -66,11 +63,6 @@ app.get("/", async (req, res, next) => {
       readTime,
       readTimeOperator,
     } = req.query;
-
-    jwt.verify(req.headers.token, config.development.secret, (err, decoded) => {
-      if (err) throw new Error("Visitor token invalid");
-      return true;
-    });
 
     let resLimit = 25;
     let page = req.query.page || 1;
@@ -129,7 +121,8 @@ app.get("/", async (req, res, next) => {
       query.omitSeries = true
     }
 
-    const postOwner = await Post.findOne({visitor_token: req.headers.token})
+
+    const postOwner = await Post.findOne({visitor_token: res.locals.temptoken})
     const posts = postOwner === null ? [] : postOwner.posts
                     .filter(post => filterByUpvotes({post, query}))
                     .filter(post => filterByReadTime({post, query}))
@@ -148,12 +141,12 @@ app.get("/", async (req, res, next) => {
   }
 });
 
-app.put("/update", async (req, res, next) => {
+app.put("/update", visitorHandler, async (req, res, next) => {
   try {
     const { post_id } = req.body;
   
     const postOwner = await Post.findOne({
-      visitor_token: req.headers.token
+      visitor_token: res.locals.temptoken
     })
 
     const post = postOwner.posts.filter(p => p.post_id === post_id)[0]

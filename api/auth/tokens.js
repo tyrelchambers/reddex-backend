@@ -3,6 +3,7 @@ const { authHandler } = require("../../middleware/middleware");
 const User = require("../../db/Models/User");
 const jwt = require("jsonwebtoken");
 const config = require("../../config");
+const { v4: uuidv4 } = require('uuid');
 
 const app = express.Router();
 
@@ -57,7 +58,7 @@ app.post("/saveTokens", authHandler, async (req, res) => {
 
 app.get("/visitorToken", async (req, res, next) => {
   try {
-    const token = jwt.sign({}, config.development.secret);
+    const token = uuidv4()
     res.send(token);
   } catch (error) {
     next(error);
